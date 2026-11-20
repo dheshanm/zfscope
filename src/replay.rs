@@ -75,6 +75,10 @@ impl Replay {
                     let r = collect::smart(&self.src, &d);
                     app.on_msg(Msg::Smart(d, r));
                 }
+                Action::Write(c) => {
+                    let r = crate::workers::apply(&self.src, &c);
+                    app.on_msg(Msg::Wrote(c, r));
+                }
                 _ => {}
             }
         }

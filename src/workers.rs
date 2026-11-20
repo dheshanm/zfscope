@@ -4,6 +4,7 @@
 //! * iostat  — a long-lived `zpool iostat -Hpvlq -y N`, restarted when the interval changes
 //! * slow    — histograms every 5s, config (`zpool status/list/get`, `zfs list`) every 15s, disk inventory
 //! * jobs    — on-demand requests (snapshots of a dataset, smartctl), plus a slow background SMART sweep
+//! * writer  — write mode only: runs confirmed property changes one at a time (never queued behind smartctl)
 
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -16,6 +17,7 @@ use crate::parse::disk::Smart;
 use crate::parse::iostat::Hist;
 use crate::parse::zjson::Dataset;
 use crate::source::{Res, Source};
+use crate::write::Change;
 
 pub enum Msg {
     Kstats(KSample),
@@ -26,6 +28,8 @@ pub enum Msg {
     Smart(String, Res<Smart>),
     Snapshots(String, Res<Vec<Dataset>>),
     History(String, Res<Vec<crate::parse::history::Entry>>),
+    /// a write-mode change finished (stdout, or zfs's error message)
+    Wrote(Change, Res<String>),
 }
 
 pub enum Job {
@@ -38,6 +42,7 @@ pub const CONFIG_EVERY: Duration = Duration::from_secs(15);
 pub const HIST_EVERY: Duration = Duration::from_secs(5);
 pub const INVENTORY_EVERY: Duration = Duration::from_secs(300);
 pub const SMART_EVERY: Duration = Duration::from_secs(600);
+pub const WRITE_TIMEOUT: Duration = Duration::from_secs(60);
 
 /// Handles for talking to the workers.
 pub struct Workers {
@@ -45,6 +50,8 @@ pub struct Workers {
     refresh_tx: Sender<()>,
     job_tx: Sender<Job>,
     smart_list_tx: Sender<Vec<String>>,
+    /// None unless write mode is possible (root, not --read-only)
+    write_tx: Option<Sender<Change>>,
 }
 
 impl Workers {
@@ -63,13 +70,19 @@ impl Workers {
     pub fn smart_devices(&self, devs: Vec<String>) {
         let _ = self.smart_list_tx.send(devs);
     }
+    /// Run a confirmed change (ignored when write mode isn't possible).
+    pub fn write(&self, c: Change) {
+        if let Some(tx) = &self.write_tx {
+            let _ = tx.send(c);
+        }
+    }
 }
 
 fn spawn(name: &str, f: impl FnOnce() + Send + 'static) {
     std::thread::Builder::new().name(name.into()).spawn(f).expect("spawn worker thread");
 }
 
-pub fn start(src: Arc<dyn Source>, interval: Duration, tx: Sender<Msg>, smart: bool) -> Workers {
+pub fn start(src: Arc<dyn Source>, interval: Duration, tx: Sender<Msg>, smart: bool, can_write: bool) -> Workers {
     let (i1_tx, i1_rx) = unbounded();
     let (i2_tx, i2_rx) = unbounded();
     let (refresh_tx, refresh_rx) = unbounded();
@@ -92,7 +105,36 @@ pub fn start(src: Arc<dyn Source>, interval: Duration, tx: Sender<Msg>, smart: b
         let (src, tx) = (src.clone(), tx.clone());
         spawn("jobs", move || jobs(src, tx, job_rx, smart_list_rx, smart));
     }
-    Workers { interval_txs: vec![i1_tx, i2_tx], refresh_tx, job_tx, smart_list_tx }
+    let write_tx = can_write.then(|| {
+        let (wtx, wrx) = unbounded();
+        let (src, tx) = (src.clone(), tx.clone());
+        spawn("writer", move || writer(src, tx, wrx));
+        wtx
+    });
+    Workers { interval_txs: vec![i1_tx, i2_tx], refresh_tx, job_tx, smart_list_tx, write_tx }
+}
+
+/// Run a change and report back. The attempt and its outcome go to the log (the audit trail).
+pub fn apply(src: &dyn Source, c: &Change) -> Res<String> {
+    c.validate()?;
+    let (prog, args) = c.argv();
+    let args: Vec<&str> = args.iter().map(String::as_str).collect();
+    tracing::warn!("write: running `{}`", c.command_line());
+    let r = src.write(prog, &args, WRITE_TIMEOUT);
+    match &r {
+        Ok(_) => tracing::warn!("write: done `{}`", c.command_line()),
+        Err(e) => tracing::error!("write: failed `{}`: {e}", c.command_line()),
+    }
+    r
+}
+
+fn writer(src: Arc<dyn Source>, tx: Sender<Msg>, rx: Receiver<Change>) {
+    for c in rx {
+        let r = apply(&*src, &c);
+        if tx.send(Msg::Wrote(c, r)).is_err() {
+            return;
+        }
+    }
 }
 
 /// Deadline loop: a sample every `interval`; changing the interval re-arms the deadline without an early sample.

@@ -3,6 +3,7 @@
 pub mod arc;
 pub mod datasets;
 pub mod disks;
+pub mod edit;
 pub mod overview;
 pub mod params;
 pub mod pool;
@@ -24,15 +25,20 @@ pub fn draw(f: &mut Frame, app: &mut App) {
     app.hits.0.clear();
     let area = f.area();
     let banners = status_lines(app);
-    let [head, ban, body, foot] = Layout::vertical([
+    let status = write_status(app);
+    let [head, ban, body, stat, foot] = Layout::vertical([
         Constraint::Length(1),
         Constraint::Length(banners.len() as u16),
         Constraint::Min(1),
+        Constraint::Length(status.is_some() as u16),
         Constraint::Length(1),
     ])
     .areas(area);
     header(f, app, head);
     f.render_widget(Paragraph::new(banners), ban);
+    if let Some(l) = status {
+        f.render_widget(Paragraph::new(l).style(Style::new().bg(theme::HEADER_BG)), stat);
+    }
     let (body, log) = if app.show_log {
         let [b, l] = Layout::vertical([Constraint::Min(5), Constraint::Length(10)]).areas(body);
         (b, Some(l))
@@ -63,6 +69,7 @@ pub fn draw(f: &mut Frame, app: &mut App) {
     if app.show_help {
         help(f, app, area);
     }
+    edit::draw(f, app, area);
 }
 
 /// Panel whose border shows keyboard focus (when a view has more than one scrollable part).
@@ -121,10 +128,17 @@ fn header(f: &mut Frame, app: &mut App, r: Rect) {
     let right = vec![
         Span::styled(format!("zfs {ver} "), theme::dim()),
         Span::styled(format!("zfscope {} ", crate::VERSION), Style::new().fg(theme::FAINT)),
-        Span::styled(
-            " ro ",
-            Style::new().fg(ratatui::style::Color::Black).bg(theme::ACCENT2).add_modifier(Modifier::BOLD),
-        ),
+        if app.rw {
+            Span::styled(
+                " rw ",
+                Style::new().fg(ratatui::style::Color::Black).bg(theme::CRIT).add_modifier(Modifier::BOLD),
+            )
+        } else {
+            Span::styled(
+                " ro ",
+                Style::new().fg(ratatui::style::Color::Black).bg(theme::ACCENT2).add_modifier(Modifier::BOLD),
+            )
+        },
         Span::raw(" "),
         state,
     ];
@@ -156,6 +170,20 @@ pub fn status_lines(app: &App) -> Vec<Line<'static>> {
     }
     v.truncate(3);
     v
+}
+
+/// Write-mode status, shown just above the key bar: a change running, or the outcome of the last action
+/// (unlocked / locked, applied, failed, refused) for a few seconds.
+pub fn write_status(app: &App) -> Option<Line<'static>> {
+    if app.write_busy {
+        return Some(Line::from(Span::styled(" ⟳ applying change…", Style::new().fg(theme::WARN))));
+    }
+    let (t, msg, err) = app.notice.as_ref()?;
+    if t.elapsed() >= crate::app::NOTICE_FOR {
+        return None;
+    }
+    let c = if *err { theme::CRIT } else { theme::OK };
+    Some(Line::from(Span::styled(format!(" {msg}"), Style::new().fg(c).add_modifier(Modifier::BOLD))))
 }
 
 fn footer(f: &mut Frame, app: &App, r: Rect) {
@@ -228,6 +256,15 @@ fn footer(f: &mut Frame, app: &App, r: Rect) {
         },
         _ => {}
     }
+    if app.can_write {
+        let in_props = app.prop_view_target().is_some()
+            && (app.tab != Tab::Props || app.props_focus != crate::app::PropsFocus::Targets)
+            && (app.tab != Tab::Datasets || app.ds_focus_pane);
+        if app.rw && in_props {
+            hints.extend([("e", "set"), ("i", "inherit"), ("a", "add")]);
+        }
+        hints.push(("W", if app.rw { "lock (rw)" } else { "write mode" }));
+    }
     hints.extend([
         ("p", if app.paused { "resume" } else { "pause" }),
         ("+/-", "interval"),
@@ -264,6 +301,11 @@ fn help(f: &mut Frame, app: &mut App, area: Rect) {
         ("ARC, ZIL·TXG:  ↑↓ / n", "pick a tunable to read its help / next pool"),
         ("Props:  Enter / Esc", "move focus right (pools → properties → about) / left"),
         ("       L", "show only locally set properties"),
+        ("W", "write mode (root): unlock / lock changing properties"),
+        (
+            "  e / i / a",
+            "in write mode, in Props or Datasets ▸ Properties: set / inherit (reset) / add a user property",
+        ),
         ("q, Ctrl-C", "quit"),
     ];
     let head = |t: String| Line::from(Span::styled(t, Style::new().fg(theme::ACCENT2).add_modifier(Modifier::BOLD)));

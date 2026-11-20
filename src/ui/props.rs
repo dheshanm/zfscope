@@ -67,7 +67,7 @@ pub fn display(name: &str, p: &Prop) -> String {
 }
 
 /// Word-wrap `s` to `w` columns.
-fn wrap(s: &str, w: usize) -> Vec<String> {
+pub fn wrap(s: &str, w: usize) -> Vec<String> {
     let mut out = Vec::new();
     let mut cur = String::new();
     for word in s.split_whitespace() {
@@ -103,7 +103,7 @@ pub fn read_only(p: &Prop) -> bool {
     matches!(p.source.as_str(), "NONE" | "")
 }
 
-fn source(p: &Prop) -> (String, Style) {
+pub fn source(p: &Prop) -> (String, Style) {
     match p.source.as_str() {
         "LOCAL" => ("local".into(), Style::new().fg(theme::ACCENT).add_modifier(Modifier::BOLD)),
         "INHERITED" => (format!("inherited from {}", p.from), Style::new().fg(theme::ACCENT2)),
@@ -209,6 +209,7 @@ pub fn table(
         app.props_relocate = false;
     }
     let sel = sel.min(rows.len().saturating_sub(1));
+    app.props_sel_key = rows.get(sel).map(|(k, _)| k.to_string()); // what write mode's e / i act on
     let wide = r.width >= 110;
     let (tr, hr) = if wide {
         let [a, b] = Layout::horizontal([Constraint::Percentage(60), Constraint::Percentage(40)]).areas(r);
@@ -303,6 +304,11 @@ pub fn table(
         }
         app.about_key = k.to_string();
     }
+    // write mode: the how-to lines name the key that does it
+    let rw = app.rw;
+    let how = |key: &str, label: &str| {
+        if rw { format!("{key} {label:<7}") } else { format!("{label:<9}") }
+    };
     if let Some((k, p)) = rows.get(sel) {
         let cmd = if is_pool { "zpool" } else { "zfs" };
         hl.push(Line::from(Span::styled(k.to_string(), Style::new().fg(theme::ACCENT).add_modifier(Modifier::BOLD))));
@@ -380,7 +386,7 @@ pub fn table(
                 Span::raw(format!("OpenZFS {since} or newer")),
             ]));
             hl.push(Line::from(vec![
-                Span::styled("enable   ", theme::dim()),
+                Span::styled(how("e", "enable"), theme::dim()),
                 Span::styled(format!("zpool set {k}=enabled {target}"), Style::new().fg(theme::ACCENT)),
             ]));
             hl.push(Line::from(vec![
@@ -397,12 +403,12 @@ pub fn table(
         } else if !read_only(p) {
             hl.push(Line::from(""));
             hl.push(Line::from(vec![
-                Span::styled("change   ", theme::dim()),
+                Span::styled(how("e", "change"), theme::dim()),
                 Span::styled(format!("{cmd} set {k}=<value> {target}"), Style::new().fg(theme::ACCENT)),
             ]));
             if !is_pool && p.source != "DEFAULT" {
                 hl.push(Line::from(vec![
-                    Span::styled("reset    ", theme::dim()),
+                    Span::styled(how("i", "reset"), theme::dim()),
                     Span::styled(format!("zfs inherit {k} {target}"), Style::new().fg(theme::ACCENT)),
                     Span::styled("  (back to the parent's / default value)", theme::dim()),
                 ]));

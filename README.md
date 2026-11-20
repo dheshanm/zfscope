@@ -1,6 +1,6 @@
 # zfscope
 
-`top` for OpenZFS hosts: a live, read-only terminal view of what a ZFS server is doing and how it is set up.
+`top` for OpenZFS hosts: a live terminal view of what a ZFS server is doing and how it is set up.
 
 ![zfscope tour](docs/demo.gif)
 
@@ -57,10 +57,25 @@ zfscope                 # 1-second sampling (+/- to change)
 zfscope --dump          # print everything it collects once, no TUI (quick check of a new host)
 zfscope --no-smart      # don't run smartctl
 zfscope --fixture DIR   # replay a capture instead of the live system
+zfscope --read-only     # never allow write mode, even as root
 ```
 
 Keys: `1`–`7` views · `?` help · `/` filter · click a header to sort · `Enter`/`Esc` drill in/out ·
 `p` pause (freezes the screen and frees the mouse for copying text) · `q` quit.
+
+## Write mode
+
+zfscope starts read-only, even as root. As root, press `W` and confirm to unlock write mode for the session (the
+header badge turns from `ro` to `rw`; `W` locks it again). Then, in **Props** (or **Datasets ▸ Properties**):
+
+- `e`: set the selected property (`zfs set` / `zpool set`). Known values are listed to pick with `↑↓`. On a
+  disabled feature flag, this enables it.
+- `i`: reset a locally set dataset property to inherited (`zfs inherit`). On a user property, this removes it.
+- `a`: add a `namespace:name` user property.
+
+Every change shows the exact command and its effect, then runs only after `y`. Enabling a feature flag can't be
+undone, so it needs the pool name typed instead. Each change is logged: in the `l` pane, in the log file, and by
+ZFS itself in `zpool history`. With `--fixture`, write mode is a dry run: commands are shown but never executed.
 
 ## Requirements
 

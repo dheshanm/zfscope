@@ -1,0 +1,51 @@
+---
+source: tests/render.rs
+expression: "render_rw(&format!(\"W y {HOME_COMPRESSION} e Down Down Down Down\"), |_| {})"
+---
+╭ pools & datasets · /home ────────────╮┏ dataset pool0/data/home · 1 shown · 10 local · zfs order ━━━━━━━━━━━━┓╭ about this property · Tab, then ↑↓ to scroll ╮
+│      pool0/data/home                 │┃PROPERTY     VALUE                                     SOURCE         ┃│compression                                   │
+│        pool0/data/home/alice         │┃── settable · 1 (zfs set)                                             ┃│value zstd                                    │
+│        pool0/data/home/analysis      │┃compression  zstd                                      local          ┃│source local                                  │
+│        pool0/data/home/archive       │┃                                                                      ┃│settable: zfs set compression=…               │
+│        pool0/data/home/backups       │┃                                                                      ┃│                                              │
+│        pool0/data/home/bob           │┃                                                                      ┃│Compress data as it is written: off, lz4,     │
+│        pool0/data/home/carol         │┃                                                                      ┃│zstd, zstd-N, gzip-N, zle, on (= lz4).        │
+│        pool0/data/home/dave          │┃                                                                      ┃│                                              │
+│        pool0/data/home/db            │┃                                                                      ┃│possible values                               │
+│        pool0/data/home/erin          │┃                                                                      ┃│  off          no compression; only for data  │
+│        pool0/data/home/frank         │┃                                                                      ┃│               that is already compressed or  │
+│        pool0/data/home/genomic┏ set compression · dataset pool0/data/home ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓encrypted by the application   │
+│        pool0/data/home/grace  ┃now     zstd  local                                                                           ┃= lz4 (the recommended default)│
+│        pool0/data/home/heidi  ┃new     zstd▏                                                                                 ┃very fast, gives up early on   │
+│        pool0/data/home/imaging┃                                                                                              ┃incompressible data; good      │
+│        pool0/data/home/ivan   ┃possible values (↑↓ pick)                                                                     ┃default almost everywhere      │
+│        pool0/data/home/judy   ┃  off          no compression; only for data that is already compressed or encrypted by the   ┃= zstd-3: noticeably better    │
+│        pool0/data/home/lab    ┃               application                                                                    ┃ratio than lz4 at moderate CPU │
+│        pool0/data/home/media  ┃  on           = lz4 (the recommended default)                                                ┃cost; good for logs, text,     │
+│        pool0/data/home/process┃  lz4          very fast, gives up early on incompressible data; good default almost          ┃backups                        │
+│        pool0/data/home/project┃               everywhere                                                                     ┃zstd level 1–19: higher =      │
+│        pool0/data/home/raw    ┃▸ zstd         = zstd-3: noticeably better ratio than lz4 at moderate CPU cost; good for logs,┃smaller but slower writes      │
+│        pool0/data/home/researc┃               text, backups                                                                  ┃(reads stay fast); 1–3 for     │
+│        pool0/data/home/results┃  zstd-N       zstd level 1–19: higher = smaller but slower writes (reads stay fast); 1–3 for ┃general use                    │
+│        pool0/data/home/scratch┃               general use                                                                    ┃faster than lz4-class speed at │
+│        pool0/data/home/shared ┃  zstd-fast-N  faster than lz4-class speed at a lower ratio; for very high write rates        ┃a lower ratio; for very high   │
+│        pool0/data/home/users  ┃  gzip-N       gzip level 1–9: good ratio but slow; zstd is usually better at the same ratio  ┃write rates                    │
+│        pool0/data/home/vm     ┃  zle          only squeezes runs of zeros; nearly free                                       ┃gzip level 1–9: good ratio but │
+│                               ┃  lzjb         legacy algorithm; use lz4 instead                                              ┃slow; zstd is usually better at│
+│                               ┃                                                                                              ┃the same ratio                 │
+│                               ┃Enter review the command · ↑↓ values · Ctrl-U clear · Esc cancel                              ┃only squeezes runs of zeros;   │
+│                               ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛nearly free                    │
+│                                      │┃                                                                      ┃│  lzjb         legacy algorithm; use lz4      │
+│                                      │┃                                                                      ┃│               instead                        │
+│                                      │┃                                                                      ┃│                                              │
+│                                      │┃                                                                      ┃│lz4 is fast enough to be almost free and gives│
+│                                      │┃                                                                      ┃│up quickly on incompressible data: a good     │
+│                                      │┃                                                                      ┃│default nearly everywhere. zstd compresses    │
+│                                      │┃                                                                      ┃│better at more CPU cost (zstd-1…19).          │
+│                                      │┃                                                                      ┃│Compression also speeds up disks, because     │
+│                                      │┃                                                                      ┃│fewer bytes are read and written.             │
+│                                      │┃                                                                      ┃│                                              │
+│                                      │┃                                                                      ┃│Only new writes are affected; existing data   │
+╰──────────────────────────────────────╯┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛╰──────────────────────────────────────────────╯
+ write mode on: e set · i inherit · a add, in the property views
+ filter: compression  q quit  ? help  1-7 tabs  ↑↓ select  Enter → about  Esc ← pools & datasets  s/S sort  L local only  / filter  e set  i inherit  a add  W l

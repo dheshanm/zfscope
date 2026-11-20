@@ -32,12 +32,27 @@ fn key(name: &str) -> KeyEvent {
 /// Replay `ticks` samples, press `keys` (space-separated; `click:X,Y` clicks), render, return the screen as text
 /// without the header line.
 fn render(keys: &str, ticks: usize) -> String {
+    render_with(keys, ticks, false, |_| {})
+}
+
+/// `render` with write mode available (fixture: dry run). Draws before every key, like the real loop does, since
+/// write mode acts on the property the last frame showed as selected. `setup` runs before the keys.
+fn render_rw(keys: &str, setup: impl FnOnce(&mut App)) -> String {
+    render_with(keys, 10, true, setup)
+}
+
+fn render_with(keys: &str, ticks: usize, can_write: bool, setup: impl FnOnce(&mut App)) -> String {
     let mut r = Replay::new(std::path::Path::new("tests/fixtures/demo")).unwrap();
     let mut app = App::new("zfs-demo".into(), "fixture".into(), Duration::from_secs(1));
+    app.can_write = can_write;
     r.init(&mut app);
     r.run(&mut app, ticks);
+    setup(&mut app);
     let mut term = Terminal::new(TestBackend::new(COLS, ROWS)).unwrap();
     for k in keys.split_whitespace() {
+        if can_write {
+            term.draw(|f| zfscope::ui::draw(f, &mut app)).unwrap();
+        }
         if let Some(xy) = k.strip_prefix("click:") {
             term.draw(|f| zfscope::ui::draw(f, &mut app)).unwrap();
             let (x, y) = xy.split_once(',').unwrap();
@@ -108,6 +123,91 @@ fn same_property_follows_dataset_switch() {
     assert_eq!(before, after);
 }
 
+// ---------------------------------------------------------------- write mode (fixture: dry run)
+
+/// Props tab, dataset pool0/data/home, filtered to its compression property.
+const HOME_COMPRESSION: &str = "7 / h o m e Enter Enter / c o m p r e s s i o n Enter";
+
+#[test]
+fn rw_unlock_prompt() {
+    insta::assert_snapshot!(render_rw("W", |_| {}));
+}
+
+#[test]
+fn rw_edit_compression() {
+    insta::assert_snapshot!(render_rw(&format!("W y {HOME_COMPRESSION} e Down Down Down Down"), |_| {}));
+}
+
+#[test]
+fn rw_confirm_compression() {
+    insta::assert_snapshot!(render_rw(&format!("W y {HOME_COMPRESSION} e Down Down Down Enter"), |_| {}));
+}
+
+#[test]
+fn rw_dry_run_result() {
+    let s = render_rw(&format!("W y {HOME_COMPRESSION} e Down Down Down Enter y"), |_| {});
+    assert!(s.contains("✓ zfs set compression=lz4 pool0/data/home · dry run (fixture)"), "{s}");
+}
+
+#[test]
+fn rw_locked_does_nothing() {
+    // without W, e only says how to unlock; nothing is queued
+    let s = render_rw(&format!("{HOME_COMPRESSION} e"), |_| {});
+    assert!(s.contains("write mode is off: W unlocks it"), "{s}");
+    assert!(!s.contains("possible values (↑↓ pick)"));
+}
+
+#[test]
+fn rw_needs_root() {
+    let s = render("W", 5);
+    assert!(s.contains("write mode needs root"), "{s}");
+}
+
+#[test]
+fn rw_unchanged_and_inherit_refusals() {
+    // submitting the current value does nothing
+    let s = render_rw(&format!("W y {HOME_COMPRESSION} e Enter"), |_| {});
+    assert!(s.contains("compression unchanged"), "{s}");
+    // an inherited property can't be "reset"
+    let s = render_rw("W y 7 / p r o j e c t s Enter Enter / c o m p r e s s i o n Enter i", |_| {});
+    assert!(s.contains("compression is already inherited from pool0/data/home"), "{s}");
+    // read-only statistics can't be set
+    let s = render_rw("W y 7 / h o m e Enter Enter / u s e d b y s n a p Enter e", |_| {});
+    assert!(s.contains("usedbysnapshots is read-only"), "{s}");
+}
+
+#[test]
+fn rw_add_user_property() {
+    let s = render_rw("W y 7 / h o m e Enter Enter a o r g . x : n o t e Enter h i Enter", |_| {});
+    insta::assert_snapshot!(s);
+    assert!(s.contains("zfs set org.x:note=hi pool0/data/home"));
+}
+
+#[test]
+fn rw_feature_flag_needs_pool_name() {
+    use zfscope::app::{ConfirmState, Modal};
+    use zfscope::write::{Change, Target};
+    let open = |app: &mut App| {
+        app.rw = true;
+        app.modal = Some(Modal::Confirm(ConfirmState {
+            change: Change::Set {
+                target: Target::Pool("pool0".into()),
+                key: "feature@fast_dedup".into(),
+                value: "enabled".into(),
+            },
+            old: None,
+            typed: String::new(),
+            error: None,
+        }));
+    };
+    // y alone doesn't confirm a one-way change
+    let s = render_rw("y Enter", open);
+    assert!(s.contains("type the pool name exactly"), "{s}");
+    insta::assert_snapshot!(s);
+    let s = render_rw("p o o l 0 Enter", open);
+    assert!(s.contains("✓ zpool set feature@fast_dedup=enabled pool0"), "{s}");
+}
+
 #[test]
 fn renders_at_small_sizes_without_panicking() {
     for (c, r) in [(80, 24), (100, 30), (60, 20)] {
@@ -121,4 +221,12 @@ fn renders_at_small_sizes_without_panicking() {
             term.draw(|f| zfscope::ui::draw(f, &mut app)).unwrap();
         }
     }
+}
+
+#[test]
+fn rw_from_datasets_properties_pane() {
+    // Datasets ▸ detail ▸ Properties pane, focused: e edits the highlighted property of the selected dataset
+    let s = render_rw("W y 3 j Enter ] ] ] Tab j j j e", |_| {});
+    assert!(s.contains("· dataset pool0/data"), "{s}");
+    assert!(s.contains("Enter review the command"), "{s}");
 }

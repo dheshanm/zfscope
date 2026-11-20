@@ -13,8 +13,9 @@ use tracing_subscriber::{EnvFilter, Layer};
 use zfscope::app::{Action, App};
 use zfscope::source::SourceSpec;
 
-/// Live, read-only view of an OpenZFS host: pool/vdev/disk IO and latency, datasets and space, ARC, ZIL, TXGs,
-/// properties and disks. Run it on the ZFS host itself (as root for zpool/smartctl; kstats work as any user).
+/// Live view of an OpenZFS host: pool/vdev/disk IO and latency, datasets and space, ARC, ZIL, TXGs, properties and
+/// disks. Run it on the ZFS host itself (as root for zpool/smartctl; kstats work as any user). It is read-only unless
+/// write mode is unlocked with `W` (root only), which lets you change pool/dataset properties after confirming.
 #[derive(Parser, Debug)]
 #[command(version = zfscope::VERSION, about)]
 struct Args {
@@ -37,6 +38,10 @@ struct Args {
     /// Don't capture the mouse (keeps the terminal's native text selection).
     #[arg(long)]
     no_mouse: bool,
+
+    /// Never allow write mode, even as root (`W` just says it is disabled).
+    #[arg(long)]
+    read_only: bool,
 
     /// Print what zfscope collects (one kstat sample, config, inventory) as text and exit — no TUI.
     #[arg(long, hide = true)]
@@ -114,9 +119,15 @@ fn main() -> Result<()> {
     tracing::info!("starting zfscope {}: {}, interval {}s", zfscope::VERSION, src.describe(), args.interval);
 
     let interval = Duration::from_secs(args.interval);
+    // fixtures: write mode is a dry run (nothing is executed), so it can be tried anywhere
+    let can_write = !args.read_only && (src.is_fixture() || zfscope::write::running_as_root());
     let (tx, rx) = unbounded();
-    let workers = zfscope::workers::start(src.clone(), interval, tx, !args.no_smart);
+    let workers = zfscope::workers::start(src.clone(), interval, tx, !args.no_smart, can_write);
     let mut app = App::new(host, src.describe(), interval);
+    app.can_write = can_write;
+    if args.read_only {
+        app.write_off_reason = "write mode is disabled (--read-only)";
+    }
 
     let (key_tx, key_rx) = unbounded();
     std::thread::Builder::new().name("input".into()).spawn(move || {
@@ -162,6 +173,7 @@ fn main() -> Result<()> {
                     Action::History(pool) => workers.job(zfscope::workers::Job::History(pool)),
                     Action::Smart(dev) => workers.job(zfscope::workers::Job::Smart(dev)),
                     Action::SmartDevices(devs) => workers.smart_devices(devs),
+                    Action::Write(c) => workers.write(c),
                     Action::MouseCapture(on) if !args.no_mouse => {
                         let _ = if on {
                             execute!(std::io::stdout(), EnableMouseCapture)

@@ -34,6 +34,10 @@ pub trait Source: Send + Sync {
     }
     /// Stream `zpool iostat -Hpvlq -y <interval>`: one message per interval block, until `stop` is set.
     fn iostat_stream(&self, interval: Duration, stop: Arc<AtomicBool>, tx: Sender<Res<String>>);
+    /// Run a command that changes the system (write mode only: `zfs set` / `zpool set` / `zfs inherit`).
+    fn write(&self, prog: &str, _args: &[&str], _timeout: Duration) -> Res<String> {
+        Err(format!("{prog}: read-only source"))
+    }
     /// Seconds on the source's clock (monotonic; fixture time advances one capture interval per tick).
     fn now(&self) -> f64;
     /// Advance to the next sample (fixtures step a frame; live is a no-op).
@@ -143,6 +147,10 @@ impl Source for LiveSource {
 
     fn run_lenient(&self, prog: &str, args: &[&str], timeout: Duration) -> Res<String> {
         run_cmd_inner(prog, args, timeout, true)
+    }
+
+    fn write(&self, prog: &str, args: &[&str], timeout: Duration) -> Res<String> {
+        run_cmd(prog, args, timeout)
     }
 
     fn iostat_stream(&self, interval: Duration, stop: Arc<AtomicBool>, tx: Sender<Res<String>>) {
@@ -454,6 +462,11 @@ impl Source for FixtureSource {
             }
             _ => Err(format!("fixture: no capture for `{prog} {}`", args.join(" "))),
         }
+    }
+
+    /// Fixtures never change: a write is a dry run, so write mode can be tried (and tested) anywhere.
+    fn write(&self, _prog: &str, _args: &[&str], _timeout: Duration) -> Res<String> {
+        Ok("dry run (fixture): not executed".into())
     }
 
     fn iostat_stream(&self, interval: Duration, stop: Arc<AtomicBool>, tx: Sender<Res<String>>) {

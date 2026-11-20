@@ -7,8 +7,12 @@ use crossterm::event::{KeyCode, KeyEvent, KeyModifiers, MouseButton, MouseEvent,
 use ratatui::layout::Rect;
 
 use crate::model::{Model, vkey};
-use crate::parse::zjson::{DsKind, PropsExt, Vdev};
+use crate::parse::zjson::{DsKind, Prop, Props, PropsExt, Vdev};
 use crate::workers::Msg;
+use crate::write::{Change, Target};
+
+/// How long a write-mode notice stays on screen.
+pub const NOTICE_FOR: Duration = Duration::from_secs(10);
 
 pub const INTERVALS: [u64; 6] = [1, 2, 5, 10, 30, 60];
 
@@ -316,6 +320,76 @@ pub enum Action {
     SmartDevices(Vec<String>),
     /// capture (true) or release (false) the mouse
     MouseCapture(bool),
+    /// run a confirmed write-mode change
+    Write(Change),
+}
+
+/// Write mode: editing a property value (or the name of a new user property, then its value).
+#[derive(Debug, Clone, PartialEq)]
+pub struct EditState {
+    pub target: Target,
+    /// empty while naming a new user property
+    pub key: String,
+    pub input: String,
+    /// the value the input started from (submitting it unchanged does nothing)
+    pub orig: String,
+    /// highlighted entry of the possible values (↑↓)
+    pub opt_sel: Option<usize>,
+    /// typing the name of a new user property
+    pub naming: bool,
+    pub new_prop: bool,
+    pub error: Option<String>,
+}
+
+const FEATURE_OPTS: crate::help::Opts =
+    &[("enabled", "make the feature available; it becomes active when first used (one-way)")];
+
+impl EditState {
+    /// Known values for this property, each with a description.
+    pub fn options(&self) -> crate::help::Opts {
+        if self.naming { &[] } else { prop_options(&self.target, &self.key) }
+    }
+}
+
+/// Values that can be set for a property (feature flags: only `enabled`).
+pub fn prop_options(target: &Target, key: &str) -> crate::help::Opts {
+    if key.starts_with("feature@") {
+        FEATURE_OPTS
+    } else if target.is_pool() {
+        crate::help::pool_options(key).unwrap_or(&[])
+    } else {
+        crate::help::dataset_options(key).unwrap_or(&[])
+    }
+}
+
+/// What an option label puts in the input: patterns (`zstd-N`) leave the number to type, placeholders nothing.
+pub fn option_fill(label: &str) -> String {
+    if let Some(p) = label.strip_suffix('N').filter(|p| p.ends_with('-')) {
+        p.to_string()
+    } else if label.starts_with('<') {
+        String::new()
+    } else {
+        label.to_string()
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ConfirmState {
+    pub change: Change,
+    /// the property as it is now (None for a new user property)
+    pub old: Option<Prop>,
+    /// one-way changes: the pool name typed so far
+    pub typed: String,
+    pub error: Option<String>,
+}
+
+/// A dialog that takes all keys until it closes.
+#[derive(Debug, Clone, PartialEq)]
+pub enum Modal {
+    /// "enable write mode?"
+    Unlock,
+    Edit(EditState),
+    Confirm(ConfirmState),
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -435,6 +509,21 @@ pub struct App {
     pub hits: HitMap,
     last_click: Option<(Instant, u16, u16)>,
     smart_sent: Vec<String>,
+
+    // Write mode
+    /// write mode can be unlocked (root and not --read-only; fixtures: dry run)
+    pub can_write: bool,
+    /// why it can't (shown when W is pressed)
+    pub write_off_reason: &'static str,
+    /// unlocked with W
+    pub rw: bool,
+    pub modal: Option<Modal>,
+    /// a change is running
+    pub write_busy: bool,
+    /// (when, text, is_error): result of the last write-mode action
+    pub notice: Option<(Instant, String, bool)>,
+    /// property selected in the property table that was drawn last (None when it shows no rows)
+    pub props_sel_key: Option<String>,
 }
 
 impl App {
@@ -501,12 +590,24 @@ impl App {
             hits: HitMap::default(),
             last_click: None,
             smart_sent: Vec::new(),
+            can_write: false,
+            write_off_reason: "write mode needs root: run zfscope as root",
+            rw: false,
+            modal: None,
+            write_busy: false,
+            notice: None,
+            props_sel_key: None,
         }
     }
 
     // ---------------------------------------------------------------- worker messages
 
     pub fn on_msg(&mut self, m: Msg) {
+        // the answer to something the user just did: show it even while paused
+        let m = match m {
+            Msg::Wrote(c, r) => return self.on_wrote(c, r),
+            m => m,
+        };
         // Paused: the screen is frozen (so a text selection isn't wiped by redraws). Keep only the newest kstat
         // sample and config to re-baseline from on resume; interval data (iostat blocks, histograms) is dropped.
         if self.paused {
@@ -552,7 +653,26 @@ impl App {
             Msg::Smart(dev, s) => self.model.on_smart(dev, s),
             Msg::Snapshots(ds, s) => self.model.on_snapshots(ds, s),
             Msg::History(pool, h) => self.model.on_history(pool, h),
+            Msg::Wrote(..) => unreachable!("handled above"),
         }
+    }
+
+    fn on_wrote(&mut self, c: Change, r: crate::source::Res<String>) {
+        self.write_busy = false;
+        match r {
+            Ok(out) => {
+                let out = out.trim();
+                let note = if out.is_empty() { String::new() } else { format!(" · {out}") };
+                self.note(false, format!("✓ {}{note}", c.command_line()));
+                self.actions.push(Action::Refresh); // show the new value
+            }
+            Err(e) => self.note(true, format!("✗ {} failed: {e}", c.command_line())),
+        }
+    }
+
+    /// Show a write-mode notice for a while.
+    pub fn note(&mut self, err: bool, s: impl Into<String>) {
+        self.notice = Some((Instant::now(), s.into(), err));
     }
 
     /// Seconds since the last kstat sample, if the sampler looks stuck.
@@ -924,6 +1044,10 @@ impl App {
             self.quit = true;
             return;
         }
+        if self.modal.is_some() {
+            self.modal_key(k);
+            return;
+        }
         if self.editing {
             let buf = if self.filter_targets { &mut self.target_filter } else { &mut self.filter };
             match k.code {
@@ -1020,6 +1144,7 @@ impl App {
             KeyCode::Char('b') => crate::fmt::set_exact(!crate::fmt::exact()),
             KeyCode::Char('r') => self.actions.push(Action::Refresh),
             KeyCode::Char('l') => self.show_log = !self.show_log,
+            KeyCode::Char('W') => self.toggle_write(),
             KeyCode::Char('/') => {
                 self.editing = true;
                 self.filter_targets = self.tab == Tab::Props && self.props_focus == PropsFocus::Targets;
@@ -1250,6 +1375,12 @@ impl App {
                     self.cycle_prop_sort(true);
                     return;
                 }
+                KeyCode::Char('e' | 'i' | 'a')
+                    if self.can_write && self.ds_focus_pane && self.ds_pane == DsPane::Props =>
+                {
+                    self.write_key(k);
+                    return;
+                }
                 // focused pane: the usual movement keys move its highlight
                 code if self.ds_focus_pane => {
                     if let Some(i) = Self::nav(code, self.snap_sel, 1_000_000, 10) {
@@ -1420,6 +1551,9 @@ impl App {
     fn props_key(&mut self, k: KeyEvent) {
         match self.props_focus {
             PropsFocus::Targets => match k.code {
+                KeyCode::Char('a') if self.can_write => {
+                    self.write_key(k);
+                }
                 KeyCode::Enter | KeyCode::Right | KeyCode::Char('l') => {
                     self.select_target(self.picker_sel);
                     self.set_props_focus(PropsFocus::Props);
@@ -1440,6 +1574,9 @@ impl App {
                     self.props_local = !self.props_local;
                     self.props_relocate = true;
                 }
+                KeyCode::Char('e' | 'i' | 'a') if self.can_write => {
+                    self.write_key(k);
+                }
                 code => {
                     if let Some(i) = Self::nav(code, self.props_sel, 100_000, 10) {
                         self.props_sel = i;
@@ -1451,6 +1588,9 @@ impl App {
     }
 
     pub fn handle_mouse(&mut self, m: MouseEvent) {
+        if self.modal.is_some() {
+            return; // dialogs are keyboard-only
+        }
         match m.kind {
             MouseEventKind::ScrollDown | MouseEventKind::ScrollUp => {
                 // the wheel scrolls whatever is under the pointer
@@ -1558,6 +1698,244 @@ impl App {
             MouseEventKind::Down(MouseButton::Right) => self.back(),
             _ => {}
         }
+    }
+
+    // ---------------------------------------------------------------- write mode
+
+    /// `W`: unlock (after a prompt) or lock write mode.
+    pub fn toggle_write(&mut self) {
+        if !self.can_write {
+            self.note(true, self.write_off_reason);
+        } else if self.rw {
+            self.rw = false;
+            tracing::warn!("write mode locked");
+            self.note(false, "write mode off: zfscope is read-only again");
+        } else {
+            self.modal = Some(Modal::Unlock);
+        }
+    }
+
+    /// Pool or dataset whose properties the current view shows.
+    pub fn prop_view_target(&self) -> Option<Target> {
+        match self.tab {
+            Tab::Props => self.props_target().map(|t| match t.strip_prefix("pool:") {
+                Some(p) => Target::Pool(p.to_string()),
+                None => Target::Dataset(t),
+            }),
+            Tab::Datasets if self.ds_detail && self.ds_pane == DsPane::Props => {
+                self.ds_sel.clone().map(Target::Dataset)
+            }
+            _ => None,
+        }
+    }
+
+    pub fn target_props(&self, t: &Target) -> Option<&Props> {
+        match t {
+            Target::Pool(p) => self.model.pool_props(p),
+            Target::Dataset(d) => self.model.dataset(d).map(|d| &d.props),
+        }
+    }
+
+    /// `e` set / `i` inherit / `a` add in a property view.
+    fn write_key(&mut self, k: KeyEvent) {
+        let KeyCode::Char(c) = k.code else { return };
+        if !self.rw {
+            self.note(false, "write mode is off: W unlocks it");
+            return;
+        }
+        if self.write_busy {
+            self.note(true, "a change is still running");
+            return;
+        }
+        let Some(target) = self.prop_view_target() else { return };
+        if c == 'a' {
+            self.modal = Some(Modal::Edit(EditState {
+                target,
+                key: String::new(),
+                input: String::new(),
+                orig: String::new(),
+                opt_sel: None,
+                naming: true,
+                new_prop: true,
+                error: None,
+            }));
+            return;
+        }
+        let Some(key) = self.props_sel_key.clone() else {
+            self.note(true, "no property selected");
+            return;
+        };
+        let Some(p) = self.target_props(&target).and_then(|ps| ps.get(&key)).cloned() else {
+            self.note(true, format!("{key}: not found on {}", target.name()));
+            return;
+        };
+        if c == 'i' {
+            let why = match (&target, p.source.as_str()) {
+                (Target::Pool(_), _) => "pool properties aren't inherited: set the value you want with e".into(),
+                (_, "LOCAL") => String::new(),
+                (_, "INHERITED") => format!("{key} is already inherited from {}", p.from),
+                (_, "DEFAULT") => format!("{key} is already at its default"),
+                (_, "RECEIVED") => format!("{key} was received; zfscope doesn't revert received values"),
+                _ => format!("{key} can't be inherited"),
+            };
+            if !why.is_empty() {
+                self.note(true, why);
+                return;
+            }
+            let dataset = target.name().to_string();
+            self.modal = Some(Modal::Confirm(ConfirmState {
+                change: Change::Inherit { dataset, key },
+                old: Some(p),
+                typed: String::new(),
+                error: None,
+            }));
+            return;
+        }
+        if crate::ui::props::read_only(&p) {
+            self.note(true, format!("{key} is read-only (a statistic, or fixed when it was created)"));
+            return;
+        }
+        let input = if key.starts_with("feature@") {
+            if p.value != "disabled" {
+                self.note(true, format!("{key} is already {}; feature flags can't be disabled", p.value));
+                return;
+            }
+            "enabled".to_string()
+        } else if p.num == Some(0) && matches!(key.as_str(), "quota" | "refquota" | "reservation" | "refreservation") {
+            "none".to_string()
+        } else {
+            p.value.clone()
+        };
+        let orig = if key.starts_with("feature@") { p.value.clone() } else { input.clone() };
+        self.modal = Some(Modal::Edit(EditState {
+            target,
+            key,
+            input,
+            orig,
+            opt_sel: None,
+            naming: false,
+            new_prop: false,
+            error: None,
+        }));
+    }
+
+    fn modal_key(&mut self, k: KeyEvent) {
+        let Some(modal) = self.modal.take() else { return };
+        self.modal = match modal {
+            Modal::Unlock => {
+                if matches!(k.code, KeyCode::Char('y' | 'Y')) {
+                    self.rw = true;
+                    tracing::warn!("write mode unlocked");
+                    self.note(false, "write mode on: e set · i inherit · a add, in the property views");
+                }
+                None
+            }
+            Modal::Edit(e) => self.edit_key(e, k),
+            Modal::Confirm(c) => self.confirm_key(c, k),
+        };
+    }
+
+    fn edit_key(&mut self, mut e: EditState, k: KeyEvent) -> Option<Modal> {
+        let ctrl = k.modifiers.contains(KeyModifiers::CONTROL);
+        match k.code {
+            KeyCode::Esc => return None,
+            KeyCode::Char('u') if ctrl => {
+                e.input.clear();
+                e.opt_sel = None;
+            }
+            KeyCode::Char(c) if !ctrl => {
+                e.input.push(c);
+                e.opt_sel = None;
+                e.error = None;
+            }
+            KeyCode::Backspace => {
+                e.input.pop();
+                e.opt_sel = None;
+                e.error = None;
+            }
+            KeyCode::Up | KeyCode::Down => {
+                let n = e.options().len();
+                if n > 0 {
+                    let i = match (e.opt_sel, k.code) {
+                        (None, KeyCode::Down) => 0,
+                        (None, _) => n - 1,
+                        (Some(i), KeyCode::Down) => (i + 1) % n,
+                        (Some(i), _) => (i + n - 1) % n,
+                    };
+                    e.opt_sel = Some(i);
+                    e.input = option_fill(e.options()[i].0);
+                    e.error = None;
+                }
+            }
+            KeyCode::Enter if e.naming => {
+                let name = e.input.trim().to_string();
+                if let Err(msg) = crate::write::valid_user_key(&name) {
+                    e.error = Some(msg);
+                    return Some(Modal::Edit(e));
+                }
+                // an existing user property: edit its value instead
+                let cur = self.target_props(&e.target).and_then(|p| p.get(&name)).map(|p| p.value.clone());
+                e.naming = false;
+                e.key = name;
+                e.new_prop = cur.is_none();
+                e.orig = cur.clone().unwrap_or_default();
+                e.input = cur.unwrap_or_default();
+                e.error = None;
+            }
+            KeyCode::Enter => {
+                if e.input == e.orig {
+                    self.note(false, format!("{} unchanged", e.key));
+                    return None;
+                }
+                let change = Change::Set { target: e.target.clone(), key: e.key.clone(), value: e.input.clone() };
+                if let Err(msg) = change.validate() {
+                    e.error = Some(msg);
+                    return Some(Modal::Edit(e));
+                }
+                let old = self.target_props(&e.target).and_then(|p| p.get(&e.key)).cloned();
+                return Some(Modal::Confirm(ConfirmState { change, old, typed: String::new(), error: None }));
+            }
+            _ => {}
+        }
+        Some(Modal::Edit(e))
+    }
+
+    fn confirm_key(&mut self, mut c: ConfirmState, k: KeyEvent) -> Option<Modal> {
+        if c.change.one_way() {
+            match k.code {
+                KeyCode::Esc => {
+                    self.note(false, "cancelled");
+                    return None;
+                }
+                KeyCode::Backspace => {
+                    c.typed.pop();
+                }
+                KeyCode::Char(ch) => c.typed.push(ch),
+                KeyCode::Enter if c.typed == c.change.target().pool() => {
+                    self.run_change(c);
+                    return None;
+                }
+                KeyCode::Enter => c.error = Some("type the pool name exactly to confirm (Esc cancels)".into()),
+                _ => {}
+            }
+            return Some(Modal::Confirm(c));
+        }
+        if matches!(k.code, KeyCode::Char('y' | 'Y')) {
+            self.run_change(c);
+        } else {
+            self.note(false, "cancelled");
+        }
+        None
+    }
+
+    fn run_change(&mut self, c: ConfirmState) {
+        let was = match &c.old {
+            Some(p) => format!("was {:?} ({})", p.value, p.source.to_lowercase()),
+            None => "new property".into(),
+        };
+        tracing::warn!("write: confirmed `{}` ({was})", c.change.command_line());
+        self.write_busy = true;
+        self.actions.push(Action::Write(c.change));
     }
 
     fn select_row(&mut self, i: usize) {

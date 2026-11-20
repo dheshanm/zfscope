@@ -838,6 +838,13 @@ pub fn tab_guide(tab: crate::app::Tab) -> &'static [(&'static str, &'static str)
                 "Optional on-disk capabilities of a pool. 'active' features are in use and require a \
               ZFS version that understands them.",
             ),
+            (
+                "Write mode",
+                "Read-only by default. As root, W unlocks changing properties: e sets the selected one (or \
+              enables a feature flag), i resets a dataset property to inherited, a adds a user property. Each \
+              change shows the exact zfs / zpool command first and runs only after y (enabling a feature, \
+              which can't be undone, needs the pool name typed). Changes are logged.",
+            ),
         ],
     }
 }

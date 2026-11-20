@@ -31,9 +31,9 @@ Screenshots come from a sanitised capture of a real 60-disk server (`tests/fixtu
 Download the static binary on the ZFS host (no dependencies, any distribution):
 
 ```sh
-arch=$(uname -m)   # x86_64 or aarch64
+# $(uname -m) picks x86_64 or aarch64
 curl -fLo /usr/local/sbin/zfscope \
-  "https://github.com/dheshanm/zfscope/releases/latest/download/zfscope-$arch-unknown-linux-musl"
+  "https://github.com/dheshanm/zfscope/releases/latest/download/zfscope-$(uname -m)-unknown-linux-musl"
 chmod +x /usr/local/sbin/zfscope
 ```
 

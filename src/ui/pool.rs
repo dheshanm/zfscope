@@ -486,31 +486,84 @@ fn size_hist(f: &mut Frame, m: &Model, key: &str, r: Rect) {
 
 // ------------------------------------------------------------------------------------------------ disk grid
 
+/// Tile colour for a disk that doesn't report the metric (no SMART, not an SSD, no diskstats match).
+const NO_DATA: Color = Color::Indexed(238);
+
+/// How a metric's values map to tile colours.
+enum Scale {
+    /// 0 → the busiest disk of the pool; the formatter labels the legend's top end
+    Peak(fn(f64) -> String),
+    /// fixed range, whatever the pool does (a cool pool's hottest disk shouldn't look alarming)
+    Fixed(f64, f64, &'static str),
+    /// red when > 0, otherwise calm: counts where any is bad
+    Flag(&'static str),
+}
+
+fn grid_scale(g: GridMetric) -> Scale {
+    use GridMetric as G;
+    match g {
+        G::Latency | G::DiskRead | G::DiskWrite | G::TotalWait => Scale::Peak(fmt::ns),
+        G::Ops | G::ReadOps | G::WriteOps | G::Queue => Scale::Peak(fmt::count),
+        G::ReadBw | G::WriteBw => Scale::Peak(fmt::rate),
+        G::Util | G::Wear => Scale::Fixed(0.0, 100.0, "0 → 100%"),
+        G::Temp => Scale::Fixed(25.0, 60.0, "25 → 60 °C"),
+        G::Errors => Scale::Flag("red = errors / slow I/Os / not ONLINE"),
+        G::Defects => Scale::Flag("red = grown defects / reallocated sectors"),
+    }
+}
+
 /// A leaf vdev's value for `metric` (NaN when unknown), and how a tile shows it.
 fn grid_value(m: &Model, metric: GridMetric, pool: &str, v: &Vdev) -> (f64, String) {
+    use GridMetric as G;
+    let io = || m.io(pool, &v.name);
+    let wait = |i: usize| io().map(|r| r.wait[i].unwrap_or(0.0)).unwrap_or(0.0);
+    let disk = || m.disk_for_vdev(pool, &v.name);
+    let smart = || disk().and_then(|d| m.smart.get(&d.smart_dev)).and_then(|r| r.as_ref().ok());
+    let smart_num =
+        |f: fn(&crate::parse::disk::Smart) -> Option<u64>| smart().and_then(f).map(|x| x as f64).unwrap_or(f64::NAN);
+    let ops = |f: fn(&Row) -> f64| io().map(f).unwrap_or(0.0);
     match metric {
-        GridMetric::Latency => {
-            let io = m.io(pool, &v.name);
-            let (r, wv) =
-                io.map(|i| (i.wait[w::DISK_R].unwrap_or(0.0), i.wait[w::DISK_W].unwrap_or(0.0))).unwrap_or((0.0, 0.0));
-            let x = r.max(wv);
+        G::Latency | G::DiskRead | G::DiskWrite | G::TotalWait => {
+            let x = match metric {
+                G::DiskRead => wait(w::DISK_R),
+                G::DiskWrite => wait(w::DISK_W),
+                G::TotalWait => wait(w::TOTAL_R).max(wait(w::TOTAL_W)),
+                _ => wait(w::DISK_R).max(wait(w::DISK_W)),
+            };
             (x, fmt::ns(x))
         }
-        GridMetric::Ops => {
-            let x = m.io(pool, &v.name).map(|i| i.rops + i.wops).unwrap_or(0.0);
+        G::Ops | G::ReadOps | G::WriteOps | G::Queue => {
+            let x = match metric {
+                G::ReadOps => ops(|r| r.rops),
+                G::WriteOps => ops(|r| r.wops),
+                G::Queue => ops(|r| r.active() as f64),
+                _ => ops(|r| r.rops + r.wops),
+            };
             (x, fmt::count(x))
         }
-        GridMetric::Util => {
-            let x = m
-                .disk_for_vdev(pool, &v.name)
-                .and_then(|d| m.disk_rates.get(&d.whole))
-                .map(|r| r.util)
-                .unwrap_or(f64::NAN);
+        G::ReadBw | G::WriteBw => {
+            let x = if metric == G::ReadBw { ops(|r| r.rbw) } else { ops(|r| r.wbw) };
+            (x, fmt::rate(x))
+        }
+        G::Util => {
+            let x = disk().and_then(|d| m.disk_rates.get(&d.whole)).map(|r| r.util).unwrap_or(f64::NAN);
             (x, fmt::pct(x))
         }
-        GridMetric::Errors => {
+        G::Errors => {
             let x = (v.errors() + v.slow_ios) as f64;
             (x, if x > 0.0 { format!("{x}") } else { "ok".into() })
+        }
+        G::Temp => {
+            let x = smart_num(|s| s.temp_c);
+            (x, if x.is_finite() { format!("{x}°C") } else { "-".into() })
+        }
+        G::Defects => {
+            let x = smart_num(|s| s.defects);
+            (x, if x.is_finite() { format!("{x}") } else { "-".into() })
+        }
+        G::Wear => {
+            let x = smart_num(|s| s.wear_pct);
+            (x, fmt::pct(x))
         }
     }
 }
@@ -518,54 +571,83 @@ fn grid_value(m: &Model, metric: GridMetric, pool: &str, v: &Vdev) -> (f64, Stri
 /// Disk grid plus a panel listing every metric it can colour by (with the current worst disk's value), so the
 /// choices are visible at a glance and ↑↓ / a click picks one.
 fn grid(f: &mut Frame, app: &mut App, area: Rect) {
-    let rows = GridMetric::ALL.len() as u16;
-    let (grid_r, metrics_r, side) = if area.width >= 100 {
+    let (grid_r, metrics_r) = if area.width >= 100 {
         let [a, b] = Layout::horizontal([Constraint::Min(40), Constraint::Length(34)]).areas(area);
-        (a, b, true)
+        (a, b)
     } else {
-        let [a, b] = Layout::vertical([Constraint::Length(rows + 3), Constraint::Min(4)]).areas(area);
-        (b, a, false)
+        // narrow: a strip above the grid, tall enough for the largest section
+        let h = sections().iter().map(|s| s.len()).max().unwrap_or(1) as u16 + 2;
+        let [a, b] = Layout::vertical([Constraint::Length(h), Constraint::Min(4)]).areas(area);
+        (b, a)
     };
     grid_tiles(f, app, grid_r);
-    grid_metrics(f, app, metrics_r, side);
+    grid_metrics(f, app, metrics_r);
 }
 
-fn grid_metrics(f: &mut Frame, app: &mut App, area: Rect, side: bool) {
+/// `GridMetric::ALL` split into its consecutive sections.
+fn sections() -> Vec<&'static [GridMetric]> {
+    GridMetric::ALL.chunk_by(|a, b| a.section() == b.section()).collect()
+}
+
+fn grid_metrics(f: &mut Frame, app: &mut App, area: Rect) {
     let m = &app.model;
     let ir = inner(area);
     let leaves: Vec<(&str, &Vdev)> =
         m.pools().iter().flat_map(|p| p.root.leaves().into_iter().map(move |v| (p.name.as_str(), v))).collect();
-    let mut lines = vec![Line::from(vec![
-        Span::styled(format!("  {:<w$}", "metric", w = (ir.width as usize).saturating_sub(10)), theme::dim()),
-        Span::styled(format!("{:>7} ", "worst"), theme::dim()),
-    ])];
-    for (i, &g) in GridMetric::ALL.iter().enumerate() {
-        let vals = leaves.iter().map(|(p, v)| grid_value(m, g, p, v));
-        // errors: the total across disks; the rest: the worst single disk
-        let worst = if g == GridMetric::Errors {
-            let n: f64 = vals.map(|(x, _)| x).sum();
-            if n > 0.0 { format!("{n}") } else { "ok".into() }
-        } else {
-            vals.filter(|(x, _)| x.is_finite()).max_by(|a, b| a.0.total_cmp(&b.0)).map(|(_, t)| t).unwrap_or("-".into())
-        };
-        let on = g == app.grid_metric;
-        let name_w = (ir.width as usize).saturating_sub(10);
-        let style = if on { theme::sel() } else { Style::new() };
+    let secs = sections();
+    // everything (column header + a heading per section + every metric) if it fits, else the selected section
+    let full = ir.height as usize >= 1 + secs.len() + GridMetric::ALL.len();
+    let cur = app.grid_metric;
+    let name_w = (ir.width as usize).saturating_sub(10);
+    let mut lines = Vec::new();
+    if full {
         lines.push(Line::from(vec![
-            Span::styled(if on { "▸ " } else { "  " }, style.fg(theme::ACCENT)),
-            Span::styled(format!("{:<name_w$}", fmt::fit(g.title(), name_w)), style),
-            Span::styled(format!("{worst:>7} "), style),
+            Span::styled(format!("  {:<name_w$}", "metric"), theme::dim()),
+            Span::styled(format!("{:>7} ", "worst"), theme::dim()),
         ]));
-        app.hits.add(Rect::new(ir.x, ir.y + 1 + i as u16, ir.width, 1), Hit::GridMetric(g));
     }
-    if side {
+    for sec in secs {
+        if !full && !sec.contains(&cur) {
+            continue;
+        }
+        if full {
+            lines.push(Line::from(Span::styled(sec[0].section(), theme::dim().add_modifier(Modifier::BOLD))));
+        }
+        for &g in sec {
+            let vals = leaves.iter().map(|(p, v)| grid_value(m, g, p, v));
+            // errors: the total across disks; the rest: the worst single disk
+            let worst = if g == GridMetric::Errors {
+                let n: f64 = vals.map(|(x, _)| x).sum();
+                if n > 0.0 { format!("{n}") } else { "ok".into() }
+            } else {
+                vals.filter(|(x, _)| x.is_finite())
+                    .max_by(|a, b| a.0.total_cmp(&b.0))
+                    .map(|(_, t)| t)
+                    .unwrap_or("-".into())
+            };
+            let on = g == cur;
+            let style = if on { theme::sel() } else { Style::new() };
+            let y = ir.y + lines.len() as u16;
+            if y < ir.bottom() {
+                app.hits.add(Rect::new(ir.x, y, ir.width, 1), Hit::GridMetric(g));
+            }
+            lines.push(Line::from(vec![
+                Span::styled(if on { "▸ " } else { "  " }, style.fg(theme::ACCENT)),
+                Span::styled(format!("{:<name_w$}", fmt::fit(g.title(), name_w)), style),
+                Span::styled(format!("{worst:>7} "), style),
+            ]));
+        }
+    }
+    if full {
         lines.push(Line::from(""));
-        lines.push(Line::from(Span::styled(app.grid_metric.about(), theme::dim())));
+        lines.push(Line::from(Span::styled(cur.about(), theme::dim())));
     }
-    f.render_widget(
-        Paragraph::new(lines).wrap(ratatui::widgets::Wrap { trim: false }).block(panel("colour by · ↑↓ / c")),
-        area,
-    );
+    let title = if full {
+        "colour by · ↑↓ / c".to_string()
+    } else {
+        format!("colour by · {} · ↑↓ / c", cur.section())
+    };
+    f.render_widget(Paragraph::new(lines).wrap(ratatui::widgets::Wrap { trim: false }).block(panel(&title)), area);
 }
 
 fn grid_tiles(f: &mut Frame, app: &mut App, area: Rect) {
@@ -577,7 +659,9 @@ fn grid_tiles(f: &mut Frame, app: &mut App, area: Rect) {
     // Two-line tiles: disk name on top, value below, both on the tile's colour.
     let short = |n: &str| if n.chars().count() <= 8 { n.to_string() } else { fmt::fit_left(n, 7) };
     let mut legend_max: f64 = 0.0;
+    let scale = grid_scale(metric);
     let value = |pool: &str, v: &Vdev| grid_value(m, metric, pool, v);
+    let missing = m.pools().iter().any(|p| p.root.leaves().iter().any(|v| !value(&p.name, v).0.is_finite()));
     for p in m.pools() {
         let leaves = p.root.leaves();
         let tile_w = leaves.iter().map(|v| short(&v.name).chars().count()).max().unwrap_or(6).max(7) + 2;
@@ -610,16 +694,15 @@ fn grid_tiles(f: &mut Frame, app: &mut App, area: Rect) {
                 let mut bot = vec![Span::raw(" ".repeat(label_w))];
                 for v in chunk {
                     let (x, txt) = value(&p.name, v);
-                    let bg = match metric {
-                        GridMetric::Errors => {
-                            if x > 0.0 {
-                                theme::CRIT
-                            } else {
-                                Color::Indexed(23)
-                            }
+                    let bg = if !x.is_finite() {
+                        NO_DATA
+                    } else {
+                        match scale {
+                            Scale::Flag(_) if x > 0.0 => theme::CRIT,
+                            Scale::Flag(_) => Color::Indexed(23),
+                            Scale::Fixed(lo, hi, _) => widgets::heat(((x - lo) / (hi - lo)).clamp(0.0, 1.0)),
+                            Scale::Peak(_) => widgets::heat(if peak > 0.0 { x / peak } else { 0.0 }),
                         }
-                        GridMetric::Util => widgets::heat(x / 100.0),
-                        _ => widgets::heat(if peak > 0.0 { x / peak } else { 0.0 }),
                     };
                     let bg = if v.state != "ONLINE" { theme::CRIT } else { bg };
                     let light = matches!(bg, Color::Indexed(n) if [79, 149, 220, 208, 196, 203].contains(&n));
@@ -642,17 +725,31 @@ fn grid_tiles(f: &mut Frame, app: &mut App, area: Rect) {
             lines.push(Line::from(""));
         }
     }
-    let scale = match metric {
-        GridMetric::Util => "0 → 100%".to_string(),
-        GridMetric::Errors => "red = errors / slow I/Os / not ONLINE".to_string(),
-        GridMetric::Latency => format!("0 → {} (pool peak)", fmt::ns(legend_max)),
-        GridMetric::Ops => format!("0 → {} (pool peak)", fmt::count(legend_max)),
-    };
     let mut legend = vec![Span::styled(format!("colour: {} ", metric.title()), theme::dim())];
-    for i in 0..=9 {
-        legend.push(Span::styled("  ", Style::new().bg(widgets::heat(i as f64 / 9.0))));
+    match scale {
+        Scale::Flag(what) => {
+            legend.push(Span::styled("  ", Style::new().bg(Color::Indexed(23))));
+            legend.push(Span::styled(" none  ", theme::dim()));
+            legend.push(Span::styled("  ", Style::new().bg(theme::CRIT)));
+            legend.push(Span::styled(format!(" {what}"), theme::dim()));
+        }
+        _ => {
+            for i in 0..=9 {
+                legend.push(Span::styled("  ", Style::new().bg(widgets::heat(i as f64 / 9.0))));
+            }
+            let range = match scale {
+                Scale::Peak(fmt) => format!("0 → {} (pool peak)", fmt(legend_max)),
+                Scale::Fixed(_, _, label) => label.to_string(),
+                Scale::Flag(_) => unreachable!(),
+            };
+            legend.push(Span::styled(format!(" {range}"), theme::dim()));
+        }
     }
-    legend.push(Span::styled(format!(" {scale}"), theme::dim()));
+    if missing {
+        legend.push(Span::styled("   ", theme::dim()));
+        legend.push(Span::styled("  ", Style::new().bg(NO_DATA)));
+        legend.push(Span::styled(" not reported", theme::dim()));
+    }
     lines.push(Line::from(legend));
     f.render_widget(Paragraph::new(lines).block(panel(&format!("disk grid · {} (d/Esc back)", metric.title()))), area);
 }

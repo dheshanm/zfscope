@@ -90,21 +90,46 @@ view!(pool_latency_sorted, "2 m click:62,2");
 view!(pool_queues, "2 m m");
 view!(pool_space, "2 m m m");
 view!(pool_disk_grid, "2 d");
-view!(pool_disk_grid_util, "2 d Down Down");
+view!(pool_disk_grid_util, &format!("2 d{}", " Down".repeat(9)));
+view!(pool_disk_grid_temp, &format!("2 d{}", " Down".repeat(12)));
 
 #[test]
 fn disk_grid_metric_panel() {
-    // every metric is listed; arrows clamp at the ends; a click picks one
+    // every metric is listed, under its section; arrows clamp at the ends; a click picks one
     let s = render("2 d", 30);
-    for m in ["disk wait", "IOPS", "util %", "errors"] {
+    for m in [
+        "latency",
+        "IO",
+        "load",
+        "health",
+        "disk wait read",
+        "disk wait write",
+        "total wait",
+        "IOPS",
+        "read ops/s",
+        "write ops/s",
+        "read bandwidth",
+        "write bandwidth",
+        "util %",
+        "active queue",
+        "errors",
+        "temperature",
+        "defects",
+        "SSD wear",
+    ] {
         assert!(s.contains(m), "{m} missing:\n{s}");
     }
-    assert!(render("2 d Up", 30).contains("disk grid · disk wait"));
-    assert!(render("2 d Down Down Down Down", 30).contains("disk grid · errors"));
-    assert!(render("2 d c", 30).contains("disk grid · IOPS"));
-    // metric panel: right column, rows start below the border + header line (screen row 1 is the panel top)
-    let s = render("2 d click:140,4", 30);
-    assert!(s.contains("disk grid · IOPS"), "{s}");
+    assert!(render("2 d Up", 30).contains("disk grid · disk wait ("));
+    assert!(render(&format!("2 d{}", " Down".repeat(20)), 30).contains("disk grid · SSD wear"));
+    assert!(render("2 d c", 30).contains("disk grid · disk wait read"));
+    // metric panel (right column): screen row 1 is its top border, 2 the column header, 3 the "latency" heading
+    let s = render("2 d click:140,5", 30);
+    assert!(s.contains("disk grid · disk wait read"), "{s}");
+    // …4 latency rows, IO heading + 5, load heading + 2, health heading, errors, then temperature on row 19
+    let s = render("2 d click:140,19", 30);
+    assert!(s.contains("disk grid · temperature"), "{s}");
+    // a click on a section heading changes nothing
+    assert!(render("2 d click:140,8", 30).contains("disk grid · disk wait ("));
 }
 view!(pool_history, "2 H");
 view!(datasets_tree, "3");

@@ -4,29 +4,29 @@ expression: "render(\"2 d\", 30)"
 ---
 ╭ disk grid · disk wait (d/Esc back) ────────────────────────────────────────────────────────────────────────────────────────╮╭ colour by · ↑↓ / c ────────────╮
 │pool0                                                                                                                       ││  metric                  worst │
-│raidz2-0     e00s00    e00s01    e00s02    e00s03    e00s04    e00s05    e00s06    e00s07    e00s08    e00s09               ││▸ disk wait                39ms │
-│             31ms      28ms      26ms      29ms      29ms      31ms      31ms      31ms      30ms      28ms                 ││  IOPS                      272 │
-│                                                                                                                            ││  util %                    89% │
-│raidz2-1     e00s10    e00s11    e00s12    e00s13    e00s14    e00s15    e00s16    e00s17    e00s18    e00s19               ││  errors                     ok │
-│             35ms      33ms      35ms      31ms      33ms      33ms      31ms      27ms      26ms      31ms                 ││                                │
-│                                                                                                                            ││Time each IO spent on the disk  │
-│raidz2-2     e00s20    e00s21    e00s22    e00s23    e00s24    e00s25    e00s26    e00s27    e00s28    e00s29               ││itself (the worse of reads and  │
-│             34ms      38ms      35ms      39ms      37ms      28ms      38ms      38ms      28ms      34ms                 ││writes).                        │
-│                                                                                                                            ││                                │
-│raidz2-3     e00s30    e00s31    e00s32    e00s33    e00s34    e00s35    e00s36    e00s37    e00s38    e00s39               ││                                │
-│             30ms      30ms      26ms      27ms      24ms      25ms      24ms      25ms      26ms      28ms                 ││                                │
-│                                                                                                                            ││                                │
-│raidz2-4     e00s40    e00s41    e00s42    e00s43    e00s44    e00s45    e00s46    e00s47    e00s48    e00s49               ││                                │
-│             22ms      22ms      22ms      20ms      22ms      24ms      24ms      20ms      22ms      21ms                 ││                                │
-│                                                                                                                            ││                                │
-│raidz2-5     e00s50    e00s51    e00s52    e00s53    e00s54    e00s55    e00s56    e00s57    e00s58    e00s59               ││                                │
-│             21ms      25ms      25ms      25ms      26ms      24ms      22ms      23ms      25ms      23ms                 ││                                │
-│                                                                                                                            ││                                │
-│mirror-6     …000001   …000002   …000003                                                                                    ││                                │
+│raidz2-0     e00s00    e00s01    e00s02    e00s03    e00s04    e00s05    e00s06    e00s07    e00s08    e00s09               ││latency                         │
+│             31ms      28ms      26ms      29ms      29ms      31ms      31ms      31ms      30ms      28ms                 ││▸ disk wait                39ms │
+│                                                                                                                            ││  disk wait read           18ms │
+│raidz2-1     e00s10    e00s11    e00s12    e00s13    e00s14    e00s15    e00s16    e00s17    e00s18    e00s19               ││  disk wait write          39ms │
+│             35ms      33ms      35ms      31ms      33ms      33ms      31ms      27ms      26ms      31ms                 ││  total wait              166ms │
+│                                                                                                                            ││IO                              │
+│raidz2-2     e00s20    e00s21    e00s22    e00s23    e00s24    e00s25    e00s26    e00s27    e00s28    e00s29               ││  IOPS                      272 │
+│             34ms      38ms      35ms      39ms      37ms      28ms      38ms      38ms      28ms      34ms                 ││  read ops/s                 69 │
+│                                                                                                                            ││  write ops/s               272 │
+│raidz2-3     e00s30    e00s31    e00s32    e00s33    e00s34    e00s35    e00s36    e00s37    e00s38    e00s39               ││  read bandwidth        6.32M/s │
+│             30ms      30ms      26ms      27ms      24ms      25ms      24ms      25ms      26ms      28ms                 ││  write bandwidth       13.9M/s │
+│                                                                                                                            ││load                            │
+│raidz2-4     e00s40    e00s41    e00s42    e00s43    e00s44    e00s45    e00s46    e00s47    e00s48    e00s49               ││  util %                    89% │
+│             22ms      22ms      22ms      20ms      22ms      24ms      24ms      20ms      22ms      21ms                 ││  active queue                2 │
+│                                                                                                                            ││health                          │
+│raidz2-5     e00s50    e00s51    e00s52    e00s53    e00s54    e00s55    e00s56    e00s57    e00s58    e00s59               ││  errors                     ok │
+│             21ms      25ms      25ms      25ms      26ms      24ms      22ms      23ms      25ms      23ms                 ││  temperature              46°C │
+│                                                                                                                            ││  defects                     0 │
+│mirror-6     …000001   …000002   …000003                                                                                    ││  SSD wear                   0% │
 │             18us      20us      19us                                                                                       ││                                │
-│                                                                                                                            ││                                │
-│logs         …000064                                                                                                        ││                                │
-│             21us                                                                                                           ││                                │
+│                                                                                                                            ││Time each IO spent on the disk  │
+│logs         …000064                                                                                                        ││itself (the worse of reads and  │
+│             21us                                                                                                           ││writes).                        │
 │                                                                                                                            ││                                │
 │colour: disk wait                      0 → 39ms (pool peak)                                                                 ││                                │
 │                                                                                                                            ││                                │

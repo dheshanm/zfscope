@@ -178,15 +178,45 @@ pub fn natural(a: &str, b: &str) -> std::cmp::Ordering {
 /// What the disk grid colours by (`c`).
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum GridMetric {
+    /// disk_wait, the worse of read and write
     Latency,
+    DiskRead,
+    DiskWrite,
+    /// total_wait (queued in ZFS + on the disk), the worse of read and write
+    TotalWait,
     Ops,
+    ReadOps,
+    WriteOps,
+    ReadBw,
+    WriteBw,
     Util,
+    /// IOs issued to the disk and not yet completed, all queues
+    Queue,
     Errors,
+    Temp,
+    Defects,
+    Wear,
 }
 
 impl GridMetric {
-    /// Every metric, in the order the grid's metric panel lists them (and `c` cycles).
-    pub const ALL: [GridMetric; 4] = [GridMetric::Latency, GridMetric::Ops, GridMetric::Util, GridMetric::Errors];
+    /// Every metric, in the order the grid's metric panel lists them (and `c` cycles), grouped by `section`.
+    pub const ALL: [GridMetric; 15] = [
+        GridMetric::Latency,
+        GridMetric::DiskRead,
+        GridMetric::DiskWrite,
+        GridMetric::TotalWait,
+        GridMetric::Ops,
+        GridMetric::ReadOps,
+        GridMetric::WriteOps,
+        GridMetric::ReadBw,
+        GridMetric::WriteBw,
+        GridMetric::Util,
+        GridMetric::Queue,
+        GridMetric::Errors,
+        GridMetric::Temp,
+        GridMetric::Defects,
+        GridMetric::Wear,
+    ];
 
     pub fn index(self) -> usize {
         GridMetric::ALL.iter().position(|m| *m == self).unwrap_or(0)
@@ -197,18 +227,54 @@ impl GridMetric {
     pub fn title(self) -> &'static str {
         match self {
             GridMetric::Latency => "disk wait",
+            GridMetric::DiskRead => "disk wait read",
+            GridMetric::DiskWrite => "disk wait write",
+            GridMetric::TotalWait => "total wait",
             GridMetric::Ops => "IOPS",
+            GridMetric::ReadOps => "read ops/s",
+            GridMetric::WriteOps => "write ops/s",
+            GridMetric::ReadBw => "read bandwidth",
+            GridMetric::WriteBw => "write bandwidth",
             GridMetric::Util => "util %",
+            GridMetric::Queue => "active queue",
             GridMetric::Errors => "errors",
+            GridMetric::Temp => "temperature",
+            GridMetric::Defects => "defects",
+            GridMetric::Wear => "SSD wear",
+        }
+    }
+    /// Heading the metric is listed under in the metric panel.
+    pub fn section(self) -> &'static str {
+        match self {
+            GridMetric::Latency | GridMetric::DiskRead | GridMetric::DiskWrite | GridMetric::TotalWait => "latency",
+            GridMetric::Ops | GridMetric::ReadOps | GridMetric::WriteOps | GridMetric::ReadBw | GridMetric::WriteBw => {
+                "IO"
+            }
+            GridMetric::Util | GridMetric::Queue => "load",
+            GridMetric::Errors | GridMetric::Temp | GridMetric::Defects | GridMetric::Wear => "health",
         }
     }
     /// What the metric measures (shown under the grid's metric panel list).
     pub fn about(self) -> &'static str {
         match self {
             GridMetric::Latency => "Time each IO spent on the disk itself (the worse of reads and writes).",
+            GridMetric::DiskRead => "Time each read spent on the disk itself.",
+            GridMetric::DiskWrite => "Time each write spent on the disk itself.",
+            GridMetric::TotalWait => {
+                "Time each IO took in all, queued in ZFS plus on the disk (the worse of reads and writes): \
+                 what applications feel."
+            }
             GridMetric::Ops => "Reads + writes per second sent to the disk.",
+            GridMetric::ReadOps => "Reads per second sent to the disk.",
+            GridMetric::WriteOps => "Writes per second sent to the disk.",
+            GridMetric::ReadBw => "Bytes per second read from the disk.",
+            GridMetric::WriteBw => "Bytes per second written to the disk.",
             GridMetric::Util => "Share of time the disk was busy with at least one IO.",
+            GridMetric::Queue => "IOs ZFS has issued to the disk that haven't completed yet (all queues).",
             GridMetric::Errors => "Read / write / checksum errors plus slow IOs. Red also marks disks not ONLINE.",
+            GridMetric::Temp => "Drive temperature from SMART, coloured on a fixed 25 → 60 °C scale.",
+            GridMetric::Defects => "SMART grown defects (SAS) or reallocated sectors (SATA). Red = any.",
+            GridMetric::Wear => "Share of rated endurance used, from SMART (SSD / NVMe; grey = not reported).",
         }
     }
 }

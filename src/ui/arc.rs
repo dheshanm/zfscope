@@ -359,5 +359,15 @@ fn lists(f: &mut Frame, m: &Model, r: Rect) {
         ]
         .concat(),
     ));
+    lines.push(Line::from(""));
+    for (label, what) in [
+        ("anon", "dirty data not yet written to disk; can't be evicted until its TXG syncs"),
+        ("uncached", "blocks not kept after use (primarycache=none/metadata); freed once released"),
+    ] {
+        lines.push(Line::from(vec![
+            Span::styled(format!("{label:<10}"), theme::dim()),
+            Span::styled(what, Style::new().fg(theme::FAINT)),
+        ]));
+    }
     f.render_widget(Paragraph::new(lines).block(panel("ARC lists (ghosts: recently evicted, headers only)")), r);
 }

@@ -779,7 +779,10 @@ pub fn tab_guide(tab: crate::app::Tab) -> &'static [(&'static str, &'static str)
             (
                 "Lists",
                 "How the cache is split between recent (MRU) and frequent (MFU) data, and how much of it could \
-              be evicted if memory were needed.",
+              be evicted if memory were needed. anon = dirty blocks that don't have a place on disk yet (new or \
+              modified data waiting for its TXG to sync); they can't be evicted, and a large anon size means heavy \
+              writing. ghost = recently evicted blocks, remembered by header only. uncached = blocks not kept \
+              after use (primarycache=none/metadata).",
             ),
         ],
         Tab::Zil => &[

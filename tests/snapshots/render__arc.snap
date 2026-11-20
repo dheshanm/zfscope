@@ -45,7 +45,7 @@ expression: "render(\"4\", 30)"
 │hash elements 16,187,880  max 16,187,880  chains 1,664,970                            │╭ about ───────────────────────────────────────────────────────────────╮
 │dnode limit 64.0G  meta used 117G  prunes/s 0                                         ││zfs_arc_max                                                           │
 │                                                                                      ││Largest size the ARC (ZFS's RAM cache) may grow to, in bytes.         │
-│                                                                                      ││0 = automatic (most of RAM on OpenZFS 2.3+). The ARC gives memory back│
-│                                                                                      ││under pressure, but slowly; lower this if other applications need     │
+│anon      dirty data not yet written to disk; can't be evicted until its TXG syncs    ││0 = automatic (most of RAM on OpenZFS 2.3+). The ARC gives memory back│
+│uncached  blocks not kept after use (primarycache=none/metadata); freed once released ││under pressure, but slowly; lower this if other applications need     │
 ╰──────────────────────────────────────────────────────────────────────────────────────╯╰──────────────────────────────────────────────────────────────────────╯
  q quit  ? help  1-7 tabs  ↑↓ tunable help  p pause  +/- interval  b bytes  l log

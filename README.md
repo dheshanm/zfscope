@@ -8,8 +8,9 @@
 - **Pool**: vdev/disk tree with live IO, latency, queue and space columns; per-device graphs, a latency heatmap,
   request-size histogram, a disk grid to spot the one slow disk, and `zpool history`
 - **Datasets**: space breakdown (snapshots, children, quotas), per-dataset IO and ZIL (ztop), snapshots, properties
-- **ARC**: size and composition, hit ratios per access class, ghost hits, tunables
-- **ZIL·TXG**: sync-write logging per pool and dataset, SLOG vs pool, transaction groups, the write throttle
+- **ARC**: size and composition, hit ratios per access class, ghost hits, tunables (editable in write mode)
+- **ZIL·TXG**: sync-write logging per pool and dataset, SLOG vs pool, transaction groups, the write throttle,
+  TXG / ZIL tunables (editable in write mode)
 - **Disks**: every physical disk behind the pool: enclosure slot, multipath paths, SMART health, temperature,
   util/await
 - **Props**: every pool and dataset property with its source, possible values and plain-language help, plus help
@@ -72,6 +73,22 @@ header badge turns from `ro` to `rw`; `W` locks it again). Then, in **Props** (o
   disabled feature flag, this enables it.
 - `i`: reset a locally set dataset property to inherited (`zfs inherit`). On a user property, this removes it.
 - `a`: add a `namespace:name` user property.
+
+On the **ARC** and **ZIL·TXG** tabs, the tunables panels (module parameters) can be changed too:
+
+- `e`: edit the selected tunable. The editor explains what it does, its default, what it accepts, when a change
+  takes effect and what raising or lowering it does. Sizes take suffixes (`8G`, `512M`). `Tab` picks where the
+  change goes: **now** (writes `/sys/module/zfs/parameters/<name>`, lost at reboot), **now + at boot**, or **at boot
+  only** (adds or updates `options zfs <name>=<value>` in `/etc/modprobe.d`, in the file that already sets it, else
+  `zfs.conf`; the previous file is kept as `<file>.zfscope-bak`). Parameters that are read-only while the module is
+  loaded can only be set for the next boot.
+- `i`: reset the selected tunable to its default and remove its boot setting.
+
+The running value is read back after writing; if the kernel didn't take it (out of range), nothing is made
+permanent. zfscope warns when `zfs.<name>=` on the kernel command line overrides modprobe.d, and when `/` is on ZFS
+(the module then loads from the initramfs: run `update-initramfs -u` or `dracut -f` yourself for boot settings to
+apply). In the panels, ◆ marks a value that isn't the default and `boot <v>` a different value set for the next
+boot.
 
 Every change shows the exact command and its effect, then runs only after `y`. Enabling a feature flag can't be
 undone, so it needs the pool name typed instead. Each change is logged: in the `l` pane, in the log file, and by

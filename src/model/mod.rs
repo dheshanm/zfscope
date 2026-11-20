@@ -670,6 +670,58 @@ impl Model {
         self.config.as_ref()?.params.iter().find(|(k, _)| k == name).map(|(_, v)| v.as_str())
     }
 
+    /// The boot setting of a tunable and the modprobe.d file it is in (the last one modprobe reads wins).
+    pub fn boot_param(&self, name: &str) -> Option<(String, &str)> {
+        let c = self.config.as_ref()?;
+        c.modprobe.iter().rev().find_map(|(f, t)| crate::write::modprobe_get(t, name).map(|v| (v, f.as_str())))
+    }
+
+    /// Every modprobe.d file that sets this tunable.
+    pub fn boot_param_files(&self, name: &str) -> Vec<&str> {
+        let Some(c) = self.config.as_ref() else { return Vec::new() };
+        c.modprobe
+            .iter()
+            .filter(|(_, t)| crate::write::modprobe_get(t, name).is_some())
+            .map(|(f, _)| f.as_str())
+            .collect()
+    }
+
+    /// Content of a modprobe.d file as last read ("" for one that doesn't exist or sets no ZFS options).
+    pub fn modprobe_text(&self, file: &str) -> &str {
+        self.config.as_ref().and_then(|c| c.modprobe.iter().find(|(f, _)| f == file)).map_or("", |(_, t)| t)
+    }
+
+    /// `zfs.<name>=` on the kernel command line.
+    pub fn cmdline_param(&self, name: &str) -> Option<String> {
+        crate::write::cmdline_param(&self.config.as_ref()?.cmdline, name)
+    }
+
+    /// Root filesystem on ZFS: the module loads from the initramfs.
+    pub fn root_on_zfs(&self) -> bool {
+        self.config.as_ref().and_then(|c| c.root_fs.as_deref()) == Some("zfs")
+    }
+
+    /// The tunable is read-only while the module is loaded.
+    pub fn param_load_only(&self, name: &str) -> bool {
+        self.config.as_ref().is_some_and(|c| c.param_ro.iter().any(|p| p == name))
+    }
+
+    /// The value a tunable has when nothing sets it, as a number to write (automatic defaults: 0 where 0 means
+    /// automatic; zfs_dirty_data_max: worked out from RAM like the module does).
+    pub fn param_default(&self, name: &str) -> Option<String> {
+        let t = crate::help::tunable(name)?;
+        if !t.default.is_empty() {
+            return Some(t.default.to_string());
+        }
+        if name == "zfs_dirty_data_max" {
+            let ram = self.val("arcstats", "memory_all_bytes");
+            let pct: u64 = self.param("zfs_dirty_data_max_percent").and_then(|v| v.parse().ok()).unwrap_or(10);
+            let cap: u64 = self.param("zfs_dirty_data_max_max").and_then(|v| v.parse().ok()).unwrap_or(u64::MAX);
+            return (ram > 0).then(|| (ram / 100 * pct).min(cap).to_string());
+        }
+        None
+    }
+
     // ---------------------------------------------------------------- disks
 
     pub fn on_disks(&mut self, d: Res<Vec<DiskInfo>>) {

@@ -16,6 +16,9 @@ const COLS: u16 = 160;
 const ROWS: u16 = 48;
 
 fn key(name: &str) -> KeyEvent {
+    if name == "Ctrl-U" {
+        return KeyEvent::new(KeyCode::Char('u'), KeyModifiers::CONTROL);
+    }
     KeyEvent::from(match name {
         "Enter" => KeyCode::Enter,
         "Esc" => KeyCode::Esc,
@@ -272,4 +275,71 @@ fn rw_from_datasets_properties_pane() {
     let s = render_rw("W y 3 j Enter ] ] ] Tab j j j e", |_| {});
     assert!(s.contains("· dataset pool0/data"), "{s}");
     assert!(s.contains("Enter review the command"), "{s}");
+}
+
+// ---------------------------------------------------------------- write mode: tunables
+
+#[test]
+fn rw_tune_edit_arc_max() {
+    // ARC tab (4), zfs_arc_max (first entry): description, default, range, effects, and the size typed with a suffix
+    let s = render_rw("W y 4 e Ctrl-U 2 5 6 G", |_| {});
+    insta::assert_snapshot!(s);
+    assert!(s.contains("set zfs_arc_max · ZFS module parameter"), "{s}");
+    assert!(s.contains("= 274877906944 (256G)"), "{s}");
+    assert!(s.contains("from /etc/modprobe.d/zfs.conf"), "{s}");
+}
+
+#[test]
+fn rw_tune_scope_and_confirm() {
+    // now + at boot: the sysfs write and the modprobe.d line, old → new
+    let s = render_rw("W y 4 e Ctrl-U 2 5 6 G Tab Enter", |_| {});
+    insta::assert_snapshot!(s);
+    assert!(s.contains("echo 274877906944 > /sys/module/zfs/parameters/zfs_arc_max"), "{s}");
+    assert!(s.contains("- options zfs zfs_arc_max=343597383680 zfs_arc_sys_free=34359738368"), "{s}");
+    assert!(s.contains("+ options zfs zfs_arc_max=274877906944 zfs_arc_sys_free=34359738368"), "{s}");
+    // at boot only: nothing written to sysfs
+    let s = render_rw("W y 4 e Ctrl-U 2 5 6 G Tab Tab Enter", |_| {});
+    assert!(!s.contains("echo 274877906944"), "{s}");
+    assert!(s.contains("the running value stays"), "{s}");
+}
+
+#[test]
+fn rw_tune_dry_run_result() {
+    let s = render_rw("W y 5 e Ctrl-U 1 0 Enter y", |_| {});
+    assert!(s.contains("✓ zfs_txg_timeout = 10 now (until reboot) · dry run (fixture)"), "{s}");
+}
+
+#[test]
+fn rw_tune_validation() {
+    // below the 64 MiB minimum
+    let s = render_rw("W y 4 e Ctrl-U 1 M Enter", |_| {});
+    assert!(s.contains("must be at least 64.0M"), "{s}");
+    // not a number
+    let s = render_rw("W y 5 e Ctrl-U x Enter", |_| {});
+    assert!(s.contains("is not a whole number"), "{s}");
+    // the current value, now only: nothing to do
+    let s = render_rw("W y 5 e Enter", |_| {});
+    assert!(s.contains("zfs_txg_timeout unchanged"), "{s}");
+}
+
+#[test]
+fn rw_tune_reset_and_locked() {
+    // zfs_arc_meta_balance (3rd ARC entry) is 2000 now and at boot; reset → 500 now, boot setting removed
+    let s = render_rw("W y 4 j j i", |_| {});
+    assert!(s.contains("echo 500 > /sys/module/zfs/parameters/zfs_arc_meta_balance"), "{s}");
+    assert!(s.contains("- options zfs zfs_arc_meta_balance=2000"), "{s}");
+    assert!(s.contains("(line removed)"), "{s}");
+    // already at its default
+    let s = render_rw("W y 5 i", |_| {});
+    assert!(s.contains("zfs_txg_timeout is already at its default"), "{s}");
+    // locked: e only says how to unlock
+    let s = render_rw("4 e", |_| {});
+    assert!(s.contains("write mode is off: W unlocks it"), "{s}");
+}
+
+#[test]
+fn rw_tune_risky_value() {
+    // zil_nocacheflush: pick 1 from the list; the confirm dialog warns
+    let s = render_rw(&format!("W y 5{} e Down Down Enter", " j".repeat(11)), |_| {});
+    assert!(s.contains("zil_nocacheflush=1: a power loss can lose or corrupt"), "{s}");
 }

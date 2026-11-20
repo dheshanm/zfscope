@@ -38,6 +38,15 @@ pub trait Source: Send + Sync {
     fn write(&self, prog: &str, _args: &[&str], _timeout: Duration) -> Res<String> {
         Err(format!("{prog}: read-only source"))
     }
+    /// Write a file that changes the system (write mode only: a module parameter under /sys, or a modprobe.d file,
+    /// which is replaced atomically and its previous content kept as `<file>.zfscope-bak`).
+    fn write_file(&self, path: &str, _contents: &str) -> Res<()> {
+        Err(format!("{path}: read-only source"))
+    }
+    /// Can the file be written (owner write bit)? None when unknown.
+    fn writable(&self, _path: &str) -> Option<bool> {
+        None
+    }
     /// Seconds on the source's clock (monotonic; fixture time advances one capture interval per tick).
     fn now(&self) -> f64;
     /// Advance to the next sample (fixtures step a frame; live is a no-op).
@@ -53,6 +62,41 @@ pub fn exists(src: &dyn Source, path: &str) -> bool {
 }
 
 // ------------------------------------------------------------------------------------------------ live
+
+/// Replace a config file without ever leaving it half-written: write a temp file next to it, sync, rename over.
+/// The old content is kept as `<path>.zfscope-bak`; a new file gets mode 0644.
+fn atomic_write(path: &str, contents: &str) -> Res<()> {
+    use std::io::Write;
+    let err = |e: std::io::Error| format!("{path}: {e}");
+    let p = Path::new(path);
+    let old = std::fs::metadata(p).ok();
+    if old.is_some() {
+        std::fs::copy(p, format!("{path}.zfscope-bak")).map_err(err)?;
+    }
+    let tmp = format!("{path}.zfscope-tmp");
+    let r = (|| {
+        let mut f = std::fs::File::create(&tmp)?;
+        f.write_all(contents.as_bytes())?;
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            let mode = old.as_ref().map(|m| m.permissions().mode() & 0o7777).unwrap_or(0o644);
+            f.set_permissions(std::fs::Permissions::from_mode(mode))?;
+        }
+        f.sync_all()?;
+        std::fs::rename(&tmp, p)
+    })();
+    if r.is_err() {
+        let _ = std::fs::remove_file(&tmp);
+    }
+    r.map_err(err)?;
+    if let Some(dir) = p.parent()
+        && let Ok(d) = std::fs::File::open(dir)
+    {
+        let _ = d.sync_all();
+    }
+    Ok(())
+}
 
 pub struct LiveSource {
     t0: Instant,
@@ -151,6 +195,21 @@ impl Source for LiveSource {
 
     fn write(&self, prog: &str, args: &[&str], timeout: Duration) -> Res<String> {
         run_cmd(prog, args, timeout)
+    }
+
+    fn write_file(&self, path: &str, contents: &str) -> Res<()> {
+        use std::io::Write;
+        if path.starts_with("/sys/") {
+            let mut f = std::fs::OpenOptions::new().write(true).open(path).map_err(|e| format!("{path}: {e}"))?;
+            return f.write_all(contents.as_bytes()).map_err(|e| format!("{path}: {e}"));
+        }
+        atomic_write(path, contents)
+    }
+
+    #[cfg(unix)]
+    fn writable(&self, path: &str) -> Option<bool> {
+        use std::os::unix::fs::PermissionsExt;
+        std::fs::metadata(path).ok().map(|m| m.permissions().mode() & 0o200 != 0)
     }
 
     fn iostat_stream(&self, interval: Duration, stop: Arc<AtomicBool>, tx: Sender<Res<String>>) {
@@ -469,6 +528,10 @@ impl Source for FixtureSource {
         Ok("dry run (fixture): not executed".into())
     }
 
+    fn write_file(&self, _path: &str, _contents: &str) -> Res<()> {
+        Ok(())
+    }
+
     fn iostat_stream(&self, interval: Duration, stop: Arc<AtomicBool>, tx: Sender<Res<String>>) {
         let text = match std::fs::read_to_string(self.dir.join("iostat.txt")) {
             Ok(t) => t,
@@ -531,6 +594,27 @@ impl SourceSpec {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn atomic_write_keeps_a_backup() {
+        let dir = std::env::temp_dir().join(format!("zfscope-test-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let f = dir.join("zfs.conf");
+        let p = f.to_str().unwrap();
+        atomic_write(p, "options zfs zfs_txg_timeout=5\n").unwrap();
+        assert!(!Path::new(&format!("{p}.zfscope-bak")).exists(), "nothing to back up for a new file");
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            assert_eq!(std::fs::metadata(p).unwrap().permissions().mode() & 0o777, 0o644);
+        }
+        atomic_write(p, "options zfs zfs_txg_timeout=10\n").unwrap();
+        assert_eq!(std::fs::read_to_string(p).unwrap(), "options zfs zfs_txg_timeout=10\n");
+        assert_eq!(std::fs::read_to_string(format!("{p}.zfscope-bak")).unwrap(), "options zfs zfs_txg_timeout=5\n");
+        assert!(!Path::new(&format!("{p}.zfscope-tmp")).exists());
+        assert_eq!(LiveSource::new().writable(p), Some(true));
+        std::fs::remove_dir_all(&dir).unwrap();
+    }
 
     #[test]
     fn counter_extrapolation() {

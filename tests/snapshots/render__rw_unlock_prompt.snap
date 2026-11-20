@@ -18,14 +18,14 @@ expression: "render_rw(\"W\", |_| {})"
 │raidz2-4     ━━━━────  45%    313    171    │╰────────────────────────────────────────────────────────────────────────────────────────────────────────── ◀ 9s ╯
 │raidz2-5     ━━━━────  45%    661    198    │╭ bandwidth r 214M/s w 675M/s ───────────────────────────────────────────────────────────────────────────────────╮
 │mirror-6     ━━━─────  35%      0    423    ││▲ read · top 1.07G/s                                                                                            │
-│…TB_ZD000064 ━─────── 0.1%      0    272    ││                                                                                                                │
-│                               ┏ write mode ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓                               │
+│…TB_ZD000064 ━─────── 0.1%     ┏ write mode ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓                               │
 │                               ┃Enable write mode on zfs-demo?                                                                ┃                               │
-│                               ┃                                                                                              ┃                             ⢀⣠│
-│                               ┃Lets you change properties from the Props views: e sets a value (or enables a feature flag),  ┃                          ⠐⠒⠒⠚ │
-│                               ┃i resets a dataset property to inherited, a adds a user property.                             ┃                          ⢀⣤ ⣰⡆│
-│                               ┃Each change runs zfs set / zpool set / zfs inherit as root, only after you confirm the exact  ┃                           ⢸⢠⠇⢳│
-│                               ┃command. Every change is logged (l, and the log file).                                        ┃                           ⢸⢸ ⢸│
+│                               ┃                                                                                              ┃                               │
+│                               ┃Lets you change properties from the Props views: e sets a value (or enables a feature flag),  ┃                             ⢀⣠│
+│                               ┃i resets a dataset property to inherited, a adds a user property.                             ┃                          ⠐⠒⠒⠚ │
+│                               ┃On the ARC and ZIL·TXG tabs, e changes a tunable (now and/or at boot), i resets it.           ┃                          ⢀⣤ ⣰⡆│
+│                               ┃Changes run zfs set / zpool set / zfs inherit, or write /sys/module/zfs/parameters and        ┃                           ⢸⢠⠇⢳│
+│                               ┃/etc/modprobe.d, as root, only after you confirm exactly what happens. All are logged (l).    ┃                           ⢸⢸ ⢸│
 │                               ┃                                                                                              ┃                           ⢸⡼ ⠸│
 │                               ┃Fixture replay: commands are shown but never run.                                             ┃                           ⢸⡇  │
 │                               ┃                                                                                              ┃                           ⢸⡇  │

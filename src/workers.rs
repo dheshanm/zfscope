@@ -17,7 +17,7 @@ use crate::parse::disk::Smart;
 use crate::parse::iostat::Hist;
 use crate::parse::zjson::Dataset;
 use crate::source::{Res, Source};
-use crate::write::Change;
+use crate::write::{Boot, Change, MODPROBE_DIR, ParamChange, modprobe_set};
 
 pub enum Msg {
     Kstats(KSample),
@@ -117,7 +117,12 @@ pub fn start(src: Arc<dyn Source>, interval: Duration, tx: Sender<Msg>, smart: b
 /// Run a change and report back. The attempt and its outcome go to the log (the audit trail).
 pub fn apply(src: &dyn Source, c: &Change) -> Res<String> {
     c.validate()?;
-    let (prog, args) = c.argv();
+    let Some((prog, args)) = c.argv() else {
+        return match c {
+            Change::Param(p) => apply_param(src, p),
+            _ => Err("nothing to run".into()),
+        };
+    };
     let args: Vec<&str> = args.iter().map(String::as_str).collect();
     tracing::warn!("write: running `{}`", c.command_line());
     let r = src.write(prog, &args, WRITE_TIMEOUT);
@@ -126,6 +131,55 @@ pub fn apply(src: &dyn Source, c: &Change) -> Res<String> {
         Err(e) => tracing::error!("write: failed `{}`: {e}", c.command_line()),
     }
     r
+}
+
+/// A tunable: the running value first (so a value the kernel rejects is never made permanent), then the boot
+/// setting in modprobe.d.
+fn apply_param(src: &dyn Source, p: &ParamChange) -> Res<String> {
+    let dry = src.is_fixture();
+    let mut out = Vec::new();
+    tracing::warn!("write: {} (was {:?}, boot {:?})", p.steps().join("; "), p.was, p.boot_was);
+    if let Some(v) = &p.value {
+        let path = p.path();
+        if let Err(e) = src.write_file(&path, v) {
+            tracing::error!("write: failed `echo {v} > {path}`: {e}");
+            return Err(e);
+        }
+        if !dry {
+            match src.read(&path).map(|s| s.trim().to_string()) {
+                Ok(back) if back == *v => tracing::warn!("write: done, {} = {back}", p.name),
+                Ok(back) => {
+                    let msg = format!("the kernel kept {}={back} instead of {v} (out of range?)", p.name);
+                    tracing::error!("write: {msg}");
+                    return Err(if p.boot == Boot::Keep { msg } else { format!("{msg}; boot setting not changed") });
+                }
+                Err(e) => tracing::warn!("write: wrote {v} to {path}, but can't read it back: {e}"),
+            }
+        }
+    }
+    if p.boot != Boot::Keep {
+        let file = &p.file;
+        let exists =
+            src.list(MODPROBE_DIR).unwrap_or_default().iter().any(|f| Some(f.as_str()) == file.rsplit('/').next());
+        let text = if exists { src.read(file)? } else { String::new() };
+        let value = match &p.boot {
+            Boot::Set(v) => Some(v.as_str()),
+            _ => None,
+        };
+        let new = modprobe_set(&text, &p.name, value);
+        if new == text {
+            out.push(format!("{file} already says so"));
+        } else if let Err(e) = src.write_file(file, &new) {
+            tracing::error!("write: failed to update {file}: {e}");
+            return Err(e);
+        } else {
+            tracing::warn!("write: updated {file} (old content in {file}.zfscope-bak)");
+        }
+    }
+    if dry {
+        out.push("dry run (fixture): not executed".into());
+    }
+    Ok(out.join(" · "))
 }
 
 fn writer(src: Arc<dyn Source>, tx: Sender<Msg>, rx: Receiver<Change>) {

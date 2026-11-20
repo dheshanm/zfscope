@@ -82,6 +82,15 @@ pub struct Config {
     pub datasets: Res<Vec<Dataset>>,
     pub params: Vec<(String, String)>,
     pub version: Option<(String, String)>,
+    /// Boot-time module settings: /etc/modprobe.d/*.conf files with `options zfs` lines, (path, text), in the
+    /// order modprobe reads them.
+    pub modprobe: Vec<(String, String)>,
+    /// /proc/cmdline (`zfs.<param>=` there overrides modprobe.d)
+    pub cmdline: String,
+    /// filesystem type of `/` (zfs: the module loads from the initramfs, which has its own copy of modprobe.d)
+    pub root_fs: Option<String>,
+    /// curated tunables that can only be set when the module loads (read-only in sysfs)
+    pub param_ro: Vec<String>,
 }
 
 pub fn config(src: &dyn Source) -> Config {
@@ -99,7 +108,39 @@ pub fn config(src: &dyn Source) -> Config {
         .into_iter()
         .filter_map(|p| src.read(&format!("{pdir}/{p}")).ok().map(|v| (p, v.trim().to_string())))
         .collect();
-    Config { t: src.now(), status, list, pool_props, datasets, params, version }
+    let modprobe = boot_settings(src);
+    let cmdline = src.read("/proc/cmdline").map(|s| s.trim().to_string()).unwrap_or_default();
+    let root_fs = src.read("/proc/mounts").ok().and_then(|m| {
+        m.lines()
+            .filter_map(|l| {
+                let mut f = l.split_whitespace();
+                let (_, mnt, ty) = (f.next()?, f.next()?, f.next()?);
+                (mnt == "/").then(|| ty.to_string())
+            })
+            .next_back()
+    });
+    let param_ro = crate::help::ARC_PARAMS
+        .iter()
+        .chain(crate::help::TXG_PARAMS.iter())
+        .filter(|p| src.writable(&format!("{pdir}/{p}")) == Some(false))
+        .map(|p| p.to_string())
+        .collect();
+    Config { t: src.now(), status, list, pool_props, datasets, params, version, modprobe, cmdline, root_fs, param_ro }
+}
+
+/// modprobe.d files that set ZFS module options.
+pub fn boot_settings(src: &dyn Source) -> Vec<(String, String)> {
+    let dir = crate::write::MODPROBE_DIR;
+    src.list(dir)
+        .unwrap_or_default()
+        .into_iter()
+        .filter(|f| f.ends_with(".conf"))
+        .filter_map(|f| {
+            let path = format!("{dir}/{f}");
+            let text = src.read(&path).ok()?;
+            text.lines().any(|l| l.split_whitespace().take(2).eq(["options", "zfs"])).then_some((path, text))
+        })
+        .collect()
 }
 
 /// Snapshots of one dataset (on demand: hosts can have 100k snapshots, so they are never listed wholesale).

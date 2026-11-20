@@ -660,7 +660,7 @@ pub fn param(name: &str) -> Option<Help> {
 }
 
 /// Parameters worth showing next to the TXG/ZIL view.
-pub const TXG_PARAMS: [&str; 10] = [
+pub const TXG_PARAMS: [&str; 13] = [
     "zfs_txg_timeout",
     "zfs_dirty_data_max",
     "zfs_dirty_data_sync_percent",
@@ -670,6 +670,9 @@ pub const TXG_PARAMS: [&str; 10] = [
     "zfs_vdev_sync_write_max_active",
     "zfs_immediate_write_sz",
     "zil_slog_bulk",
+    "zfs_commit_timeout_pct",
+    "zil_maxblocksize",
+    "zil_nocacheflush",
     "zio_slow_io_ms",
 ];
 
@@ -681,6 +684,298 @@ pub const ARC_PARAMS: [&str; 6] = [
     "zfs_prefetch_disable",
     "l2arc_write_max",
 ];
+
+/// The tunables a tab lists (and write mode can change there).
+pub fn tab_params(tab: crate::app::Tab) -> &'static [&'static str] {
+    match tab {
+        crate::app::Tab::Arc => &ARC_PARAMS,
+        crate::app::Tab::Zil => &TXG_PARAMS,
+        _ => &[],
+    }
+}
+
+/// Is this one of the tunables zfscope lets you change?
+pub fn is_curated_param(name: &str) -> bool {
+    ARC_PARAMS.contains(&name) || TXG_PARAMS.contains(&name)
+}
+
+/// What a tunable's number means.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Kind {
+    Bytes,
+    Count,
+    Percent,
+    Ms,
+    Secs,
+    Bool,
+}
+
+impl Kind {
+    pub fn unit(self) -> &'static str {
+        match self {
+            Kind::Bytes => "bytes (K/M/G/T suffixes accepted)",
+            Kind::Count => "count",
+            Kind::Percent => "percent",
+            Kind::Ms => "milliseconds",
+            Kind::Secs => "seconds",
+            Kind::Bool => "0 = off, 1 = on",
+        }
+    }
+}
+
+/// What changing a module parameter does (OpenZFS 2.4 defaults, `man 4 zfs`).
+#[derive(Debug, Clone, Copy)]
+pub struct Tunable {
+    pub kind: Kind,
+    /// the value the module starts with ("" = worked out at load time, see `auto`)
+    pub default: &'static str,
+    /// how an automatic default is worked out ("" = the default is a fixed number)
+    pub auto: &'static str,
+    /// accepted range (0 is also accepted when `zero_auto`)
+    pub min: u64,
+    pub max: u64,
+    /// 0 means "automatic"
+    pub zero_auto: bool,
+    /// when a change takes effect
+    pub applies: &'static str,
+    pub raise: &'static str,
+    pub lower: &'static str,
+    /// a caveat worth reading before changing it ("" = none)
+    pub note: &'static str,
+}
+
+const U32: u64 = u32::MAX as u64;
+const MIB: u64 = 1 << 20;
+
+const T: Tunable = Tunable {
+    kind: Kind::Count,
+    default: "",
+    auto: "",
+    min: 0,
+    max: U32,
+    zero_auto: false,
+    applies: "immediately",
+    raise: "",
+    lower: "",
+    note: "",
+};
+
+pub fn tunable(name: &str) -> Option<Tunable> {
+    Some(match name {
+        "zfs_arc_max" => Tunable {
+            kind: Kind::Bytes,
+            default: "0",
+            auto: "the larger of RAM − 1 GiB and 5/8 of RAM",
+            min: 64 * MIB,
+            max: u64::MAX,
+            zero_auto: true,
+            applies: "immediately: the ARC's upper limit (c_max) moves right away",
+            raise: "more RAM for caching: higher hit ratios, less for applications",
+            lower: "frees RAM for applications. The ARC only shrinks to the new limit as it evicts blocks, and more \
+                    reads go to the disks",
+            note: "Must be at least 64 MiB and below total RAM, or the kernel ignores it. Writing 0 while loaded \
+                   doesn't bring the automatic size back; that returns at the next module load.",
+        },
+        "zfs_arc_min" => Tunable {
+            kind: Kind::Bytes,
+            default: "0",
+            auto: "the larger of 32 MiB and RAM/32",
+            max: u64::MAX,
+            zero_auto: true,
+            raise: "the ARC keeps at least this much even under memory pressure (less for applications)",
+            lower: "the ARC can give more memory back when the system needs it",
+            note: "Must stay below zfs_arc_max. Writing 0 while loaded doesn't bring the automatic size back.",
+            ..T
+        },
+        "zfs_arc_meta_balance" => Tunable {
+            default: "500",
+            min: 1,
+            raise: "keeps more metadata (directories, block pointers) cached: faster lookups and scrubs",
+            lower: "leaves more room for file data",
+            note: "Values above 100 favour metadata.",
+            ..T
+        },
+        "zfs_arc_sys_free" => Tunable {
+            kind: Kind::Bytes,
+            default: "0",
+            auto: "the larger of 512 KiB and RAM/64",
+            max: u64::MAX,
+            zero_auto: true,
+            raise: "the ARC leaves more memory free for the rest of the system",
+            lower: "the ARC may use memory closer to the limit",
+            ..T
+        },
+        "zfs_prefetch_disable" => Tunable {
+            kind: Kind::Bool,
+            default: "0",
+            max: 1,
+            applies: "immediately, for new reads",
+            raise: "1 turns predictive read-ahead off: can help purely random reads, slows sequential ones",
+            lower: "0 turns read-ahead back on",
+            ..T
+        },
+        "l2arc_write_max" => Tunable {
+            kind: Kind::Bytes,
+            default: "33554432",
+            min: 1,
+            max: u64::MAX,
+            applies: "from the next L2ARC fill interval",
+            raise: "the cache SSD warms up faster, at the cost of more SSD wear and write bandwidth",
+            lower: "less SSD wear; the L2ARC fills more slowly",
+            ..T
+        },
+        "zfs_txg_timeout" => Tunable {
+            kind: Kind::Secs,
+            default: "5",
+            min: 1,
+            applies: "from the next TXG",
+            raise: "fewer, larger TXG commits; up to this many seconds of asynchronous writes are lost on a crash \
+                    (synchronous writes are safe in the ZIL)",
+            lower: "smaller, more frequent commits; more metadata overhead",
+            ..T
+        },
+        "zfs_dirty_data_max" => Tunable {
+            kind: Kind::Bytes,
+            auto: "zfs_dirty_data_max_percent (10%) of RAM, at most zfs_dirty_data_max_max",
+            min: MIB,
+            max: u64::MAX,
+            applies: "immediately",
+            raise: "absorbs bigger write bursts before writers are throttled; TXGs take longer and use more RAM",
+            lower: "writers are throttled sooner; less RAM held by dirty data",
+            note: "Values above zfs_dirty_data_max_max are allowed while loaded, but that cap applies at the next \
+                   module load.",
+            ..T
+        },
+        "zfs_dirty_data_sync_percent" => Tunable {
+            kind: Kind::Percent,
+            default: "20",
+            max: 100,
+            applies: "immediately",
+            raise: "TXGs start committing later (bigger batches)",
+            lower: "TXGs commit earlier, with less dirty data each",
+            note: "Should stay below zfs_vdev_async_write_active_min_dirty_percent.",
+            ..T
+        },
+        "zfs_delay_min_dirty_percent" => Tunable {
+            kind: Kind::Percent,
+            default: "60",
+            max: 100,
+            raise: "writers are slowed down later (more burst headroom, harder throttling when it kicks in)",
+            lower: "writers are slowed down earlier and more gently",
+            note: "Should be at least zfs_vdev_async_write_active_max_dirty_percent.",
+            ..T
+        },
+        "zfs_vdev_async_write_max_active" => Tunable {
+            default: "10",
+            min: 1,
+            max: 1000,
+            applies: "for new IOs",
+            raise: "more writes in flight per disk during TXG commits: faster syncs, higher read latency meanwhile",
+            lower: "gentler on read latency; TXG commits take longer",
+            ..T
+        },
+        "zfs_vdev_async_write_min_active" => Tunable {
+            default: "2",
+            min: 1,
+            max: 1000,
+            applies: "for new IOs",
+            raise: "faster resilvers and syncs at low dirty levels, at some latency cost (3 is a common choice)",
+            lower: "better latency on HDDs; slower resilvers",
+            note: "Must not exceed zfs_vdev_async_write_max_active.",
+            ..T
+        },
+        "zfs_vdev_sync_write_max_active" => Tunable {
+            default: "10",
+            min: 1,
+            max: 1000,
+            applies: "for new IOs",
+            raise: "more synchronous (ZIL) writes in flight per disk",
+            lower: "fewer concurrent sync writes per disk",
+            ..T
+        },
+        "zfs_immediate_write_sz" => Tunable {
+            kind: Kind::Bytes,
+            default: "32768",
+            min: 512,
+            max: i64::MAX as u64,
+            applies: "for new synchronous writes",
+            raise: "larger sync writes are copied into the log (more log traffic, faster acknowledgement)",
+            lower: "more sync writes go straight to the pool with only a pointer in the log",
+            note: "Only matters without a SLOG (logbias=latency); with a SLOG it is ignored.",
+            ..T
+        },
+        "zil_slog_bulk" => Tunable {
+            kind: Kind::Bytes,
+            default: "67108864",
+            max: u64::MAX,
+            applies: "for new log commits",
+            raise: "big sync writers keep SLOG priority longer",
+            lower: "small latency-sensitive sync writes are protected from bulk writers sooner",
+            ..T
+        },
+        "zfs_commit_timeout_pct" => Tunable {
+            kind: Kind::Percent,
+            default: "10",
+            min: 1,
+            max: 100,
+            applies: "for new log commits",
+            raise: "log blocks wait longer to fill: fewer, fuller log writes, higher fsync latency",
+            lower: "log blocks are issued sooner: lower fsync latency, more small log writes",
+            ..T
+        },
+        "zil_maxblocksize" => Tunable {
+            kind: Kind::Bytes,
+            default: "131072",
+            min: 4096,
+            max: 16 * MIB,
+            applies: "for new log blocks",
+            raise: "fewer, larger log blocks",
+            lower: "smaller log blocks; can help very fragmented pools (36 KiB is a common choice)",
+            ..T
+        },
+        "zil_nocacheflush" => Tunable {
+            kind: Kind::Bool,
+            default: "0",
+            max: 1,
+            applies: "for new log writes",
+            raise: "1 stops cache flushes after log writes: faster sync writes, but the ZIL can be lost or corrupted \
+                    on power loss unless every log device has power-loss protection",
+            lower: "0 flushes log device caches again (safe)",
+            ..T
+        },
+        "zio_slow_io_ms" => Tunable {
+            kind: Kind::Ms,
+            default: "30000",
+            min: 1,
+            raise: "fewer IOs are counted as slow in zpool status -s",
+            lower: "slower disks show up sooner as slow IOs (and delay events)",
+            ..T
+        },
+        _ => return None,
+    })
+}
+
+/// Named choices for on/off tunables (for the edit dialog's value list).
+pub fn param_options(name: &str) -> Option<Opts> {
+    Some(match name {
+        "zfs_prefetch_disable" => &[("0", "prefetch on (default)"), ("1", "prefetch off")],
+        "zil_nocacheflush" => &[
+            ("0", "flush log device caches after each log write (default, safe)"),
+            ("1", "don't flush: only safe if every log device has power-loss protection"),
+        ],
+        _ => return None,
+    })
+}
+
+/// A warning for a risky value.
+pub fn param_risk(name: &str, v: u64) -> Option<&'static str> {
+    Some(match (name, v) {
+        ("zil_nocacheflush", 1) => "a power loss can lose or corrupt recent synchronous writes",
+        ("zfs_prefetch_disable", 1) => "sequential reads (backups, scrubs of files, streaming) get slower",
+        ("zfs_txg_timeout", v) if v > 30 => "up to this many seconds of asynchronous writes are lost on a crash",
+        _ => return None,
+    })
+}
 
 // ------------------------------------------------------------------------------------------------ view guides
 
@@ -784,6 +1079,14 @@ pub fn tab_guide(tab: crate::app::Tab) -> &'static [(&'static str, &'static str)
               writing. ghost = recently evicted blocks, remembered by header only. uncached = blocks not kept \
               after use (primarycache=none/metadata).",
             ),
+            (
+                "Tunables",
+                "ZFS module parameters (/sys/module/zfs/parameters); ◆ marks a value that isn't the default, and \
+              'boot' a different value set for the next boot in /etc/modprobe.d. In write mode, e changes the \
+              selected one: now (until reboot), now + at boot, or at boot only; the editor explains it, its \
+              default, what it accepts and what raising or lowering it does. i resets it to the default and \
+              removes its boot setting. Each change is shown in full and runs only after y.",
+            ),
         ],
         Tab::Zil => &[
             (
@@ -806,6 +1109,14 @@ pub fn tab_guide(tab: crate::app::Tab) -> &'static [(&'static str, &'static str)
                 "Write throttle",
                 "When too much un-committed (dirty) data piles up, ZFS slows down writers. Non-zero \
               'delayed/s' means applications are being held back by disk speed.",
+            ),
+            (
+                "Tunables",
+                "ZFS module parameters (/sys/module/zfs/parameters); ◆ marks a value that isn't the default, and \
+              'boot' a different value set for the next boot in /etc/modprobe.d. In write mode, e changes the \
+              selected one: now (until reboot), now + at boot, or at boot only; the editor explains it, its \
+              default, what it accepts and what raising or lowering it does. i resets it to the default and \
+              removes its boot setting. Each change is shown in full and runs only after y.",
             ),
         ],
         Tab::Disks => &[
@@ -846,7 +1157,8 @@ pub fn tab_guide(tab: crate::app::Tab) -> &'static [(&'static str, &'static str)
                 "Read-only by default. As root, W unlocks changing properties: e sets the selected one (or \
               enables a feature flag), i resets a dataset property to inherited, a adds a user property. Each \
               change shows the exact zfs / zpool command first and runs only after y (enabling a feature, \
-              which can't be undone, needs the pool name typed). Changes are logged.",
+              which can't be undone, needs the pool name typed). Module tunables are changed the same way from \
+              the ARC and ZIL·TXG tabs. Changes are logged.",
             ),
         ],
     }
@@ -1192,6 +1504,12 @@ mod tests {
         assert!(!feature("block_cloning").1.is_empty());
         for p in TXG_PARAMS.iter().chain(ARC_PARAMS.iter()) {
             assert!(param(p).is_some(), "{p}");
+            let t = tunable(p).unwrap_or_else(|| panic!("no tunable() for {p}"));
+            assert!(t.default.is_empty() != t.auto.is_empty() || t.zero_auto, "{p}: default or auto");
+            assert!(t.min <= t.max && !t.raise.is_empty() && !t.lower.is_empty(), "{p}");
+            if let Ok(d) = t.default.parse::<u64>() {
+                assert!((t.min..=t.max).contains(&d) || (t.zero_auto && d == 0), "{p}: default out of range");
+            }
         }
     }
 }

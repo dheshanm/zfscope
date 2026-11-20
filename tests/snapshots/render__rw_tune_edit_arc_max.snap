@@ -1,0 +1,51 @@
+---
+source: tests/render.rs
+expression: s
+---
+╭ ARC 273G 85% of max ──────────────────────────────────────────────────────╮╭ hit ratios · last interval ─────────────────────────────────────────────────────╮
+│size   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━───────── 320G    ││                     hits/s  iohit/s   miss/s    hit%  since boot                │
+│now 273G   target (c) 274G   min 11.8G   max 320G                          ││demand data           8.03k        1       61     99%         96%                │
+│made of ██████████████████████████████████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒░·││demand metadata       5.76k        0        0    100%         97%                │
+│█ data 156G  ▓ metadata 105G  ▒ dnode 3.76G  ░ dbuf 1.54G  · hdr/other 7.13││prefetch data            13        0      232    5.3%         24%                │
+│mru|mfu ████████████████████████████████████████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓││prefetch metadata         0        0        0       -         89%                │
+│MRU (recent) 170G   MFU (frequent) 90.6G   ghosts 128G / 93.3G             ││all                   13.8k        1      293     98%         96%                │
+│compressed 248G → 356G logical  ratio 1.44x                                ││                                                                                 │
+│                                                                           ││MRU hits/s 3.48k  MFU hits/s 10.1k  uncached/s 278                               │
+│memory 376G   free 72.0G   available 40.0G   sys_free 32.0G                ││ghost hits/s 5  (misses a bigger ARC would have served)                          │
+│reclaim: direct 0/s, indirect 0┏ set zfs_arc_max · ZFS module parameter ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓                               │
+│                               ┃Largest size the ARC (ZFS's RAM cache) may grow to, in bytes.                                 ┃                               │
+╰───────────────────────────────┃0 = automatic (most of RAM on OpenZFS 2.3+). The ARC gives memory back under pressure, but    ┃───────────────────────────────╯
+╭ accesses/s 14.1k 293 misses/s ┃slowly; lower this if other applications need guaranteed memory.                              ┃ 40.0G ────────────────────────╮
+│▲ reads · top 29.5k/s          ┃                                                                                              ┃G (max)                        │
+│                               ┃now     320G (343597383680)                                                                   ┃                          ⠐⠒⠒⠒⠒│
+│                               ┃boot    320G (343597383680)  from /etc/modprobe.d/zfs.conf                                    ┃                               │
+│                               ┃default 0 = automatic: the larger of RAM − 1 GiB and 5/8 of RAM                               ┃                               │
+│                               ┃accepts bytes (K/M/G/T suffixes accepted), at least 64.0M (0 = automatic)                     ┃                               │
+│                               ┃applies immediately: the ARC's upper limit (c_max) moves right away                           ┃                               │
+│                               ┃raise   more RAM for caching: higher hit ratios, less for applications                        ┃                               │
+│                               ┃lower   frees RAM for applications. The ARC only shrinks to the new limit as it evicts blocks,┃                               │
+│                               ┃        and more reads go to the disks                                                        ┃                           ⢀⣀⣀⣀│
+│                               ┃note    Must be at least 64 MiB and below total RAM, or the kernel ignores it. Writing 0 while┃                          ⠈⠉   │
+│                               ┃        loaded doesn't bring the automatic size back; that returns at the next module load.   ┃                               │
+│                               ┃                                                                                              ┃                               │
+│                               ┃new     256G▏  = 274877906944 (256G)                                                          ┃                               │
+│                               ┃⚠       the ARC holds 273G now: it shrinks to the new limit only as it evicts blocks, and more┃                               │
+│                               ┃        reads go to disk                                                                      ┃                               │
+│▼ misses · bottom 344/s        ┃apply    now (until reboot)   now + at boot   at boot only  (Tab)                             ┃ bottom 376G                   │
+╰───────────────────────────────┃                                                                                              ┃───────────────────────────────╯
+╭ ARC lists (ghosts: recently ev┃possible values (↑↓ pick)                                                                     ┃i reset ───────────────────────╮
+│list             size      data┃  0  automatic: the larger of RAM − 1 GiB and 5/8 of RAM                                      ┃0)                             │
+│anon            11.2M     6.67M┃                                                                                              ┃                               │
+│MRU              170G      121G┃Enter review the change · Tab now / at boot · ↑↓ values · Ctrl-U clear · Esc cancel           ┃                               │
+│MRU ghost        128G     69.3G┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛8)                             │
+│MFU             90.6G     35.1G     55.5G      32.8G      42.7G                       ││ zfs_prefetch_disable 0                                               │
+│MFU ghost       93.3G     90.8G     2.46G      90.8G      2.46G                       ││ l2arc_write_max      32.0M (33554432)                                │
+│uncached         111M      111M     40.5K         0B         0B                       │╰──────────────────────────────────────────────────────────────────────╯
+│                                                                                      │╭ about ───────────────────────────────────────────────────────────────╮
+│hash elements 16,187,880  max 16,187,880  chains 1,664,970                            ││zfs_arc_max                                                           │
+│dnode limit 64.0G  meta used 117G  prunes/s 0                                         ││Largest size the ARC (ZFS's RAM cache) may grow to, in bytes.         │
+│                                                                                      ││0 = automatic (most of RAM on OpenZFS 2.3+). The ARC gives memory back│
+│anon      dirty data not yet written to disk; can't be evicted until its TXG syncs    ││under pressure, but slowly; lower this if other applications need     │
+╰──────────────────────────────────────────────────────────────────────────────────────╯╰──────────────────────────────────────────────────────────────────────╯
+ write mode on: e set · i inherit · a add in the property views; e set · i reset on the ARC / ZIL·TXG tunables
+ q quit  ? help  1-7 tabs  ↑↓ tunable help  e edit tunable  i reset  W lock (rw)  p pause  +/- interval  b bytes  l log

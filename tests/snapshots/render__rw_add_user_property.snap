@@ -47,5 +47,5 @@ expression: s
 │                                      │┃acltype                 posix                                     loca┃│                                              │
 │                                      │┃context                 system_u:object_r:samba_share_t:s0        loca┃│                                              │
 ╰──────────────────────────────────────╯┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛╰──────────────────────────────────────────────╯
- write mode on: e set · i inherit · a add, in the property views
+ write mode on: e set · i inherit · a add in the property views; e set · i reset on the ARC / ZIL·TXG tunables
  q quit  ? help  1-7 tabs  ↑↓ select  Enter → about  Esc ← pools & datasets  s/S sort  L local only  / filter  e set  i inherit  a add  W lock (rw)  p pause  +/

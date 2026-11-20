@@ -47,5 +47,5 @@ expression: "render_rw(&format!(\"W y {HOME_COMPRESSION} e Down Down Down Enter\
 │                                      │┃                                                                      ┃│                                              │
 │                                      │┃                                                                      ┃│Only new writes are affected; existing data   │
 ╰──────────────────────────────────────╯┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛╰──────────────────────────────────────────────╯
- write mode on: e set · i inherit · a add, in the property views
+ write mode on: e set · i inherit · a add in the property views; e set · i reset on the ARC / ZIL·TXG tunables
  filter: compression  q quit  ? help  1-7 tabs  ↑↓ select  Enter → about  Esc ← pools & datasets  s/S sort  L local only  / filter  e set  i inherit  a add  W l

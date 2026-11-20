@@ -36,13 +36,13 @@ expression: "render(\"5\", 30)"
 │                                                                                 ││                                                                           │
 │                                                                                 │╰───────────────────────────────────────────────────────────────────────────╯
 │                                                                                 │╭ TXG / write tunables · ↑↓ for help ───────────────────────────────────────╮
-│                                                                                 ││zfs_txg_timeout                  5                                         │
-│                                                                                 ││zfs_dirty_data_max               4.00G (4294967296)                        │
-│                                                                                 ││zfs_dirty_data_sync_percent      20                                        │
-│                                                                                 ││zfs_delay_min_dirty_percent      60                                        │
-│                                                                                 ││zfs_vdev_async_write_max_active  10                                        │
-│                                                                                 ││zfs_vdev_async_write_min_active  2                                         │
-│                                                                                 ││zfs_vdev_sync_write_max_active   10                                        │
+│                                                                                 ││ zfs_txg_timeout                 5                                         │
+│                                                                                 ││ zfs_dirty_data_max              4.00G (4294967296)                        │
+│                                                                                 ││ zfs_dirty_data_sync_percent     20                                        │
+│                                                                                 ││ zfs_delay_min_dirty_percent     60                                        │
+│                                                                                 ││ zfs_vdev_async_write_max_active 10                                        │
+│                                                                                 ││ zfs_vdev_async_write_min_active 2                                         │
+│                                                                                 ││ zfs_vdev_sync_write_max_active  10                                        │
 │                                                                                 │╰───────────────────────────────────────────────────────────────────────────╯
 │                                                                                 │╭ about ────────────────────────────────────────────────────────────────────╮
 │                                                                                 ││zfs_txg_timeout                                                            │

@@ -34,12 +34,12 @@ expression: "render(\"4\", 30)"
 │▼ misses · bottom 390/s                  ⣿ ⠿ ⠉     ││▼ prefetch · bottom 100%                            ││▼ available memory · bottom 376G                   │
 ╰───────────────────────────────────────────────────╯╰────────────────────────────────────────────────────╯╰───────────────────────────────────────────────────╯
 ╭ ARC lists (ghosts: recently evicted, headers only) ──────────────────────────────────╮╭ ARC tunables · ↑↓ for help ──────────────────────────────────────────╮
-│list             size      data  metadata evict data evict meta                       ││zfs_arc_max           320G (343597383680)                             │
-│anon            11.2M     6.67M     4.52M         0B         0B                       ││zfs_arc_min           0 (auto)                                        │
-│MRU              170G      121G     49.2G       107G      48.4G                       ││zfs_arc_meta_balance  2000                                            │
-│MRU ghost        128G     69.3G     58.7G      69.3G      58.7G                       ││zfs_arc_sys_free      32.0G (34359738368)                             │
-│MFU             90.6G     35.1G     55.5G      32.8G      42.7G                       ││zfs_prefetch_disable  0                                               │
-│MFU ghost       93.3G     90.8G     2.46G      90.8G      2.46G                       ││l2arc_write_max       32.0M (33554432)                                │
+│list             size      data  metadata evict data evict meta                       ││◆zfs_arc_max          320G (343597383680)                             │
+│anon            11.2M     6.67M     4.52M         0B         0B                       ││ zfs_arc_min          0 (auto)                                        │
+│MRU              170G      121G     49.2G       107G      48.4G                       ││◆zfs_arc_meta_balance 2000                                            │
+│MRU ghost        128G     69.3G     58.7G      69.3G      58.7G                       ││◆zfs_arc_sys_free     32.0G (34359738368)                             │
+│MFU             90.6G     35.1G     55.5G      32.8G      42.7G                       ││ zfs_prefetch_disable 0                                               │
+│MFU ghost       93.3G     90.8G     2.46G      90.8G      2.46G                       ││ l2arc_write_max      32.0M (33554432)                                │
 │uncached         111M      111M     40.5K         0B         0B                       ││                                                                      │
 │                                                                                      │╰──────────────────────────────────────────────────────────────────────╯
 │hash elements 16,187,880  max 16,187,880  chains 1,664,970                            │╭ about ───────────────────────────────────────────────────────────────╮

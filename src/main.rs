@@ -15,7 +15,8 @@ use zfscope::source::SourceSpec;
 
 /// Live view of an OpenZFS host: pool/vdev/disk IO and latency, datasets and space, ARC, ZIL, TXGs, properties and
 /// disks. Run it on the ZFS host itself (as root for zpool/smartctl; kstats work as any user). It is read-only unless
-/// write mode is unlocked with `W` (root only), which lets you change pool/dataset properties after confirming.
+/// write mode is unlocked with `W` (root only), which lets you change pool/dataset properties and ZFS module tunables
+/// (now and/or at boot) after confirming.
 #[derive(Parser, Debug)]
 #[command(version = zfscope::VERSION, about)]
 struct Args {

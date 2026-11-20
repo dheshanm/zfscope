@@ -237,8 +237,18 @@ fn footer(f: &mut Frame, app: &App, r: Rect) {
             ("s/S", "sort/reverse"),
             ("/", "filter"),
         ]),
-        Tab::Arc => hints.push(("↑↓", "tunable help")),
-        Tab::Zil => hints.extend([("↑↓", "tunable help"), ("n", "next pool")]),
+        Tab::Arc => {
+            hints.push(("↑↓", "tunable help"));
+            if app.rw {
+                hints.extend([("e", "edit tunable"), ("i", "reset")]);
+            }
+        }
+        Tab::Zil => {
+            hints.extend([("↑↓", "tunable help"), ("n", "next pool")]);
+            if app.rw {
+                hints.extend([("e", "edit tunable"), ("i", "reset")]);
+            }
+        }
         Tab::Props => match app.props_focus {
             crate::app::PropsFocus::Targets => {
                 hints.extend([("↑↓", "pick pool/dataset"), ("Enter →", "its properties"), ("/", "filter")])

@@ -9,7 +9,7 @@ use ratatui::layout::Rect;
 use crate::model::{Model, vkey};
 use crate::parse::zjson::{DsKind, Prop, Props, PropsExt, Vdev};
 use crate::workers::Msg;
-use crate::write::{Change, Target};
+use crate::write::{Boot, Change, ParamChange, Target};
 
 /// How long a write-mode notice stays on screen.
 pub const NOTICE_FOR: Duration = Duration::from_secs(10);
@@ -459,12 +459,54 @@ pub struct ConfirmState {
     pub error: Option<String>,
 }
 
+/// Where a tunable change goes: the running module, its boot setting, or both.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Scope {
+    Now,
+    NowAndBoot,
+    BootOnly,
+}
+
+impl Scope {
+    pub const ALL: [Scope; 3] = [Scope::Now, Scope::NowAndBoot, Scope::BootOnly];
+    pub fn label(self) -> &'static str {
+        match self {
+            Scope::Now => "now (until reboot)",
+            Scope::NowAndBoot => "now + at boot",
+            Scope::BootOnly => "at boot only",
+        }
+    }
+    fn next(self) -> Self {
+        match self {
+            Scope::Now => Scope::NowAndBoot,
+            Scope::NowAndBoot => Scope::BootOnly,
+            Scope::BootOnly => Scope::Now,
+        }
+    }
+}
+
+/// Write mode: editing a ZFS module parameter (tunable).
+#[derive(Debug, Clone, PartialEq)]
+pub struct TuneState {
+    pub name: String,
+    pub input: String,
+    /// the running value when the dialog opened
+    pub orig: String,
+    /// highlighted entry of the possible values (↑↓)
+    pub opt_sel: Option<usize>,
+    pub scope: Scope,
+    /// read-only while the module is loaded: only the boot setting can change
+    pub load_only: bool,
+    pub error: Option<String>,
+}
+
 /// A dialog that takes all keys until it closes.
 #[derive(Debug, Clone, PartialEq)]
 pub enum Modal {
     /// "enable write mode?"
     Unlock,
     Edit(EditState),
+    Tune(TuneState),
     Confirm(ConfirmState),
 }
 
@@ -737,6 +779,17 @@ impl App {
 
     fn on_wrote(&mut self, c: Change, r: crate::source::Res<String>) {
         self.write_busy = false;
+        if let Change::Param(p) = &c {
+            match r {
+                Ok(out) => {
+                    let note = if out.is_empty() { String::new() } else { format!(" · {out}") };
+                    self.note(false, format!("✓ {}{note}", p.summary()));
+                }
+                Err(e) => self.note(true, format!("✗ {}: {e}", p.name)),
+            }
+            self.actions.push(Action::Refresh); // even a failure may have changed the running value
+            return;
+        }
         match r {
             Ok(out) => {
                 let out = out.trim();
@@ -1345,7 +1398,11 @@ impl App {
             Tab::Disks => self.disk_key(k),
             Tab::Props => self.props_key(k),
             Tab::Arc | Tab::Zil => {
-                if k.code == KeyCode::Char('n') {
+                if let KeyCode::Char(c @ ('e' | 'i')) = k.code
+                    && self.can_write
+                {
+                    self.param_write_key(c);
+                } else if k.code == KeyCode::Char('n') {
                     let n = self.model.pools().len().max(1);
                     self.txg_pool = (self.txg_pool + 1) % n;
                 } else if let Some(i) = Self::nav(k.code, self.param_sel, 1000, 5) {
@@ -1911,13 +1968,209 @@ impl App {
                 if matches!(k.code, KeyCode::Char('y' | 'Y')) {
                     self.rw = true;
                     tracing::warn!("write mode unlocked");
-                    self.note(false, "write mode on: e set · i inherit · a add, in the property views");
+                    self.note(
+                        false,
+                        "write mode on: e set · i inherit · a add in the property views; e set · i reset on the ARC / \
+                         ZIL·TXG tunables",
+                    );
                 }
                 None
             }
             Modal::Edit(e) => self.edit_key(e, k),
+            Modal::Tune(t) => self.tune_key(t, k),
             Modal::Confirm(c) => self.confirm_key(c, k),
         };
+    }
+
+    /// The tunable selected in the ARC / ZIL·TXG parameter list.
+    pub fn selected_param(&self) -> Option<&'static str> {
+        let names = crate::help::tab_params(self.tab);
+        names.get(self.param_sel.min(names.len().saturating_sub(1))).copied()
+    }
+
+    /// Values offered for ↑↓ in the tunable editor: named choices for switches, otherwise the default.
+    pub fn tune_options(&self, name: &str) -> Vec<(String, String)> {
+        if let Some(o) = crate::help::param_options(name) {
+            return o.iter().map(|(v, d)| (v.to_string(), d.to_string())).collect();
+        }
+        let Some(t) = crate::help::tunable(name) else { return Vec::new() };
+        match self.model.param_default(name) {
+            Some(d) if t.zero_auto && d == "0" => vec![(d, format!("automatic: {}", t.auto))],
+            Some(d) if !t.auto.is_empty() => vec![(d, format!("the default on this host: {}", t.auto))],
+            Some(d) => vec![(d, "the default".into())],
+            None => Vec::new(),
+        }
+    }
+
+    /// `e` edit / `i` reset to default, on a tunable.
+    fn param_write_key(&mut self, c: char) {
+        if !self.rw {
+            self.note(false, "write mode is off: W unlocks it");
+            return;
+        }
+        if self.write_busy {
+            self.note(true, "a change is still running");
+            return;
+        }
+        let Some(name) = self.selected_param() else { return };
+        let Some(cur) = self.model.param(name).map(str::to_string) else {
+            self.note(true, format!("{name}: not found in {}", crate::write::PARAM_DIR));
+            return;
+        };
+        let load_only = self.model.param_load_only(name);
+        let boot = self.model.boot_param(name);
+        if c == 'e' {
+            let input = match (&boot, load_only) {
+                (Some((v, _)), true) => v.clone(),
+                _ => cur.clone(),
+            };
+            self.modal = Some(Modal::Tune(TuneState {
+                name: name.to_string(),
+                input,
+                orig: cur,
+                opt_sel: None,
+                scope: if load_only { Scope::BootOnly } else { Scope::Now },
+                load_only,
+                error: None,
+            }));
+            return;
+        }
+        // reset: the default now, and no boot setting
+        let files = self.model.boot_param_files(name);
+        if files.len() > 1 {
+            self.note(true, format!("{name} is set in several files ({}): fix that by hand", files.join(", ")));
+            return;
+        }
+        let value = if load_only { None } else { self.model.param_default(name).filter(|d| *d != cur) };
+        let change = ParamChange {
+            name: name.to_string(),
+            value,
+            boot: if boot.is_some() { Boot::Remove } else { Boot::Keep },
+            file: files.first().map_or(crate::write::MODPROBE_FILE, |f| f).to_string(),
+            was: cur,
+            boot_was: boot.map(|(v, _)| v),
+        };
+        if change.value.is_none() && change.boot == Boot::Keep {
+            self.note(false, format!("{name} is already at its default"));
+            return;
+        }
+        self.modal = Some(Modal::Confirm(ConfirmState {
+            change: Change::Param(change),
+            old: None,
+            typed: String::new(),
+            error: None,
+        }));
+    }
+
+    fn tune_key(&mut self, mut t: TuneState, k: KeyEvent) -> Option<Modal> {
+        let ctrl = k.modifiers.contains(KeyModifiers::CONTROL);
+        match k.code {
+            KeyCode::Esc => return None,
+            KeyCode::Char('u') if ctrl => {
+                t.input.clear();
+                t.opt_sel = None;
+            }
+            KeyCode::Char(c) if !ctrl => {
+                t.input.push(c);
+                t.opt_sel = None;
+                t.error = None;
+            }
+            KeyCode::Backspace => {
+                t.input.pop();
+                t.opt_sel = None;
+                t.error = None;
+            }
+            KeyCode::Tab | KeyCode::BackTab => {
+                if t.load_only {
+                    t.error = Some("read-only while the module is loaded: it can only be set for the next boot".into());
+                } else {
+                    t.scope = t.scope.next();
+                    t.error = None;
+                }
+            }
+            KeyCode::Up | KeyCode::Down => {
+                let opts = self.tune_options(&t.name);
+                let n = opts.len();
+                if n > 0 {
+                    let i = match (t.opt_sel, k.code) {
+                        (None, KeyCode::Down) => 0,
+                        (None, _) => n - 1,
+                        (Some(i), KeyCode::Down) => (i + 1) % n,
+                        (Some(i), _) => (i + n - 1) % n,
+                    };
+                    t.opt_sel = Some(i);
+                    t.input = opts[i].0.clone();
+                    t.error = None;
+                }
+            }
+            KeyCode::Enter => match self.tune_change(&t) {
+                Ok(Some(change)) => {
+                    return Some(Modal::Confirm(ConfirmState {
+                        change: Change::Param(change),
+                        old: None,
+                        typed: String::new(),
+                        error: None,
+                    }));
+                }
+                Ok(None) => {
+                    self.note(false, format!("{} unchanged", t.name));
+                    return None;
+                }
+                Err(e) => t.error = Some(e),
+            },
+            _ => {}
+        }
+        Some(Modal::Tune(t))
+    }
+
+    /// The change the tunable editor describes (None: nothing would change).
+    pub fn tune_change(&self, t: &TuneState) -> Result<Option<ParamChange>, String> {
+        let name = t.name.as_str();
+        let tun = crate::help::tunable(name).ok_or_else(|| format!("{name} can't be changed from zfscope"))?;
+        let v = crate::write::parse_value(tun.kind, &t.input)?;
+        let show = |n: u64| {
+            if tun.kind == crate::help::Kind::Bytes && n >= 1024 && n != u64::MAX {
+                format!("{} ({n})", crate::fmt::size(n))
+            } else {
+                n.to_string()
+            }
+        };
+        if !(tun.zero_auto && v == 0) && !(tun.min..=tun.max).contains(&v) {
+            let zero = if tun.zero_auto { " (or 0 = automatic)" } else { "" };
+            return Err(if tun.max == u64::MAX || tun.max == u32::MAX as u64 {
+                format!("must be at least {}{zero}", show(tun.min))
+            } else {
+                format!("must be between {} and {}{zero}", show(tun.min), show(tun.max))
+            });
+        }
+        let ram = self.model.val("arcstats", "memory_all_bytes");
+        if name == "zfs_arc_max" && v != 0 && ram > 0 && v >= ram {
+            return Err(format!("must be below total RAM ({}), or the kernel ignores it", crate::fmt::size(ram)));
+        }
+        let vs = v.to_string();
+        let boot = self.model.boot_param(name);
+        let boot_same = boot.as_ref().is_some_and(|(b, _)| *b == vs);
+        let now = (t.scope != Scope::BootOnly && vs != t.orig).then(|| vs.clone());
+        let boot_change = match t.scope {
+            Scope::Now => Boot::Keep,
+            _ if boot_same => Boot::Keep,
+            _ => Boot::Set(vs.clone()),
+        };
+        if now.is_none() && boot_change == Boot::Keep {
+            return Ok(None);
+        }
+        let files = self.model.boot_param_files(name);
+        if boot_change != Boot::Keep && files.len() > 1 {
+            return Err(format!("{name} is set in several files ({}): fix that by hand first", files.join(", ")));
+        }
+        Ok(Some(ParamChange {
+            name: name.to_string(),
+            value: now,
+            boot: boot_change,
+            file: files.first().map_or(crate::write::MODPROBE_FILE, |f| f).to_string(),
+            was: t.orig.clone(),
+            boot_was: boot.map(|(b, _)| b),
+        }))
     }
 
     fn edit_key(&mut self, mut e: EditState, k: KeyEvent) -> Option<Modal> {
@@ -1996,7 +2249,7 @@ impl App {
                     c.typed.pop();
                 }
                 KeyCode::Char(ch) => c.typed.push(ch),
-                KeyCode::Enter if c.typed == c.change.target().pool() => {
+                KeyCode::Enter if c.change.target().is_some_and(|t| c.typed == t.pool()) => {
                     self.run_change(c);
                     return None;
                 }
@@ -2014,9 +2267,16 @@ impl App {
     }
 
     fn run_change(&mut self, c: ConfirmState) {
-        let was = match &c.old {
-            Some(p) => format!("was {:?} ({})", p.value, p.source.to_lowercase()),
-            None => "new property".into(),
+        let was = match (&c.change, &c.old) {
+            (Change::Param(p), _) => {
+                format!(
+                    "was {:?}, at boot {}",
+                    p.was,
+                    p.boot_was.as_deref().map_or("unset".into(), |b| format!("{b:?}"))
+                )
+            }
+            (_, Some(p)) => format!("was {:?} ({})", p.value, p.source.to_lowercase()),
+            (_, None) => "new property".into(),
         };
         tracing::warn!("write: confirmed `{}` ({was})", c.change.command_line());
         self.write_busy = true;

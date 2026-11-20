@@ -1,6 +1,6 @@
 [package]
 name = "zfscope"
-version = "0.2.4"
+version = "0.2.5"
 edition = "2024"
 description = "top for OpenZFS hosts: pool/vdev/disk IO and latency, datasets and space, ARC, ZIL, TXGs, properties and disks"
 license = "Unlicense"

@@ -8,7 +8,7 @@ Captures everything zfscope reads, in the layout FixtureSource replays:
   iostat.txt                        raw `zpool iostat -Hpvlq -y 1 N` stream
   hist/NNN-w.txt, hist/NNN-r.txt    cumulative latency / request-size histograms (every HIST_EVERY ticks)
   cmd/*.json                        zpool status/list/get, zfs list/get (JSON)
-  root/...                          static files: vdev_id.conf, sysfs disk attributes, by-vdev links, zfs params
+  root/...                          static files: vdev_id.conf, modprobe.d zfs options, sysfs disk attributes, by-vdev links, zfs params
   smart/<dev>.json                  smartctl -j -a
 
 Dataset/snapshot names are data on these hosts: every dataset path component and snapshot name is replaced by a
@@ -182,6 +182,12 @@ put_json("cmd/zpool-list.json", run(["zpool", "list", "-v", "-j", "--json-int"])
 put_json("cmd/zpool-get.json", run(["zpool", "get", "-j", "-p", "all"]))
 put_json("cmd/zfs-version.json", run(["zfs", "version", "-j"]))
 put("root/etc/zfs/vdev_id.conf", read("/etc/zfs/vdev_id.conf"))
+mdir = "/etc/modprobe.d"
+for f in sorted(os.listdir(mdir)) if os.path.isdir(mdir) else []:
+    if f.endswith(".conf"):
+        text = read(mdir + "/" + f)
+        if text and re.search(rb"^\s*options\s+zfs\s", text, flags=re.M):
+            put("root" + mdir + "/" + f, text)
 for pool in pools:
     h = run(["zpool", "history", "-il", pool]).decode(errors="replace").splitlines()
     put("cmd/zpool-history-%s.txt" % pool, scrub_history("\n".join(h[:1] + h[-8000:]) + "\n"))

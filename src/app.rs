@@ -1,6 +1,6 @@
 //! App state and input handling. No I/O: requests for the workers go out through `actions`.
 
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::time::{Duration, Instant};
 
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers, MouseButton, MouseEvent, MouseEventKind};
@@ -70,6 +70,38 @@ impl IoMode {
             IoMode::Queue => "queues",
             IoMode::Space => "space",
         }
+    }
+}
+
+/// A live-sorted table's order as of the last data update, used to break ties: rows whose values are equal (in
+/// practice, idle ones at 0) keep their previous order instead of jumping back to name / pool order, so something
+/// that was just busy stays at the top of the idle rows. Only counts for the sort (and direction) it was recorded
+/// under; after the sort changes, ties fall back to the table's default order until the next update.
+#[derive(Debug)]
+pub struct StickyOrder<S> {
+    sort: Option<(S, bool)>,
+    rank: HashMap<String, usize>,
+}
+
+impl<S> Default for StickyOrder<S> {
+    fn default() -> Self {
+        Self { sort: None, rank: HashMap::new() }
+    }
+}
+
+impl<S: Copy + PartialEq> StickyOrder<S> {
+    /// Position of `key` in the last recorded order of this sort; unknown keys (or another sort) go last.
+    pub fn rank(&self, sort: S, desc: bool, key: &str) -> usize {
+        if self.sort != Some((sort, desc)) {
+            return usize::MAX;
+        }
+        self.rank.get(key).copied().unwrap_or(usize::MAX)
+    }
+
+    /// Remember `keys` (in display order) as the order of this sort.
+    pub fn record(&mut self, sort: S, desc: bool, keys: impl IntoIterator<Item = String>) {
+        self.sort = Some((sort, desc));
+        self.rank = keys.into_iter().enumerate().map(|(i, k)| (k, i)).collect();
     }
 }
 
@@ -147,7 +179,11 @@ pub enum DiskSort {
 }
 
 impl DiskSort {
+    /// Numbers sort descending by default (biggest first); text and pool order ascending.
     pub fn default_desc(self) -> bool {
+        self.is_numeric()
+    }
+    pub fn is_numeric(self) -> bool {
         !matches!(self, DiskSort::Order | DiskSort::Slot | DiskSort::Vdev | DiskSort::Dev | DiskSort::Model)
     }
 }
@@ -578,6 +614,8 @@ pub struct App {
     pub heat_disk: bool,
     pub topo_sort: TopoSort,
     pub topo_desc: bool,
+    /// tie-break order for `topo_sort` (by vkey; ranks only compared among siblings)
+    pub topo_order: StickyOrder<TopoSort>,
     pub pool_history: bool,
     pub hist_sel: usize,
 
@@ -587,6 +625,8 @@ pub struct App {
     pub ds_flat: bool,
     pub ds_sort: DsSort,
     pub ds_desc: bool,
+    /// tie-break order for `ds_sort` (all datasets, flat, by name)
+    pub ds_order: StickyOrder<DsSort>,
     pub ds_detail: bool,
     pub ds_pane: DsPane,
     /// keyboard focus is on the detail pane (not the dataset list)
@@ -598,6 +638,8 @@ pub struct App {
     pub disk_detail: bool,
     pub disk_sort: DiskSort,
     pub disk_desc: bool,
+    /// tie-break order for `disk_sort` (by `pool:vdev`)
+    pub disk_order: StickyOrder<DiskSort>,
     pub disk_scroll: usize,
 
     // Props tab
@@ -675,6 +717,7 @@ impl App {
             heat_disk: false,
             topo_sort: TopoSort::Order,
             topo_desc: false,
+            topo_order: StickyOrder::default(),
             pool_history: false,
             hist_sel: 0,
             ds_sel: None,
@@ -682,6 +725,7 @@ impl App {
             ds_flat: false,
             ds_sort: DsSort::Name,
             ds_desc: false,
+            ds_order: StickyOrder::default(),
             ds_detail: false,
             ds_pane: DsPane::Space,
             ds_focus_pane: false,
@@ -690,6 +734,7 @@ impl App {
             disk_detail: false,
             disk_sort: DiskSort::Order,
             disk_desc: false,
+            disk_order: StickyOrder::default(),
             disk_scroll: 0,
             props_target: None,
             props_local: false,
@@ -774,6 +819,37 @@ impl App {
             Msg::Snapshots(ds, s) => self.model.on_snapshots(ds, s),
             Msg::History(pool, h) => self.model.on_history(pool, h),
             Msg::Wrote(..) => unreachable!("handled above"),
+        }
+        self.record_sort_orders();
+    }
+
+    /// Remember the current order of every live-sorted table (see `StickyOrder`). Re-recording with unchanged data
+    /// reproduces the same order, so this is safe after any update.
+    pub fn record_sort_orders(&mut self) {
+        if self.ds_sort != DsSort::Name {
+            let mut v: Vec<&crate::parse::zjson::Dataset> = self.model.datasets().iter().collect();
+            self.sort_siblings(&mut v);
+            let keys: Vec<String> = v.into_iter().map(|d| d.name.clone()).collect();
+            self.ds_order.record(self.ds_sort, self.ds_desc, keys);
+        }
+        if self.topo_sort != TopoSort::Order {
+            fn walk(app: &App, pool: &str, v: &Vdev, out: &mut Vec<String>) {
+                for c in app.sorted_children(pool, v) {
+                    out.push(vkey(pool, &c.name));
+                    walk(app, pool, c, out);
+                }
+            }
+            let mut keys = Vec::new();
+            for p in self.model.pools() {
+                walk(self, &p.name, &p.root, &mut keys);
+            }
+            self.topo_order.record(self.topo_sort, self.topo_desc, keys);
+        }
+        if self.disk_sort.is_numeric() {
+            let mut v: Vec<usize> = (0..self.model.disks.len()).collect();
+            self.sort_disks(&mut v);
+            let keys: Vec<String> = v.into_iter().map(|i| self.disk_id(i)).collect();
+            self.disk_order.record(self.disk_sort, self.disk_desc, keys);
         }
     }
 
@@ -893,7 +969,8 @@ impl App {
             return kids;
         }
         let desc = self.topo_desc;
-        // class sections (special, logs, ...) keep their place after the data vdevs
+        let rank = |c: &Vdev| self.topo_order.rank(self.topo_sort, desc, &vkey(pool, &c.name));
+        // class sections (special, logs, ...) keep their place after the data vdevs; ties keep the last order
         kids.sort_by(|a, b| {
             let (ca, cb) = (a.vtype == "class", b.vtype == "class");
             if ca || cb {
@@ -904,7 +981,7 @@ impl App {
                 TopoSort::State => a.state.cmp(&b.state),
                 _ => self.topo_value(pool, a).total_cmp(&self.topo_value(pool, b)),
             };
-            if desc { o.reverse() } else { o }
+            (if desc { o.reverse() } else { o }).then_with(|| rank(a).cmp(&rank(b)))
         });
         kids
     }
@@ -992,10 +1069,12 @@ impl App {
             v.sort_by(|a, b| if desc { b.name.cmp(&a.name) } else { a.name.cmp(&b.name) });
             return;
         }
+        // Ties keep last tick's order (already in display direction, so not reversed), then fall back to name.
+        let rank = |d: &crate::parse::zjson::Dataset| self.ds_order.rank(self.ds_sort, desc, &d.name);
         v.sort_by(|a, b| {
             let (x, y) = (self.ds_value(a), self.ds_value(b));
             let o = if desc { y.total_cmp(&x) } else { x.total_cmp(&y) };
-            o.then_with(|| a.name.cmp(&b.name))
+            o.then_with(|| rank(a).cmp(&rank(b))).then_with(|| a.name.cmp(&b.name))
         });
     }
 
@@ -1067,6 +1146,18 @@ impl App {
             })
             .map(|(i, _)| i)
             .collect();
+        self.sort_disks(&mut v);
+        v
+    }
+
+    /// Key of a disk row for `disk_order` (a disk can back several vdevs, so not the device name).
+    fn disk_id(&self, i: usize) -> String {
+        let d = &self.model.disks[i];
+        vkey(&d.pool, &d.vdev)
+    }
+
+    /// Sort disk indexes by the current disk sort; numeric ties keep the last order, then pool order.
+    fn sort_disks(&self, v: &mut [usize]) {
         let disks = &self.model.disks;
         let desc = self.disk_desc;
         let text = |i: usize| -> Option<String> {
@@ -1086,12 +1177,14 @@ impl App {
                 let o = natural(&text(a).unwrap_or_default(), &text(b).unwrap_or_default());
                 if desc { o.reverse() } else { o }
             }),
-            _ => v.sort_by(|&a, &b| {
-                let o = self.disk_value(&disks[a]).total_cmp(&self.disk_value(&disks[b]));
-                (if desc { o.reverse() } else { o }).then(a.cmp(&b))
-            }),
+            _ => {
+                let rank = |i: usize| self.disk_order.rank(self.disk_sort, desc, &self.disk_id(i));
+                v.sort_by(|&a, &b| {
+                    let o = self.disk_value(&disks[a]).total_cmp(&self.disk_value(&disks[b]));
+                    (if desc { o.reverse() } else { o }).then_with(|| rank(a).cmp(&rank(b))).then(a.cmp(&b))
+                })
+            }
         }
-        v
     }
 
     /// First click sorts ascending, second reverses, third returns to ZFS's own property order.

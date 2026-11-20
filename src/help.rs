@@ -1051,7 +1051,8 @@ pub fn tab_guide(tab: crate::app::Tab) -> &'static [(&'static str, &'static str)
             (
                 "ztop (t)",
                 "A flat list of datasets by live IO: reads/writes per second, file deletions (unlink) and \
-              synchronous-write activity (ZIL).",
+              synchronous-write activity (ZIL). Ties (e.g. idle datasets at 0) keep their previous order, so a \
+              dataset that just went quiet stays at the top of the idle ones instead of jumping around.",
             ),
             ("Detail (Enter)", "Space breakdown and quotas, IO and ZIL graphs, the snapshot list, and all properties."),
         ],

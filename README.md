@@ -89,7 +89,7 @@ zfscope --dump          # print everything it collects once and exit (quick chec
 | `?` | Help for the current view |
 | `↑↓` / `j k`, `Enter` / `Esc` | Move, drill in / out |
 | `/` | Filter |
-| `s` / `S`, or click a header | Sort / reverse |
+| `s` / `S`, or click a header | Sort / reverse. On live columns, ties (e.g. idle rows at 0) keep their last order, so a row that just went quiet stays near the top |
 | `+` / `-` | Sampling interval |
 | `p` | Pause (freezes the screen and frees the mouse for copying text) |
 | `l` | Change log pane |

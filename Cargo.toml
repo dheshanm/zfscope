@@ -1,0 +1,32 @@
+[package]
+name = "zfscope"
+version = "0.1.0"
+edition = "2024"
+description = "top for OpenZFS hosts: pool/vdev/disk IO and latency, datasets and space, ARC, ZIL, TXGs, properties and disks"
+license = "Unlicense"
+repository = "https://github.com/dheshanm/zfscope"
+readme = "README.md"
+keywords = ["zfs", "openzfs", "tui", "monitoring", "sysadmin"]
+categories = ["command-line-utilities", "filesystem", "os::linux-apis"]
+exclude = ["scratch/", "tests/fixtures/local/", ".claude/"]
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+color-eyre = "0.6"
+crossbeam-channel = "0.5"
+crossterm = "0.29"
+indexmap = "2"
+jiff = "1"
+ratatui = "0.30"
+serde_json = { version = "1", features = ["preserve_order"] }
+tracing = "0.1"
+tracing-appender = "0.2"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+tui-logger = { version = "0.18", features = ["tracing-support"] }
+
+[dev-dependencies]
+insta = "1"
+
+[profile.release]
+strip = true
+lto = "thin"

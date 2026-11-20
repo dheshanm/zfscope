@@ -1,0 +1,6 @@
+/target
+/scratch
+
+# Real captures from a server (pseudonymised, but still real host data); never commit.
+/tests/fixtures/local/
+*.snap.new

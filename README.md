@@ -10,15 +10,17 @@ no dependencies, read-only by default.
 
 ## What it shows
 
-| View | |
-|---|---|
-| **1 Overview** | Pool health and capacity per class, IOPS / bandwidth / latency graphs, ARC, ZIL, TXG, busiest datasets |
-| **2 Pool** | vdev/disk tree with live IO, latency, queue and space; per-device graphs, latency heatmap, request-size histogram, a disk grid to spot the one slow disk, `zpool history` |
-| **3 Datasets** | Space breakdown (snapshots, children, quotas), per-dataset IO and ZIL, snapshots, properties |
-| **4 ARC** | Size and composition, hit ratios per access class, ghost hits, tunables |
-| **5 ZIL·TXG** | Sync-write logging per pool and dataset, SLOG vs pool, transaction groups, the write throttle |
-| **6 Disks** | Every physical disk behind the pools: enclosure slot, multipath paths, SMART health, temperature, util/await |
-| **7 Props** | Every pool and dataset property with its source, possible values and plain-language help; feature flags and module parameters too |
+- **Overview**: pool health and capacity per class, IOPS / bandwidth / latency graphs, ARC, ZIL, TXG, busiest
+  datasets
+- **Pool**: vdev/disk tree with live IO, latency, queue and space; per-device graphs, a latency heatmap,
+  request-size histogram, a disk grid to spot the one slow disk, and `zpool history`
+- **Datasets**: space breakdown (snapshots, children, quotas), per-dataset IO and ZIL, snapshots, properties
+- **ARC**: size and composition, hit ratios per access class, ghost hits, tunables
+- **ZIL·TXG**: sync-write logging per pool and dataset, SLOG vs pool, transaction groups, the write throttle
+- **Disks**: every physical disk behind the pools: enclosure slot, multipath paths, SMART health, temperature,
+  util/await
+- **Props**: every pool and dataset property with its source, possible values and plain-language help, plus
+  feature flags and module parameters
 
 Graphs are mirrored braille lines (reads up, writes down). Press `?` in any view for a guide to what it shows.
 
@@ -72,7 +74,7 @@ zfscope -i 5            # sample every 5 seconds (1-60; +/- change it while runn
 zfscope --dump          # print everything it collects once and exit (quick check of a new host)
 ```
 
-| Option | |
+| Option | What it does |
 |---|---|
 | `-i`, `--interval N` | Sampling interval in seconds, 1-60 (default 1) |
 | `--no-smart` | Don't run `smartctl` |
@@ -81,7 +83,7 @@ zfscope --dump          # print everything it collects once and exit (quick chec
 | `--log FILE` | Log file (default `/var/log/zfscope.log`, owner-readable only; filter with `RUST_LOG`) |
 | `--fixture DIR` | Replay a capture instead of the live system |
 
-| Key | |
+| Key | Action |
 |---|---|
 | `1`-`7` | Switch view |
 | `?` | Help for the current view |

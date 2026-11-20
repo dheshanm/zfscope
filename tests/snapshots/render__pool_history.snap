@@ -1,0 +1,51 @@
+---
+source: tests/render.rs
+expression: "render(\"2 H\", 30)"
+---
+╭ history · pool0 · newest first (zpool history -il) · 952 entries (267 commands) ─────────────────────────────────────────────────────────────────────────────╮
+│TIME                       TXG  EVENT                                                                                                                         │
+│2026-11-19 11:15:41             $ zfs send -c -I pool0/data/build@snap34 pool0/data/build@snap35                                                              │
+│2026-11-19 11:15:41    1107369    release pool0/data/build@snap35 (11917) tag=.send-2758654-1 refs=0                                                          │
+│2026-11-19 11:15:41    1107369    release pool0/data/build@snap34 (9900) tag=.send-2758654-1 refs=0                                                           │
+│2026-11-19 11:15:06             ⚙ (152ms) ioctl hold                                                                                                          │
+│2026-11-19 11:15:06    1107362    hold pool0/data/build@snap35 (11917) tag=.send-2758654-1 temp=1 refs=1                                                      │
+│2026-11-19 11:15:06    1107362    hold pool0/data/build@snap34 (9900) tag=.send-2758654-1 temp=1 refs=1                                                       │
+│2026-11-19 11:15:02             $ zfs destroy pool0/data/build@snap566                                                                                        │
+│2026-11-19 11:15:02             ⚙ (342ms) ioctl destroy_snaps                                                                                                 │
+│2026-11-19 11:15:01    1107360    destroy pool0/data/build@snap566 (240810)                                                                                   │
+│2026-11-19 11:00:01             $ zfs snapshot -r pool0/data/build@snap35                                                                                     │
+│2026-11-19 11:00:01             ⚙ (332ms) ioctl snapshot                                                                                                      │
+│2026-11-19 11:00:01    1107148    snapshot pool0/data/build@snap35 (11917)                                                                                    │
+│2026-11-19 10:16:16             $ zfs send -c -I pool0/data/build@snap33 pool0/data/build@snap34                                                              │
+│2026-11-19 10:16:16    1106534    release pool0/data/build@snap34 (9900) tag=.send-2716830-1 refs=0                                                           │
+│2026-11-19 10:16:16    1106534    release pool0/data/build@snap33 (7033) tag=.send-2716830-1 refs=0                                                           │
+│2026-11-19 10:15:35             ⚙ (88ms) ioctl hold                                                                                                           │
+│2026-11-19 10:15:35    1106525    hold pool0/data/build@snap34 (9900) tag=.send-2716830-1 temp=1 refs=1                                                       │
+│2026-11-19 10:15:35    1106525    hold pool0/data/build@snap33 (7033) tag=.send-2716830-1 temp=1 refs=1                                                       │
+│2026-11-19 10:00:02             $ zfs destroy pool0/data/build@snap564                                                                                        │
+│2026-11-19 10:00:02             ⚙ (253ms) ioctl destroy_snaps                                                                                                 │
+│2026-11-19 10:00:01    1106317    destroy pool0/data/build@snap564 (239373)                                                                                   │
+│2026-11-19 10:00:01             $ zfs snapshot -r pool0/data/build@snap34                                                                                     │
+│2026-11-19 10:00:01             ⚙ (106ms) ioctl snapshot                                                                                                      │
+│2026-11-19 10:00:01    1106316    snapshot pool0/data/build@snap34 (9900)                                                                                     │
+│2026-11-19 09:15:58             $ zfs send -c -I pool0/data/build@snap32 pool0/data/build@snap33                                                              │
+│2026-11-19 09:15:58    1105705    release pool0/data/build@snap33 (7033) tag=.send-2674705-1 refs=0                                                           │
+│2026-11-19 09:15:58    1105705    release pool0/data/build@snap32 (10628) tag=.send-2674705-1 refs=0                                                          │
+│2026-11-19 09:15:18             ⚙ (158ms) ioctl hold                                                                                                          │
+│2026-11-19 09:15:18    1105695    hold pool0/data/build@snap33 (7033) tag=.send-2674705-1 temp=1 refs=1                                                       │
+│2026-11-19 09:15:18    1105695    hold pool0/data/build@snap32 (10628) tag=.send-2674705-1 temp=1 refs=1                                                      │
+│2026-11-19 09:00:02             $ zfs destroy pool0/data/build@snap562                                                                                        │
+│2026-11-19 09:00:02             ⚙ (412ms) ioctl destroy_snaps                                                                                                 │
+│2026-11-19 09:00:02    1105483    destroy pool0/data/build@snap562 (231777)                                                                                   │
+│2026-11-19 09:00:02             $ zfs snapshot -r pool0/data/build@snap33                                                                                     │
+│2026-11-19 09:00:02             ⚙ (189ms) ioctl snapshot                                                                                                      │
+│2026-11-19 09:00:02    1105482    snapshot pool0/data/build@snap33 (7033)                                                                                     │
+│2026-11-19 08:15:55             $ zfs send -c -I pool0/data/build@snap31 pool0/data/build@snap32                                                              │
+│2026-11-19 08:15:55    1104912    release pool0/data/build@snap32 (10628) tag=.send-2633256-1 refs=0                                                          │
+│2026-11-19 08:15:55    1104912    release pool0/data/build@snap31 (3671) tag=.send-2633256-1 refs=0                                                           │
+│2026-11-19 08:15:17             ⚙ (279ms) ioctl hold                                                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭ entry ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│zfs send -c -I pool0/data/build@snap34 pool0/data/build@snap35                                                                                                │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+ q quit  ? help  1-7 tabs  ↑↓ scroll  / filter  H/Esc back  p pause  +/- interval  b bytes  l log

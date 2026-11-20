@@ -1,0 +1,60 @@
+name: release
+# Push a tag vX.Y.Z (matching Cargo.toml) to publish static Linux binaries; run manually for a dry run that uploads
+# the binaries as a workflow artifact instead.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      ZFSCOPE_RELEASE: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-unknown-linux-musl,aarch64-unknown-linux-musl
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Tag matches Cargo.toml version
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          v=$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[0].version')
+          [ "v$v" = "${GITHUB_REF_NAME}" ] || { echo "tag ${GITHUB_REF_NAME} != Cargo.toml v$v"; exit 1; }
+
+      - run: cargo test --locked
+
+      - name: Build static binaries (rust-lld, no C toolchain)
+        run: |
+          for t in x86_64-unknown-linux-musl aarch64-unknown-linux-musl; do
+            cargo build --release --locked --target "$t"
+          done
+          mkdir dist
+          cp target/x86_64-unknown-linux-musl/release/zfscope dist/zfscope-x86_64-unknown-linux-musl
+          cp target/aarch64-unknown-linux-musl/release/zfscope dist/zfscope-aarch64-unknown-linux-musl
+
+      - name: Smoke test
+        run: |
+          dist/zfscope-x86_64-unknown-linux-musl --version
+          dist/zfscope-x86_64-unknown-linux-musl --dump --fixture tests/fixtures/demo | tee /dev/stderr | grep -q "64 leaf vdevs resolved"
+
+      - name: Checksums
+        run: cd dist && sha256sum zfscope-* > SHA256SUMS
+
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${GITHUB_REF_NAME}" dist/* --title "${GITHUB_REF_NAME}" --generate-notes
+
+      - name: Dry run artifact
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: zfscope-binaries
+          path: dist/

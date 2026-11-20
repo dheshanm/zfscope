@@ -1,0 +1,51 @@
+---
+source: tests/render.rs
+expression: "render(\"6\", 30)"
+---
+╭ disks 64 (60 hdd, 4 nvme) · temp 30–46°C · SMART 64/64 ──────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│SLOT     VDEV               DEV      PATHS MODEL                 SIZE  TYPE  TEMP   AGE  SMART  DEFECT   ERR   UTIL   AWAIT  ZFS WAIT    r/s    w/s           │
+│SLOT 00  e00s00             dm-3      2    WDC WUH722020CL5204   18.2T   hdd  30°C   52d     ok       0     0    35%    16ms      31ms     31     13          │
+│SLOT 01  e00s01             dm-54     2    WDC WUH722020CL5204   18.2T   hdd  30°C   52d     ok       0     0    36%    15ms      28ms     31     15          │
+│SLOT 02  e00s02             dm-4      2    WDC WUH722020CL5204   18.2T   hdd  31°C   52d     ok       0     0    35%    16ms      26ms     30     14          │
+│SLOT 03  e00s03             dm-55     2    WDC WUH722020CL5204   18.2T   hdd  30°C   52d     ok       0     0    35%    16ms      29ms     28     14          │
+│SLOT 04  e00s04             dm-56     2    WDC WUH722020CL5204   18.2T   hdd  30°C   52d     ok       0     0    35%    17ms      29ms     28     14          │
+│SLOT 05  e00s05             dm-57     2    WDC WUH722020CL5204   18.2T   hdd  30°C   52d     ok       0     0    38%    16ms      31ms     31     13          │
+│SLOT 06  e00s06             dm-58     2    WDC WUH722020CL5204   18.2T   hdd  30°C   52d     ok       0     0    35%    16ms      31ms     31     13          │
+│SLOT 07  e00s07             dm-59     2    WDC WUH722020CL5204   18.2T   hdd  30°C   52d     ok       0     0    35%    17ms      31ms     29     13          │
+│SLOT 08  e00s08             dm-60     2    WDC WUH722020CL5204   18.2T   hdd  30°C   52d     ok       0     0    38%    18ms      30ms     27     14          │
+│SLOT 09  e00s09             dm-61     2    WDC WUH722020CL5204   18.2T   hdd  30°C   52d     ok       0     0    40%    19ms      28ms     28     16          │
+│SLOT 10  e00s10             dm-62     2    WDC WUH722020CL5204   18.2T   hdd  30°C   52d     ok       0     0    36%   9.7ms      35ms     48     12          │
+│SLOT 11  e00s11             dm-15     2    WDC WUH722020CL5204   18.2T   hdd  30°C   52d     ok       0     0    36%   8.9ms      33ms     48     12          │
+│SLOT 12  e00s12             dm-26     2    WDC WUH722020CL5204   18.2T   hdd  35°C   52d     ok       0     0    36%   9.5ms      35ms     47     12          │
+│SLOT 13  e00s13             dm-37     2    WDC WUH722020CL5204   18.2T   hdd  35°C   52d     ok       0     0    35%   9.4ms      31ms     46     12          │
+│SLOT 14  e00s14             dm-48     2    WDC WUH722020CL5204   18.2T   hdd  35°C   52d     ok       0     0    35%    10ms      33ms     47     12          │
+│SLOT 15  e00s15             dm-50     2    WDC WUH722020CL5204   18.2T   hdd  34°C   52d     ok       0     0    34%    11ms      33ms     47     12          │
+│SLOT 16  e00s16             dm-51     2    WDC WUH722020CL5204   18.2T   hdd  34°C   52d     ok       0     0    35%    11ms      31ms     46     12          │
+│SLOT 17  e00s17             dm-52     2    WDC WUH722020CL5204   18.2T   hdd  33°C   52d     ok       0     0    31%    10ms      27ms     44     12          │
+│SLOT 18  e00s18             dm-53     2    WDC WUH722020CL5204   18.2T   hdd  32°C   52d     ok       0     0    33%    10ms      26ms     43     12          │
+│SLOT 19  e00s19             dm-5      2    WDC WUH722020CL5204   18.2T   hdd  34°C   52d     ok       0     0    34%   8.3ms      31ms     44     12          │
+│SLOT 20  e00s20             dm-6      2    WDC WUH722020CL5204   18.2T   hdd  34°C   52d     ok       0     0    36%    16ms      34ms     32     10          │
+│SLOT 21  e00s21             dm-7      2    WDC WUH722020CL5204   18.2T   hdd  34°C   52d     ok       0     0    32%    16ms      38ms     35      9          │
+│SLOT 22  e00s22             dm-8      2    WDC WUH722020CL5204   18.2T   hdd  35°C   52d     ok       0     0    32%    15ms      35ms     34      9          │
+│SLOT 23  e00s23             dm-9      2    WDC WUH722020CL5204   18.2T   hdd  35°C   52d     ok       0     0    32%    15ms      39ms     29     10          │
+│SLOT 24  e00s24             dm-10     2    WDC WUH722020CL5204   18.2T   hdd  40°C   52d     ok       0     0    33%    16ms      37ms     31     10          │
+│SLOT 25  e00s25             dm-11     2    WDC WUH722020CL5204   18.2T   hdd  40°C   52d     ok       0     0    31%    14ms      28ms     35     11          │
+│SLOT 26  e00s26             dm-12     2    WDC WUH722020CL5204   18.2T   hdd  40°C   52d     ok       0     0    34%    18ms      38ms     36     10          │
+│SLOT 27  e00s27             dm-13     2    WDC WUH722020CL5204   18.2T   hdd  39°C   52d     ok       0     0    38%    16ms      38ms     34     11          │
+│SLOT 28  e00s28             dm-14     2    WDC WUH722020CL5204   18.2T   hdd  40°C   52d     ok       0     0    30%    11ms      28ms     35     10          │
+│SLOT 29  e00s29             dm-16     2    WDC WUH722020CL5204   18.2T   hdd  39°C   52d     ok       0     0    40%    18ms      34ms     34     10          │
+│SLOT 30  e00s30             dm-17     2    WDC WUH722020CL5204   18.2T   hdd  38°C   52d     ok       0     0    37%    12ms      30ms     31     11          │
+│SLOT 31  e00s31             dm-18     2    WDC WUH722020CL5204   18.2T   hdd  40°C   52d     ok       0     0    63%    12ms      30ms     34     11          │
+│SLOT 32  e00s32             dm-19     2    WDC WUH722020CL5204   18.2T   hdd  40°C   52d     ok       0     0    36%    11ms      26ms     35     12          │
+│SLOT 33  e00s33             dm-20     2    WDC WUH722020CL5204   18.2T   hdd  40°C   52d     ok       0     0    38%    12ms      27ms     35     12          │
+│SLOT 34  e00s34             dm-21     2    WDC WUH722020CL5204   18.2T   hdd  41°C   52d     ok       0     0    38%    12ms      24ms     35     13          │
+│SLOT 35  e00s35             dm-22     2    WDC WUH722020CL5204   18.2T   hdd  40°C   52d     ok       0     0    64%    12ms      25ms     35     12          │
+│SLOT 36  e00s36             dm-23     2    WDC WUH722020CL5204   18.2T   hdd  42°C   52d     ok       0     0    39%    12ms      24ms     35     13          │
+│SLOT 37  e00s37             dm-24     2    WDC WUH722020CL5204   18.2T   hdd  44°C   52d     ok       0     0    38%    12ms      25ms     35     12          │
+│SLOT 38  e00s38             dm-25     2    WDC WUH722020CL5204   18.2T   hdd  44°C   52d     ok       0     0    31%    11ms      26ms     31     12          │
+│SLOT 39  e00s39             dm-27     2    WDC WUH722020CL5204   18.2T   hdd  44°C   52d     ok       0     0    57%    12ms      28ms     28     11          │
+│SLOT 40  e00s40             dm-28     2    WDC WUH722020CL5204   18.2T   hdd  43°C   52d     ok       0     0    34%    11ms      22ms     29     15          │
+│SLOT 41  e00s41             dm-29     2    WDC WUH722020CL5204   18.2T   hdd  42°C   52d     ok       0     0    30%    11ms      22ms     27     15          │
+│SLOT 42  e00s42             dm-30     2    WDC WUH722020CL5204   18.2T   hdd  41°C   52d     ok       0     0    32%    14ms      22ms     30     17          │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+ q quit  ? help  1-7 tabs  ↑↓ select  Enter detail  s/S sort/reverse  / filter  p pause  +/- interval  b bytes  l log

@@ -1,0 +1,51 @@
+---
+source: tests/render.rs
+expression: "render(\"2 ?\", 30)"
+---
+╭ topology · IO · 1/74 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│NAME                    ╭ help · ↑↓ scroll · any other key closes ───────────────────────────────────────────────────────────────────╮                        │
+│▾ pool0                 │What am I looking at? — Pool                                                                                │                        │
+│  ▾ raidz2-0            │Topology: The pool's structure: the pool is made of vdevs (raidz groups, mirrors, special, log) made of     │                        │
+│      e00s00            │disks. R/W/CK count read, write and checksum errors per device: any non-zero CK means data was found corrupt│                        │
+│      e00s01            │(and repaired if there was redundancy).                                                                     │                        │
+│      e00s02            │Columns (m): IO: operations and bytes per second. latency: total = queue + disk time; syncq/asyncq = time   │                        │
+│      e00s03            │waiting in ZFS's queues for reads/writes an app waits for (sync) vs background work (async). queues: IOs    │                        │
+│      e00s04            │waiting (pend) and on the disk (act). space: size, used, fragmentation.                                     │                        │
+│      e00s05            │Heatmap: Latency over time for the selected row: each column is 5 s, each row a latency bucket, colour = how│                        │
+│      e00s06            │many IOs. A healthy disk shows a tight band; a struggling one smears upward.                                │                        │
+│      e00s07            │Request sizes: Sizes of IOs sent to the device. ind = single requests, agg = neighbouring requests merged   │                        │
+│      e00s08            │into one larger IO.                                                                                         │                        │
+│      e00s09            │Disk grid (d): Every disk as a tile, coloured by the chosen metric, so one slow or erroring disk among many │                        │
+│  ▾ raidz2-1            │stands out.                                                                                                 │                        │
+│      e00s10            │History (H): zpool history: every command run against the pool, and internal events.                        │                        │
+│      e00s11            │                                                                                                            │                        │
+│      e00s12            │Terms                                                                                                       │                        │
+│      e00s13            │ pool              a set of disks managed as one storage space                                              │                        │
+╰────────────────────────│ vdev              a group of disks giving redundancy (mirror, raidz1/2/3, dRAID); pools stripe data across │────────────────────────╯
+pool0 pool ONLINE        │vdevs                                                                                                       │
+8 children  491T / 1.07P │ dataset           a filesystem or volume inside a pool, with its own properties                            │
+─────────────────────────│ snapshot          a read-only point-in-time copy; costs space only as data changes                         │─────────────────────────
+╭ IOPS r 2.42k w 1.58k ──│ ARC / L2ARC       RAM cache / optional SSD cache                                                           │ ───────────────────────╮
+│▲ read · top 5.31k      │ ZIL / SLOG        log for synchronous writes / a fast device dedicated to it                               │▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│
+│                        │ TXG               transaction group: a batch of writes committed together every few seconds                │▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│
+│                        │ scrub / resilver  read and verify everything / rebuild a replaced disk                                     │▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│
+│                        │                                                                                                            │▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│
+│                        │Keys                                                                                                        │▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│
+│▼ write · bottom 5.31k  │ 1 … 7, Tab                switch view: Overview, Pool, Datasets, ARC, ZIL·TXG, Disks, Props                │▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│
+╰────────────────────────│ ↑↓ j k, PgUp PgDn, g G    move the selection                                                               │▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│
+╭ bandwidth r 214M/s w 67│ ← → Space                 collapse / expand tree rows (or click ▾ ▸)                                       │▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│
+│▲ read · top 1.07G/s    │ click a header            sort by that column; click again to reverse (s / S from the keyboard)            │▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│
+│                        │ Enter                     open / close detail                                                              │▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│
+│                        │ /                         filter the list (Esc clears)                                                     │▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│
+│                        │ p                         pause: freezes the screen and releases the mouse so you can select & copy text; p│▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│
+│▼ write · bottom 1.07G/s│resumes                                                                                                     │─────── ◀ 5s per column ╯
+╰────────────────────────│ + -                       sampling interval 1s … 60s                                                       │────────────────────────╮
+╭ latency r 8.6ms (disk 8│ b                         exact byte counts instead of K/M/G/T                                             │                        │
+│▲ read wait · top 75ms  │ r                         re-read configuration now (zpool status/list, zfs list)                          │                        │
+│                        │ l                         log pane                                                                         │                        │
+│                        │ Pool:  m / d / c / w / H  column set / disk grid / grid colouring / heatmap wait type / history            │                        │
+│                        │ Datasets:  t / Enter      ztop mode / detail ([ ] panes, Tab focus list ↔ pane, P opens Props)             │                        │
+│                        │ ARC, ZIL·TXG:  ↑↓ / n     pick a tunable to read its help / next pool                                      │████████████████████████│
+│▼ write wait · bottom 75╰────────────────────────────────────────────────────────────────────────────────────────────────────────────╯                        │
+╰─────────────────────────────────────────────────────────── total wait = queue + disk ╯╰──────────────────────────────────────────────────────────────────────╯
+ q quit  ? help  1-7 tabs  ↑↓ select  ←→␣ fold  m IO  d disk grid  H history  w heat: total wait  p pause  +/- interval  b bytes  l log

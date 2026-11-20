@@ -124,9 +124,23 @@ fn rgb(c: Color, fg: bool) -> String {
     format!("#{r:02x}{g:02x}{b:02x}")
 }
 
+/// SVG for a braille cell: dot bits 1-8 laid out as a 2×4 grid, drawn in the current text colour.
+fn braille_svg(bits: u32) -> String {
+    const POS: [(u32, u32); 8] = [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (0, 3), (1, 3)];
+    let mut dots = String::new();
+    for (i, (x, y)) in POS.iter().enumerate() {
+        if bits & (1 << i) != 0 {
+            dots.push_str(&format!("<circle cx='{}' cy='{}' r='0.36'/>", 0.5 + *x as f32, 0.5 + *y as f32));
+        }
+    }
+    format!(
+        "<svg viewBox='0 0 2 4' width='100%' height='100%' preserveAspectRatio='none' fill='currentColor' style='display:block'>{dots}</svg>"
+    )
+}
+
 fn html(buf: &ratatui::buffer::Buffer) -> String {
     let mut s = String::from(
-        "<!doctype html><meta charset=utf-8><style>body{margin:0;background:#1a1a1a}pre{margin:0;padding:8px;font:13px/1.2 Menlo,'DejaVu Sans Mono',monospace;color:#d4d4d4}pre span{display:inline-block;width:1ch;overflow:hidden;vertical-align:top}</style><pre>",
+        "<!doctype html><meta charset=utf-8><style>body{margin:0;background:#1a1a1a}pre{margin:0;padding:8px;font:13px/1.2 Menlo,'DejaVu Sans Mono',monospace;color:#d4d4d4}pre span{display:inline-block;width:1ch;height:1.2em;overflow:hidden;vertical-align:top}</style><pre>",
     );
     let a = buf.area;
     for y in 0..a.height {
@@ -139,11 +153,14 @@ fn html(buf: &ratatui::buffer::Buffer) -> String {
                 s => s,
             };
             let bold = if c.modifier.contains(Modifier::BOLD) { "font-weight:bold;" } else { "" };
-            s.push_str(&format!(
-                "<span style=\"color:{};background:{};{bold}\">{sym}</span>",
-                rgb(c.fg, true),
-                rgb(c.bg, false)
-            ));
+            let style = format!("color:{};background:{};{bold}", rgb(c.fg, true), rgb(c.bg, false));
+            // Braille: browsers lack a monospace braille font (tiny fallback glyphs), so draw the dots ourselves
+            match sym.chars().next().map(|ch| ch as u32) {
+                Some(cp @ 0x2801..=0x28ff) => {
+                    s.push_str(&format!("<span style=\"{style}\">{}</span>", braille_svg(cp - 0x2800)))
+                }
+                _ => s.push_str(&format!("<span style=\"{style}\">{sym}</span>")),
+            }
         }
         s.push('\n');
     }

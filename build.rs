@@ -39,6 +39,12 @@ fn main() {
     let n: u64 = it.next().and_then(|s| s.parse().ok()).unwrap_or(0);
     let last = it.next().unwrap_or("").to_string();
 
+    // Published releases (CI, tag builds) are just the crate version: ZFSCOPE_RELEASE=1 cargo build --release
+    println!("cargo:rerun-if-env-changed=ZFSCOPE_RELEASE");
+    if std::env::var("ZFSCOPE_RELEASE").is_ok_and(|v| v == "1") {
+        println!("cargo:rustc-env=ZFSCOPE_VERSION={}", std::env::var("CARGO_PKG_VERSION").unwrap_or_default());
+        return;
+    }
     let release = std::env::var("PROFILE").as_deref() == Ok("release");
     let (n, suffix) = if hash == last {
         (n, "")

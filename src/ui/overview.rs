@@ -229,7 +229,7 @@ fn pool_card(f: &mut Frame, m: &Model, p: &PoolStatus, r: Rect) {
 }
 
 pub fn scan_line(s: &crate::parse::zjson::Scan, w: usize) -> Line<'static> {
-    let now = jiff::Timestamp::now().as_second();
+    let now = fmt::now();
     let what = s.function.to_lowercase();
     if s.state == "SCANNING" {
         let total = s.to_examine.max(1) as f64;

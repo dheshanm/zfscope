@@ -1,0 +1,51 @@
+---
+source: tests/render.rs
+expression: "render(\"3 t\", 30)"
+---
+╭ datasets · ztop · sort read B/s ▼ · 3/59 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│DATASET                                 r/s      w/s     read▼     write  unlink/s  zil c/s   zil B/s  trend                                                  │
+│pool0/data/mallory/niaj               3.28k        0    204M/s         0         0        0         0  ██▆▆▇█▆▄▄▄▄▄▅▇██                                       │
+│pool0/data/build                      3.40k       71    113M/s    528K/s         0       71    528K/s  ████████████████                                       │
+│pool0                                     0        0         0         0         0        0         0                                                         │
+│pool0/data                                0        0         0         0         0        0         0                                                         │
+│pool0/data/cache                          0        0         0         0         0        0         0                                                         │
+│pool0/data/cache/docker                   0        0         0         0         0        0         0                                                         │
+│pool0/data/cache/docker/git               0        0         0         0         0        0         0                                                         │
+│pool0/data/cache/docker/mail              0        0         0         0         0        0         0                                                         │
+│pool0/data/cache/docker/web               0        0         0         0         0        0         0                                                         │
+│pool0/data/cache/k8s                      0        0         0         0         0        0         0                                                         │
+│pool0/data/cache/k8s/git                  0        0         0         0         0        0         0                                                         │
+│pool0/data/cache/k8s/mail                 0        0         0         0         0        0         0                                                         │
+│pool0/data/cache/k8s/web                  0        0         0         0         0        0         0                                                         │
+│pool0/data/cache/logs                     0        0         0         0         0        0         0                                                         │
+│pool0/data/cache/logs/git                 0        0         0         0         0        0         0                                                         │
+│pool0/data/cache/logs/mail                0        0         0         0         0        0         0                                                         │
+│pool0/data/cache/logs/web                 0        0         0         0         0        0         0                                                         │
+│pool0/data/cache/postgres                 0        0         0         0         0        0         0                                                         │
+│pool0/data/cache/postgres/git             0        0         0         0         0        0         0                                                         │
+│pool0/data/cache/postgres/mail            0        0         0         0         0        0         0                                                         │
+│pool0/data/cache/postgres/web             0        0         0         0         0        0         0                                                         │
+│pool0/data/ci                             0        0         0         0         0        0         0                                                         │
+│pool0/data/home                           0        0         0         0         0        0         0                                                         │
+│pool0/data/home/alice                     0        0         0         0         0        0         0                                                         │
+│pool0/data/home/analysis                  0        0         0         0         0        0         0                                                         │
+│pool0/data/home/archive                   0        0         0         0         0        0         0                                                         │
+│pool0/data/home/backups                   0        0         0         0         0        0         0                                                         │
+│pool0/data/home/bob                       0        0         0         0         0        0         0                                                         │
+│pool0/data/home/carol                     0        0         0         0         0        0         0                                                         │
+│pool0/data/home/dave                      0        0         0         0         0        0         0   ▃██▅ ▂                                                │
+│pool0/data/home/db                        0        0         0         0         0        0         0                                                         │
+│pool0/data/home/erin                      0        0         0         0         0        0         0                                                         │
+│pool0/data/home/frank                     0        0         0         0         0        0         0                                                         │
+│pool0/data/home/genomics                  0        0         0         0         0        0         0                                                         │
+│pool0/data/home/grace                     0        0         0         0         0        0         0                                                         │
+│pool0/data/home/heidi                     0        0         0         0         0        0         0        ▃████▇▂▂                                         │
+│pool0/data/home/imaging                   0        6         0   1.65M/s         0      186   1.65M/s  ▇██▅▇▅▆▃▃▂▃▃▃▇█▅                                       │
+│pool0/data/home/ivan                      0        0         0         0         0        0         0                                                         │
+│pool0/data/home/judy                      0        0         0         0         0        0         0                                                         │
+│pool0/data/home/lab                       0        0         0         0         0        0         0                                                         │
+│pool0/data/home/media                     0        0         0         0         0        0         0                                                         │
+│pool0/data/home/processed                 0        0         0         0         0        0         0        ▄██████▃                                         │
+│pool0/data/home/projects                  0        0         0         0         0        0         0                                                         │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+ q quit  ? help  1-7 tabs  ↑↓ select  ←→␣ fold  Enter detail  t tree  s/S sort/reverse  / filter  p pause  +/- interval  b bytes  l log

@@ -425,7 +425,7 @@ fn snapshots(f: &mut Frame, app: &mut App, d: &Dataset, r: Rect) {
     app.hits.add(r, Hit::PaneArea);
     let mut v: Vec<&Dataset> = snaps.iter().collect();
     v.sort_by_key(|s| std::cmp::Reverse(s.createtxg));
-    let now = jiff::Timestamp::now().as_second();
+    let now = fmt::now();
     let total_used: u64 = v.iter().map(|s| s.props.n("used")).sum();
     let max_used = v.iter().map(|s| s.props.n("used")).max().unwrap_or(0).max(1);
     let nw = (ir.width as usize).saturating_sub(70).clamp(16, 60);

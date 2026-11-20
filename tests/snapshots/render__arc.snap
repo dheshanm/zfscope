@@ -1,0 +1,51 @@
+---
+source: tests/render.rs
+expression: "render(\"4\", 30)"
+---
+╭ ARC 273G 85% of max ──────────────────────────────────────────────────────╮╭ hit ratios · last interval ─────────────────────────────────────────────────────╮
+│size   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━───────── 320G    ││                     hits/s  iohit/s   miss/s    hit%  since boot                │
+│now 273G   target (c) 274G   min 11.8G   max 320G                          ││demand data           8.03k        1       61     99%         96%                │
+│made of ██████████████████████████████████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒░·││demand metadata       5.76k        0        0    100%         97%                │
+│█ data 156G  ▓ metadata 105G  ▒ dnode 3.76G  ░ dbuf 1.54G  · hdr/other 7.13││prefetch data            13        0      232    5.3%         24%                │
+│mru|mfu ████████████████████████████████████████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓││prefetch metadata         0        0        0       -         89%                │
+│MRU (recent) 170G   MFU (frequent) 90.6G   ghosts 128G / 93.3G             ││all                   13.8k        1      293     98%         96%                │
+│compressed 248G → 356G logical  ratio 1.44x                                ││                                                                                 │
+│                                                                           ││MRU hits/s 3.48k  MFU hits/s 10.1k  uncached/s 278                               │
+│memory 376G   free 72.0G   available 40.0G   sys_free 32.0G                ││ghost hits/s 5  (misses a bigger ARC would have served)                          │
+│reclaim: direct 0/s, indirect 0/s                                          ││evicted 0  deleted/s 0  evict skips/s 0                                          │
+│                                                                           ││prefetcher hit 62%  dbuf hash hit 100%                                           │
+╰───────────────────────────────────────────────────────────────────────────╯╰─────────────────────────────────────────────────────────────────────────────────╯
+╭ accesses/s 14.1k 293 misses/s ────────────────────╮╭ hit % demand 100% prefetch 5.3% ───────────────────╮╭ size 273G avail mem 40.0G ────────────────────────╮
+│▲ reads · top 29.5k/s                 ⣿         ⣿  ││▲ demand · top 100%                  ⠈⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉││▲ ARC size · top 320G (max)                        │
+│                                      ⣿         ⣿  ││                                                    ││                                    ⠐⠒⠒⠒⠒⠒⣆⣀⣀⣀⡖⠒⠒⠒⠒│
+│                                      ⣿         ⣿  ││                                                    ││                                                   │
+│                                      ⡟⣆⡀⣀⣀⣶⣀ ⣀ ⡟⣆⡀││                                                    ││                                                   │
+│                                    ⠐⠲⠇⠉⠉⠁ ⠈⠙⢲⡟⠲⠇⠉⠉││                                                    ││                                                   │
+│                                                   ││                                                    ││                                                   │
+│                                                   ││                                                    ││                                                   │
+│                                                   ││                                                    ││                                                   │
+│                                                   ││                                     ⠐⠋⠉⠙⠲⠶⢶⡖⠚⠉⠓⠋⠉⠙⠲││                                     ⢀⣀⣀⣀⣀⡀    ⢀⣀⣀⣀│
+│                                                   ││                                                    ││                                    ⠈⠉    ⠧⠤⠤⠤⠏⠉   │
+│                                     ⢀⣀        ⢀⣀  ││                                                    ││                                                   │
+│                                    ⠐⠾⠈⢧      ⢰⠾⠈⢧ ││                                                    ││                                                   │
+│                                       ⢸  ⣤ ⢸⡇⢸  ⢸ ││                                                    ││                                                   │
+│                                       ⢸⣀⣰⢻ ⢸⣷⠋  ⢸⣀││                                                    ││                                                   │
+│                                        ⣿⣿⠸⣤⠏⣿    ⣿││                                                    ││                                                   │
+│▼ misses · bottom 390/s                  ⣿ ⠿ ⠉     ││▼ prefetch · bottom 100%                            ││▼ available memory · bottom 376G                   │
+╰───────────────────────────────────────────────────╯╰────────────────────────────────────────────────────╯╰───────────────────────────────────────────────────╯
+╭ ARC lists (ghosts: recently evicted, headers only) ──────────────────────────────────╮╭ ARC tunables · ↑↓ for help ──────────────────────────────────────────╮
+│list             size      data  metadata evict data evict meta                       ││zfs_arc_max           320G (343597383680)                             │
+│anon            11.2M     6.67M     4.52M         0B         0B                       ││zfs_arc_min           0 (auto)                                        │
+│MRU              170G      121G     49.2G       107G      48.4G                       ││zfs_arc_meta_balance  2000                                            │
+│MRU ghost        128G     69.3G     58.7G      69.3G      58.7G                       ││zfs_arc_sys_free      32.0G (34359738368)                             │
+│MFU             90.6G     35.1G     55.5G      32.8G      42.7G                       ││zfs_prefetch_disable  0                                               │
+│MFU ghost       93.3G     90.8G     2.46G      90.8G      2.46G                       ││l2arc_write_max       32.0M (33554432)                                │
+│uncached         111M      111M     40.5K         0B         0B                       ││                                                                      │
+│                                                                                      │╰──────────────────────────────────────────────────────────────────────╯
+│hash elements 16,187,880  max 16,187,880  chains 1,664,970                            │╭ about ───────────────────────────────────────────────────────────────╮
+│dnode limit 64.0G  meta used 117G  prunes/s 0                                         ││zfs_arc_max                                                           │
+│                                                                                      ││Largest size the ARC (ZFS's RAM cache) may grow to, in bytes.         │
+│                                                                                      ││0 = automatic (most of RAM on OpenZFS 2.3+). The ARC gives memory back│
+│                                                                                      ││under pressure, but slowly; lower this if other applications need     │
+╰──────────────────────────────────────────────────────────────────────────────────────╯╰──────────────────────────────────────────────────────────────────────╯
+ q quit  ? help  1-7 tabs  ↑↓ tunable help  p pause  +/- interval  b bytes  l log

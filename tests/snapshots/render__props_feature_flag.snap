@@ -1,0 +1,51 @@
+---
+source: tests/render.rs
+expression: "render(\"7 Enter / h e a d _ Enter Enter\", 30)"
+---
+╭ pools & datasets ────────────────────╮╭ pool pool0 · 1 shown · 49 local · zfs order ─────────────────────────╮┏ about this property ━━━━━━━━━━━━━━━━━━━━━━━━━┓
+│◆ pool0 (pool)                        ││PROPERTY             VALUE                                     SOURCE │┃feature@head_errlog                           ┃
+│  pool0                               ││── feature flags · 1 (enabled = available, active = in use on disk)   │┃value active                                  ┃
+│    data                              ││feature@head_errlog  active                                    local  │┃source local                                  ┃
+│      build                           ││                                                                      │┃feature flag: can be enabled, never disabled  ┃
+│      cache                           ││                                                                      │┃again                                         ┃
+│        docker                        ││                                                                      │┃                                              ┃
+│          git                         ││                                                                      │┃Track data errors per filesystem rather than  ┃
+│          mail                        ││                                                                      │┃pool-wide.                                    ┃
+│          web                         ││                                                                      │┃                                              ┃
+│        k8s                           ││                                                                      │┃possible values                               ┃
+│          git                         ││                                                                      │┃  disabled  not available; can be turned on   ┃
+│          mail                        ││                                                                      │┃            (one-way)                         ┃
+│          web                         ││                                                                      │┃  enabled   available, not used yet: the pool ┃
+│        logs                          ││                                                                      │┃            still imports on older ZFS        ┃
+│          git                         ││                                                                      │┃● active    in use on disk: only ZFS versions ┃
+│          mail                        ││                                                                      │┃            that know this feature can import ┃
+│          web                         ││                                                                      │┃            the pool                          ┃
+│        postgres                      ││                                                                      │┃                                              ┃
+│          git                         ││                                                                      │┃zpool status -v can then report affected files┃
+│          mail                        ││                                                                      │┃in snapshots and clones accurately.           ┃
+│          web                         ││                                                                      │┃                                              ┃
+│      ci                              ││                                                                      │┃how to use it                                 ┃
+│      home                            ││                                                                      │┃needs    OpenZFS 2.2 or newer                 ┃
+│        alice                         ││                                                                      │┃enable   zpool set feature@head_errlog=enabled┃
+│        analysis                      ││                                                                      │┃pool0                                         ┃
+│        archive                       ││                                                                      │┃or all   zpool upgrade pool0                  ┃
+│        backups                       ││                                                                      │┃active   immediately when enabled             ┃
+│        bob                           ││                                                                      │┃check    zpool get feature@head_errlog pool0  ┃
+│        carol                         ││                                                                      │┃                                              ┃
+│        dave                          ││                                                                      │┃enabled = available but not used yet; active =┃
+│        db                            ││                                                                      │┃in use on disk, so the pool now needs a ZFS   ┃
+│        erin                          ││                                                                      │┃version that understands it (older versions   ┃
+│        frank                         ││                                                                      │┃can no longer import it).                     ┃
+│        genomics                      ││                                                                      │┃                                              ┃
+│        grace                         ││                                                                      │┃                                              ┃
+│        heidi                         ││                                                                      │┃                                              ┃
+│        imaging                       ││                                                                      │┃                                              ┃
+│        ivan                          ││                                                                      │┃                                              ┃
+│        judy                          ││                                                                      │┃                                              ┃
+│        lab                           ││                                                                      │┃                                              ┃
+│        media                         ││                                                                      │┃                                              ┃
+│        processed                     ││                                                                      │┃                                              ┃
+│        projects                      ││                                                                      │┃                                              ┃
+│        raw                           ││                                                                      │┃                                              ┃
+╰──────────────────────────────────────╯╰──────────────────────────────────────────────────────────────────────╯┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+ filter: head_  q quit  ? help  1-7 tabs  ↑↓ scroll  Esc ← back to properties  p pause  +/- interval  b bytes  l log

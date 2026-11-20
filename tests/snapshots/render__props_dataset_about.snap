@@ -1,0 +1,51 @@
+---
+source: tests/render.rs
+expression: "render(\"7 j j Enter j j j j j j j j j Enter\", 30)"
+---
+╭ pools & datasets ────────────────────╮╭ dataset pool0/data · 93 shown · 1 local · zfs order ─────────────────╮┏ about this property ━━━━━━━━━━━━━━━━━━━━━━━━━┓
+│◆ pool0 (pool)                        ││PROPERTY                VALUE                                     SOU…│┃atime                                         ┃
+│  pool0                               ││── settable · 53 (zfs set)                                            │┃value off                                     ┃
+│    data                              ││quota                   none                                      defa│┃source inherited from pool0                   ┃
+│      build                           ││reservation             none                                      defa│┃settable: zfs set atime=…                     ┃
+│      cache                           ││volsize                 -                                         defa│┃                                              ┃
+│        docker                        ││volblocksize            -                                         defa│┃Update a file's 'last accessed' time whenever ┃
+│          git                         ││recordsize              1.00M                                     inhe│┃it is read.                                   ┃
+│          mail                        ││mountpoint              /pool0/data                               defa│┃                                              ┃
+│          web                         ││sharenfs                off                                       defa│┃possible values                               ┃
+│        k8s                           ││checksum                on                                        defa│┃  on   update access time on every read (extra┃
+│          git                         ││compression             zstd-1                                    inhe│┃       metadata writes)                       ┃
+│          mail                        ││atime                   off                                       inhe│┃● off  never update access time: best for     ┃
+│          web                         ││devices                 on                                        defa│┃       read-heavy workloads                   ┃
+│        logs                          ││exec                    on                                        defa│┃                                              ┃
+│          git                         ││setuid                  on                                        defa│┃Turning it off avoids a metadata write for    ┃
+│          mail                        ││readonly                off                                       defa│┃every read, which helps read-heavy workloads. ┃
+│          web                         ││zoned                   off                                       defa│┃relatime=on is a compromise that updates atime┃
+│        postgres                      ││snapdir                 hidden                                    defa│┃at most once a day.                           ┃
+│          git                         ││aclmode                 discard                                   defa│┃                                              ┃
+│          mail                        ││aclinherit              restricted                                defa│┃change   zfs set atime=<value> pool0/data     ┃
+│          web                         ││canmount                on                                        defa│┃reset    zfs inherit atime pool0/data  (back  ┃
+│      ci                              ││xattr                   sa                                        inhe│┃to the parent's / default value)              ┃
+│      home                            ││copies                  1                                         defa│┃                                              ┃
+│        alice                         ││vscan                   off                                       defa│┃                                              ┃
+│        analysis                      ││nbmand                  off                                       defa│┃                                              ┃
+│        archive                       ││sharesmb                off                                       defa│┃                                              ┃
+│        backups                       ││refquota                none                                      defa│┃                                              ┃
+│        bob                           ││refreservation          none                                      defa│┃                                              ┃
+│        carol                         ││primarycache            all                                       defa│┃                                              ┃
+│        dave                          ││secondarycache          all                                       defa│┃                                              ┃
+│        db                            ││logbias                 latency                                   defa│┃                                              ┃
+│        erin                          ││dedup                   off                                       inhe│┃                                              ┃
+│        frank                         ││mlslabel                none                                      defa│┃                                              ┃
+│        genomics                      ││sync                    standard                                  inhe│┃                                              ┃
+│        grace                         ││dnodesize               auto                                      inhe│┃                                              ┃
+│        heidi                         ││volmode                 default                                   defa│┃                                              ┃
+│        imaging                       ││filesystem_limit        none                                      defa│┃                                              ┃
+│        ivan                          ││snapshot_limit          none                                      defa│┃                                              ┃
+│        judy                          ││filesystem_count        none                                      defa│┃                                              ┃
+│        lab                           ││snapshot_count          none                                      defa│┃                                              ┃
+│        media                         ││snapdev                 hidden                                    defa│┃                                              ┃
+│        processed                     ││acltype                 posix                                     inhe│┃                                              ┃
+│        projects                      ││context                 none                                      defa│┃                                              ┃
+│        raw                           ││fscontext               none                                      defa│┃                                              ┃
+╰──────────────────────────────────────╯╰──────────────────────────────────────────────────────────────────────╯┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+ q quit  ? help  1-7 tabs  ↑↓ scroll  Esc ← back to properties  p pause  +/- interval  b bytes  l log

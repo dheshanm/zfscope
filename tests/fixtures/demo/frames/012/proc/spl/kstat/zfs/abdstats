@@ -1,0 +1,22 @@
+18 1 0x01 20 5440 269061673851915 2941850721119921
+name                            type data
+struct_size                     4    1324788672
+linear_cnt                      4    5501461
+linear_data_size                4    3022546944
+scatter_cnt                     4    8298421
+scatter_data_size               4    233008267776
+scatter_chunk_waste             4    329403904
+scatter_order_0                 4    1781114
+scatter_order_1                 4    374335
+scatter_order_2                 4    5897377
+scatter_order_3                 4    161187
+scatter_order_4                 4    157791
+scatter_order_5                 4    361049
+scatter_order_6                 4    1768
+scatter_order_7                 4    2349
+scatter_order_8                 4    58853
+scatter_order_9                 4    0
+scatter_page_multi_chunk        4    244782
+scatter_page_multi_zone         4    0
+scatter_page_alloc_retry        4    0
+scatter_sg_table_retry          4    0

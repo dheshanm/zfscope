@@ -1,0 +1,2001 @@
+History for 'pool0':
+2026-11-16.17:15:01 [txg:1045858] destroy pool0/data/build@snap431 (181350)   [on zfs-demo.example.org]
+2026-11-16.17:15:01 (236ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap431
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.17:15:01 zfs destroy pool0/data/build@snap431 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.17:15:35 [txg:1045865] hold pool0/data/build@snap478 (201694) tag=.send-2293089-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-16.17:15:35 [txg:1045865] hold pool0/data/build@snap480 (202049) tag=.send-2293089-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-16.17:15:35 (423ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap479 '.send-2293089-1'
+            pool0/data/build@snap481 '.send-2293089-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.17:16:07 [txg:1045872] release pool0/data/build@snap478 (201694) tag=.send-2293089-1 refs=0 [on zfs-demo.example.org]
+2026-11-16.17:16:07 [txg:1045872] release pool0/data/build@snap480 (202049) tag=.send-2293089-1 refs=0 [on zfs-demo.example.org]
+2026-11-16.17:16:07 zfs send -c -I pool0/data/build@snap478 pool0/data/build@snap480 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.18:00:01 [txg:1046413] snapshot pool0/data/build@snap482 (203863)   [on zfs-demo.example.org]
+2026-11-16.18:00:02 (192ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap482
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.18:00:02 zfs snapshot -r pool0/data/build@snap482 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.18:15:02 [txg:1046602] destroy pool0/data/build@snap433 (182465)   [on zfs-demo.example.org]
+2026-11-16.18:15:02 (271ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap433
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.18:15:02 zfs destroy pool0/data/build@snap433 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.18:15:35 [txg:1046610] hold pool0/data/build@snap480 (202049) tag=.send-2337016-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-16.18:15:35 [txg:1046610] hold pool0/data/build@snap482 (203863) tag=.send-2337016-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-16.18:15:35 (270ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap481 '.send-2337016-1'
+            pool0/data/build@snap483 '.send-2337016-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.18:16:08 [txg:1046617] release pool0/data/build@snap480 (202049) tag=.send-2337016-1 refs=0 [on zfs-demo.example.org]
+2026-11-16.18:16:08 [txg:1046617] release pool0/data/build@snap482 (203863) tag=.send-2337016-1 refs=0 [on zfs-demo.example.org]
+2026-11-16.18:16:08 zfs send -c -I pool0/data/build@snap480 pool0/data/build@snap482 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.19:00:01 [txg:1047173] snapshot pool0/data/build@snap09 (207626)   [on zfs-demo.example.org]
+2026-11-16.19:00:01 (290ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap09
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.19:00:01 zfs snapshot -r pool0/data/build@snap09 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.19:00:01 [txg:1047174] snapshot pool0/data/build@snap484 (207635)   [on zfs-demo.example.org]
+2026-11-16.19:00:01 (78ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap484
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.19:00:01 zfs snapshot -r pool0/data/build@snap484 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.19:15:02 [txg:1047364] destroy pool0/data/build@snap135 (90114)   [on zfs-demo.example.org]
+2026-11-16.19:15:03 (1199ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap135
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.19:15:03 zfs destroy pool0/data/build@snap135 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.19:15:03 [txg:1047366] destroy pool0/data/build@snap435 (186765)   [on zfs-demo.example.org]
+2026-11-16.19:15:03 (272ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap435
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.19:15:03 zfs destroy pool0/data/build@snap435 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.19:15:35 [txg:1047373] hold pool0/data/build@snap482 (203863) tag=.send-2381443-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-16.19:15:35 [txg:1047373] hold pool0/data/build@snap09 (207626) tag=.send-2381443-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-16.19:15:35 [txg:1047373] hold pool0/data/build@snap484 (207635) tag=.send-2381443-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-16.19:15:35 (75ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap483 '.send-2381443-1'
+            pool0/data/build@snap485 '.send-2381443-1'
+            pool0/data/build@snap486 '.send-2381443-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.19:16:13 [txg:1047381] release pool0/data/build@snap482 (203863) tag=.send-2381443-1 refs=0 [on zfs-demo.example.org]
+2026-11-16.19:16:13 [txg:1047381] release pool0/data/build@snap09 (207626) tag=.send-2381443-1 refs=0 [on zfs-demo.example.org]
+2026-11-16.19:16:13 [txg:1047381] release pool0/data/build@snap484 (207635) tag=.send-2381443-1 refs=0 [on zfs-demo.example.org]
+2026-11-16.19:16:13 zfs send -c -I pool0/data/build@snap482 pool0/data/build@snap484 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.20:00:01 [txg:1047933] snapshot pool0/data/build@snap487 (207527)   [on zfs-demo.example.org]
+2026-11-16.20:00:01 (274ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap487
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.20:00:01 zfs snapshot -r pool0/data/build@snap487 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.20:15:01 [txg:1048113] destroy pool0/data/build@snap438 (189579)   [on zfs-demo.example.org]
+2026-11-16.20:15:01 (157ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap438
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.20:15:01 zfs destroy pool0/data/build@snap438 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.20:15:35 [txg:1048120] hold pool0/data/build@snap484 (207635) tag=.send-2424860-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-16.20:15:35 [txg:1048120] hold pool0/data/build@snap487 (207527) tag=.send-2424860-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-16.20:15:35 (59ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap486 '.send-2424860-1'
+            pool0/data/build@snap488 '.send-2424860-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.20:16:09 [txg:1048127] release pool0/data/build@snap484 (207635) tag=.send-2424860-1 refs=0 [on zfs-demo.example.org]
+2026-11-16.20:16:09 [txg:1048127] release pool0/data/build@snap487 (207527) tag=.send-2424860-1 refs=0 [on zfs-demo.example.org]
+2026-11-16.20:16:09 zfs send -c -I pool0/data/build@snap484 pool0/data/build@snap487 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.21:00:01 [txg:1048667] snapshot pool0/data/build@snap489 (207676)   [on zfs-demo.example.org]
+2026-11-16.21:00:02 (102ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap489
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.21:00:02 zfs snapshot -r pool0/data/build@snap489 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.21:00:02 [txg:1048668] destroy pool0/data/build@snap440 (188910)   [on zfs-demo.example.org]
+2026-11-16.21:00:02 (223ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap440
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.21:00:02 zfs destroy pool0/data/build@snap440 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.21:15:35 [txg:1048858] hold pool0/data/build@snap487 (207527) tag=.send-2469587-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-16.21:15:35 [txg:1048858] hold pool0/data/build@snap489 (207676) tag=.send-2469587-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-16.21:15:35 (193ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap488 '.send-2469587-1'
+            pool0/data/build@snap490 '.send-2469587-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.21:16:07 [txg:1048865] release pool0/data/build@snap487 (207527) tag=.send-2469587-1 refs=0 [on zfs-demo.example.org]
+2026-11-16.21:16:07 [txg:1048865] release pool0/data/build@snap489 (207676) tag=.send-2469587-1 refs=0 [on zfs-demo.example.org]
+2026-11-16.21:16:07 zfs send -c -I pool0/data/build@snap487 pool0/data/build@snap489 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.22:00:01 [txg:1049391] snapshot pool0/data/build@snap491 (206805)   [on zfs-demo.example.org]
+2026-11-16.22:00:01 (156ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap491
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.22:00:01 zfs snapshot -r pool0/data/build@snap491 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.22:15:03 [txg:1049571] destroy pool0/data/build@snap442 (189144)   [on zfs-demo.example.org]
+2026-11-16.22:15:03 (309ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap442
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.22:15:03 zfs destroy pool0/data/build@snap442 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.22:15:35 [txg:1049578] hold pool0/data/build@snap489 (207676) tag=.send-2513515-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-16.22:15:35 [txg:1049578] hold pool0/data/build@snap491 (206805) tag=.send-2513515-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-16.22:15:35 (203ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap490 '.send-2513515-1'
+            pool0/data/build@snap492 '.send-2513515-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.22:16:06 [txg:1049585] release pool0/data/build@snap489 (207676) tag=.send-2513515-1 refs=0 [on zfs-demo.example.org]
+2026-11-16.22:16:06 [txg:1049585] release pool0/data/build@snap491 (206805) tag=.send-2513515-1 refs=0 [on zfs-demo.example.org]
+2026-11-16.22:16:06 zfs send -c -I pool0/data/build@snap489 pool0/data/build@snap491 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.23:00:01 [txg:1050118] snapshot pool0/data/build@snap493 (209470)   [on zfs-demo.example.org]
+2026-11-16.23:00:01 (87ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap493
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.23:00:01 zfs snapshot -r pool0/data/build@snap493 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.23:15:01 [txg:1050299] destroy pool0/data/build@snap444 (189763)   [on zfs-demo.example.org]
+2026-11-16.23:15:02 (288ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap444
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.23:15:02 zfs destroy pool0/data/build@snap444 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.23:15:35 [txg:1050307] hold pool0/data/build@snap491 (206805) tag=.send-2556759-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-16.23:15:35 [txg:1050307] hold pool0/data/build@snap493 (209470) tag=.send-2556759-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-16.23:15:35 (81ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap492 '.send-2556759-1'
+            pool0/data/build@snap494 '.send-2556759-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-16.23:16:04 [txg:1050313] release pool0/data/build@snap491 (206805) tag=.send-2556759-1 refs=0 [on zfs-demo.example.org]
+2026-11-16.23:16:04 [txg:1050313] release pool0/data/build@snap493 (209470) tag=.send-2556759-1 refs=0 [on zfs-demo.example.org]
+2026-11-16.23:16:04 zfs send -c -I pool0/data/build@snap491 pool0/data/build@snap493 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.00:00:02 [txg:1050834] snapshot pool0/data/build@snap495 (208826)   [on zfs-demo.example.org]
+2026-11-17.00:00:02 (138ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap495
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.00:00:02 zfs snapshot -r pool0/data/build@snap495 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.00:00:02 [txg:1050835] destroy pool0/data/build@snap446 (191412)   [on zfs-demo.example.org]
+2026-11-17.00:00:02 (398ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap446
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.00:00:02 zfs destroy pool0/data/build@snap446 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.00:15:16 [txg:1051019] hold pool0/data/build@snap493 (209470) tag=.send-2601562-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.00:15:16 [txg:1051019] hold pool0/data/build@snap495 (208826) tag=.send-2601562-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.00:15:16 (49ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap494 '.send-2601562-1'
+            pool0/data/build@snap496 '.send-2601562-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.00:15:58 [txg:1051028] release pool0/data/build@snap493 (209470) tag=.send-2601562-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.00:15:58 [txg:1051028] release pool0/data/build@snap495 (208826) tag=.send-2601562-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.00:15:58 zfs send -c -I pool0/data/build@snap493 pool0/data/build@snap495 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.01:00:01 [txg:1051561] snapshot pool0/data/build@snap497 (206945)   [on zfs-demo.example.org]
+2026-11-17.01:00:01 (79ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap497
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.01:00:01 zfs snapshot -r pool0/data/build@snap497 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.01:15:02 [txg:1051741] destroy pool0/data/build@snap448 (191847)   [on zfs-demo.example.org]
+2026-11-17.01:15:02 (207ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap448
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.01:15:02 zfs destroy pool0/data/build@snap448 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.01:15:35 [txg:1051748] hold pool0/data/build@snap495 (208826) tag=.send-2645089-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.01:15:35 [txg:1051748] hold pool0/data/build@snap497 (206945) tag=.send-2645089-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.01:15:35 (461ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap496 '.send-2645089-1'
+            pool0/data/build@snap498 '.send-2645089-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.01:15:59 [txg:1051753] release pool0/data/build@snap495 (208826) tag=.send-2645089-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.01:15:59 [txg:1051753] release pool0/data/build@snap497 (206945) tag=.send-2645089-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.01:15:59 zfs send -c -I pool0/data/build@snap495 pool0/data/build@snap497 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.02:00:01 [txg:1052277] snapshot pool0/data/build@snap499 (210529)   [on zfs-demo.example.org]
+2026-11-17.02:00:01 (245ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap499
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.02:00:01 zfs snapshot -r pool0/data/build@snap499 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.02:15:01 [txg:1052456] destroy pool0/data/build@snap450 (190189)   [on zfs-demo.example.org]
+2026-11-17.02:15:01 (171ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap450
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.02:15:01 zfs destroy pool0/data/build@snap450 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.02:15:10 [txg:1052458] hold pool0/data/build@snap497 (206945) tag=.send-2688442-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.02:15:10 [txg:1052458] hold pool0/data/build@snap499 (210529) tag=.send-2688442-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.02:15:10 (177ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap498 '.send-2688442-1'
+            pool0/data/build@snap500 '.send-2688442-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.02:15:30 [txg:1052462] release pool0/data/build@snap497 (206945) tag=.send-2688442-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.02:15:30 [txg:1052462] release pool0/data/build@snap499 (210529) tag=.send-2688442-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.02:15:30 zfs send -c -I pool0/data/build@snap497 pool0/data/build@snap499 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.03:00:02 [txg:1052996] snapshot pool0/data/build@snap501 (211530)   [on zfs-demo.example.org]
+2026-11-17.03:00:02 (57ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap501
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.03:00:02 zfs snapshot -r pool0/data/build@snap501 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.03:00:02 [txg:1052997] destroy pool0/data/build@snap452 (191021)   [on zfs-demo.example.org]
+2026-11-17.03:00:02 (214ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap452
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.03:00:02 zfs destroy pool0/data/build@snap452 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.03:15:06 [txg:1053178] hold pool0/data/build@snap499 (210529) tag=.send-2731327-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.03:15:06 [txg:1053178] hold pool0/data/build@snap501 (211530) tag=.send-2731327-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.03:15:06 (114ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap500 '.send-2731327-1'
+            pool0/data/build@snap502 '.send-2731327-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.03:15:31 [txg:1053183] release pool0/data/build@snap499 (210529) tag=.send-2731327-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.03:15:31 [txg:1053183] release pool0/data/build@snap501 (211530) tag=.send-2731327-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.03:15:31 zfs send -c -I pool0/data/build@snap499 pool0/data/build@snap501 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.04:00:01 [txg:1053718] snapshot pool0/data/build@snap503 (202619)   [on zfs-demo.example.org]
+2026-11-17.04:00:01 (58ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap503
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.04:00:01 zfs snapshot -r pool0/data/build@snap503 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.04:15:02 [txg:1053901] destroy pool0/data/build@snap454 (191535)   [on zfs-demo.example.org]
+2026-11-17.04:15:02 (478ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap454
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.04:15:02 zfs destroy pool0/data/build@snap454 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.04:15:16 [txg:1053904] hold pool0/data/build@snap501 (211530) tag=.send-2773990-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.04:15:16 [txg:1053904] hold pool0/data/build@snap503 (202619) tag=.send-2773990-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.04:15:16 (179ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap502 '.send-2773990-1'
+            pool0/data/build@snap504 '.send-2773990-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.04:15:41 [txg:1053910] release pool0/data/build@snap501 (211530) tag=.send-2773990-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.04:15:41 [txg:1053910] release pool0/data/build@snap503 (202619) tag=.send-2773990-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.04:15:41 zfs send -c -I pool0/data/build@snap501 pool0/data/build@snap503 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.05:00:01 [txg:1054435] snapshot pool0/data/build@snap505 (215190)   [on zfs-demo.example.org]
+2026-11-17.05:00:01 (125ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap505
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.05:00:01 zfs snapshot -r pool0/data/build@snap505 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.05:15:01 [txg:1054616] destroy pool0/data/build@snap456 (194003)   [on zfs-demo.example.org]
+2026-11-17.05:15:01 (249ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap456
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.05:15:01 zfs destroy pool0/data/build@snap456 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.05:15:35 [txg:1054623] hold pool0/data/build@snap503 (202619) tag=.send-2816895-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.05:15:35 [txg:1054623] hold pool0/data/build@snap505 (215190) tag=.send-2816895-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.05:15:35 (165ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap504 '.send-2816895-1'
+            pool0/data/build@snap506 '.send-2816895-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.05:16:00 [txg:1054628] release pool0/data/build@snap503 (202619) tag=.send-2816895-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.05:16:00 [txg:1054628] release pool0/data/build@snap505 (215190) tag=.send-2816895-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.05:16:00 zfs send -c -I pool0/data/build@snap503 pool0/data/build@snap505 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.06:00:02 [txg:1055159] snapshot pool0/data/build@snap507 (213963)   [on zfs-demo.example.org]
+2026-11-17.06:00:02 (83ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap507
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.06:00:02 zfs snapshot -r pool0/data/build@snap507 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.06:00:02 [txg:1055160] destroy pool0/data/build@snap458 (197124)   [on zfs-demo.example.org]
+2026-11-17.06:00:02 (210ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap458
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.06:00:02 zfs destroy pool0/data/build@snap458 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.06:15:16 [txg:1055343] hold pool0/data/build@snap505 (215190) tag=.send-2859605-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.06:15:16 [txg:1055343] hold pool0/data/build@snap507 (213963) tag=.send-2859605-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.06:15:17 (251ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap506 '.send-2859605-1'
+            pool0/data/build@snap508 '.send-2859605-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.06:15:39 [txg:1055348] release pool0/data/build@snap505 (215190) tag=.send-2859605-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.06:15:39 [txg:1055348] release pool0/data/build@snap507 (213963) tag=.send-2859605-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.06:15:39 zfs send -c -I pool0/data/build@snap505 pool0/data/build@snap507 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.07:00:01 [txg:1055878] snapshot pool0/data/build@snap509 (217856)   [on zfs-demo.example.org]
+2026-11-17.07:00:01 (59ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap509
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.07:00:01 zfs snapshot -r pool0/data/build@snap509 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.07:15:02 [txg:1056059] destroy pool0/data/build@snap460 (196213)   [on zfs-demo.example.org]
+2026-11-17.07:15:02 (522ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap460
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.07:15:02 zfs destroy pool0/data/build@snap460 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.07:15:17 [txg:1056062] hold pool0/data/build@snap507 (213963) tag=.send-2902098-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.07:15:17 [txg:1056062] hold pool0/data/build@snap509 (217856) tag=.send-2902098-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.07:15:17 (375ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap508 '.send-2902098-1'
+            pool0/data/build@snap510 '.send-2902098-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.07:15:43 [txg:1056068] release pool0/data/build@snap507 (213963) tag=.send-2902098-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.07:15:43 [txg:1056068] release pool0/data/build@snap509 (217856) tag=.send-2902098-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.07:15:43 zfs send -c -I pool0/data/build@snap507 pool0/data/build@snap509 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.08:00:01 [txg:1056605] snapshot pool0/data/build@snap511 (216658)   [on zfs-demo.example.org]
+2026-11-17.08:00:01 (200ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap511
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.08:00:01 zfs snapshot -r pool0/data/build@snap511 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.08:15:01 [txg:1056961] destroy pool0/data/build@snap462 (197524)   [on zfs-demo.example.org]
+2026-11-17.08:15:01 (323ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap462
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.08:15:01 zfs destroy pool0/data/build@snap462 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.08:15:35 [txg:1056968] hold pool0/data/build@snap509 (217856) tag=.send-2944450-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.08:15:35 [txg:1056968] hold pool0/data/build@snap511 (216658) tag=.send-2944450-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.08:15:35 (176ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap510 '.send-2944450-1'
+            pool0/data/build@snap512 '.send-2944450-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.08:16:39 [txg:1056981] release pool0/data/build@snap509 (217856) tag=.send-2944450-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.08:16:39 [txg:1056981] release pool0/data/build@snap511 (216658) tag=.send-2944450-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.08:16:39 zfs send -c -I pool0/data/build@snap509 pool0/data/build@snap511 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:00:02 [txg:1057497] snapshot pool0/data/build@snap513 (212452)   [on zfs-demo.example.org]
+2026-11-17.09:00:02 (278ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap513
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:00:02 zfs snapshot -r pool0/data/build@snap513 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:00:02 [txg:1057498] destroy pool0/data/build@snap464 (197178)   [on zfs-demo.example.org]
+2026-11-17.09:00:02 (287ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap464
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:00:02 zfs destroy pool0/data/build@snap464 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:14:37 [txg:1057671] set pool0/data/home/projects (104162) refquota=5497558138880 [on zfs-demo.example.org]
+2026-11-17.09:14:37 zfs set refquota=5T pool0/data/home/projects [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:14:37 [txg:1057672] set pool0/data/home/scratch (611) refquota=5497558138880 [on zfs-demo.example.org]
+2026-11-17.09:14:37 zfs set refquota=5T pool0/data/home/scratch [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:14:37 [txg:1057673] set pool0/data/home/backups (107654) refquota=5497558138880 [on zfs-demo.example.org]
+2026-11-17.09:14:37 zfs set refquota=5T pool0/data/home/backups [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:14:37 [txg:1057674] set pool0/data/home/archive (195275) refquota=5497558138880 [on zfs-demo.example.org]
+2026-11-17.09:14:37 zfs set refquota=5T pool0/data/home/archive [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:14:37 [txg:1057675] set pool0/data/home/vm (55543) refquota=5497558138880 [on zfs-demo.example.org]
+2026-11-17.09:14:37 zfs set refquota=5T pool0/data/home/vm [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:14:37 [txg:1057676] set pool0/data/home/db (105245) refquota=5497558138880 [on zfs-demo.example.org]
+2026-11-17.09:14:37 zfs set refquota=5T pool0/data/home/db [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:14:37 [txg:1057677] set pool0/data/home/media (106427) refquota=5497558138880 [on zfs-demo.example.org]
+2026-11-17.09:14:37 zfs set refquota=5T pool0/data/home/media [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:14:38 [txg:1057678] set pool0/data/home/shared (87725) refquota=5497558138880 [on zfs-demo.example.org]
+2026-11-17.09:14:38 zfs set refquota=5T pool0/data/home/shared [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:14:38 [txg:1057679] set pool0/data/home/research (139628) refquota=5497558138880 [on zfs-demo.example.org]
+2026-11-17.09:14:38 zfs set refquota=5T pool0/data/home/research [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:14:38 [txg:1057680] set pool0/data/home/lab (198857) refquota=5497558138880 [on zfs-demo.example.org]
+2026-11-17.09:14:38 zfs set refquota=5T pool0/data/home/lab [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:14:38 [txg:1057681] set pool0/data/home/genomics (100223) refquota=5497558138880 [on zfs-demo.example.org]
+2026-11-17.09:14:38 zfs set refquota=5T pool0/data/home/genomics [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:14:38 [txg:1057682] set pool0/data/home/imaging (141025) refquota=5497558138880 [on zfs-demo.example.org]
+2026-11-17.09:14:38 zfs set refquota=5T pool0/data/home/imaging [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:14:38 [txg:1057683] set pool0/data/home/analysis (107139) refquota=5497558138880 [on zfs-demo.example.org]
+2026-11-17.09:14:38 zfs set refquota=5T pool0/data/home/analysis [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:14:38 [txg:1057684] set pool0/data/home/raw (106412) refquota=5497558138880 [on zfs-demo.example.org]
+2026-11-17.09:14:38 zfs set refquota=5T pool0/data/home/raw [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:14:38 [txg:1057685] set pool0/data/home/processed (107035) refquota=5497558138880 [on zfs-demo.example.org]
+2026-11-17.09:14:38 zfs set refquota=5T pool0/data/home/processed [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:14:38 [txg:1057686] set pool0/data/home/results (147270) refquota=5497558138880 [on zfs-demo.example.org]
+2026-11-17.09:14:38 zfs set refquota=5T pool0/data/home/results [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:14:38 [txg:1057687] set pool0/data/home/users (105354) refquota=5497558138880 [on zfs-demo.example.org]
+2026-11-17.09:14:38 zfs set refquota=5T pool0/data/home/users [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:14:38 [txg:1057688] set pool0/data/home/alice (103013) refquota=5497558138880 [on zfs-demo.example.org]
+2026-11-17.09:14:38 zfs set refquota=5T pool0/data/home/alice [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:14:38 [txg:1057689] set pool0/data/home/bob (105226) refquota=5497558138880 [on zfs-demo.example.org]
+2026-11-17.09:14:39 zfs set refquota=5T pool0/data/home/bob [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:14:39 [txg:1057690] set pool0/data/home/carol (103490) refquota=5497558138880 [on zfs-demo.example.org]
+2026-11-17.09:14:39 zfs set refquota=5T pool0/data/home/carol [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:14:39 [txg:1057691] set pool0/data/home/dave (103028) refquota=5497558138880 [on zfs-demo.example.org]
+2026-11-17.09:14:39 zfs set refquota=5T pool0/data/home/dave [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:14:39 [txg:1057692] set pool0/data/home/erin (106519) refquota=5497558138880 [on zfs-demo.example.org]
+2026-11-17.09:14:39 zfs set refquota=5T pool0/data/home/erin [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:14:39 [txg:1057693] set pool0/data/home/frank (105380) refquota=5497558138880 [on zfs-demo.example.org]
+2026-11-17.09:14:39 zfs set refquota=5T pool0/data/home/frank [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:14:39 [txg:1057694] set pool0/data/home/grace (147248) refquota=5497558138880 [on zfs-demo.example.org]
+2026-11-17.09:14:39 zfs set refquota=5T pool0/data/home/grace [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:14:39 [txg:1057695] set pool0/data/home/heidi (105141) refquota=5497558138880 [on zfs-demo.example.org]
+2026-11-17.09:14:39 zfs set refquota=5T pool0/data/home/heidi [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:14:39 [txg:1057696] set pool0/data/home/ivan (82682) refquota=5497558138880 [on zfs-demo.example.org]
+2026-11-17.09:14:39 zfs set refquota=5T pool0/data/home/ivan [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:14:39 [txg:1057697] set pool0/data/home/judy (105119) refquota=5497558138880 [on zfs-demo.example.org]
+2026-11-17.09:14:39 zfs set refquota=5T pool0/data/home/judy [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:15:35 [txg:1057708] hold pool0/data/build@snap511 (216658) tag=.send-3000220-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.09:15:35 [txg:1057708] hold pool0/data/build@snap513 (212452) tag=.send-3000220-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.09:15:35 (207ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap512 '.send-3000220-1'
+            pool0/data/build@snap514 '.send-3000220-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:16:05 [txg:1057714] release pool0/data/build@snap511 (216658) tag=.send-3000220-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.09:16:05 [txg:1057714] release pool0/data/build@snap513 (212452) tag=.send-3000220-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.09:16:05 zfs send -c -I pool0/data/build@snap511 pool0/data/build@snap513 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.09:16:50 [txg:1057723] set pool0/data/home (71352) quota=219902325555200 [on zfs-demo.example.org]
+2026-11-17.09:16:50 zfs set quota=200T pool0/data/home [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.10:00:01 [txg:1058243] snapshot pool0/data/build@snap515 (215034)   [on zfs-demo.example.org]
+2026-11-17.10:00:01 (242ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap515
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.10:00:01 zfs snapshot -r pool0/data/build@snap515 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.10:00:02 [txg:1058244] destroy pool0/data/build@snap466 (193124)   [on zfs-demo.example.org]
+2026-11-17.10:00:02 (309ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap466
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.10:00:02 zfs destroy pool0/data/build@snap466 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.10:15:16 [txg:1058425] hold pool0/data/build@snap513 (212452) tag=.send-3045293-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.10:15:16 [txg:1058425] hold pool0/data/build@snap515 (215034) tag=.send-3045293-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.10:15:16 (155ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap514 '.send-3045293-1'
+            pool0/data/build@snap516 '.send-3045293-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.10:15:53 [txg:1058433] release pool0/data/build@snap513 (212452) tag=.send-3045293-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.10:15:53 [txg:1058433] release pool0/data/build@snap515 (215034) tag=.send-3045293-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.10:15:53 zfs send -c -I pool0/data/build@snap513 pool0/data/build@snap515 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.11:00:01 [txg:1058964] snapshot pool0/data/build@snap517 (217951)   [on zfs-demo.example.org]
+2026-11-17.11:00:01 (307ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap517
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.11:00:01 zfs snapshot -r pool0/data/build@snap517 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.11:15:01 [txg:1059144] destroy pool0/data/build@snap468 (198644)   [on zfs-demo.example.org]
+2026-11-17.11:15:02 (517ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap468
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.11:15:02 zfs destroy pool0/data/build@snap468 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.11:15:16 [txg:1059147] hold pool0/data/build@snap515 (215034) tag=.send-3088195-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.11:15:16 [txg:1059147] hold pool0/data/build@snap517 (217951) tag=.send-3088195-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.11:15:17 (249ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap516 '.send-3088195-1'
+            pool0/data/build@snap518 '.send-3088195-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.11:16:20 [txg:1059160] release pool0/data/build@snap515 (215034) tag=.send-3088195-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.11:16:20 [txg:1059160] release pool0/data/build@snap517 (217951) tag=.send-3088195-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.11:16:20 zfs send -c -I pool0/data/build@snap515 pool0/data/build@snap517 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.12:00:02 [txg:1059689] snapshot pool0/data/build@snap519 (221962)   [on zfs-demo.example.org]
+2026-11-17.12:00:02 (353ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap519
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.12:00:02 zfs snapshot -r pool0/data/build@snap519 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.12:00:02 [txg:1059690] destroy pool0/data/build@snap470 (198972)   [on zfs-demo.example.org]
+2026-11-17.12:00:02 (338ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap470
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.12:00:02 zfs destroy pool0/data/build@snap470 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.12:15:13 [txg:1059875] hold pool0/data/build@snap517 (217951) tag=.send-3132044-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.12:15:13 [txg:1059875] hold pool0/data/build@snap519 (221962) tag=.send-3132044-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.12:15:13 (281ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap518 '.send-3132044-1'
+            pool0/data/build@snap520 '.send-3132044-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.12:16:31 [txg:1059891] release pool0/data/build@snap517 (217951) tag=.send-3132044-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.12:16:31 [txg:1059891] release pool0/data/build@snap519 (221962) tag=.send-3132044-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.12:16:31 zfs send -c -I pool0/data/build@snap517 pool0/data/build@snap519 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.13:00:01 [txg:1060416] snapshot pool0/data/build@snap521 (217208)   [on zfs-demo.example.org]
+2026-11-17.13:00:01 (284ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap521
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.13:00:01 zfs snapshot -r pool0/data/build@snap521 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.13:15:02 [txg:1060602] destroy pool0/data/build@snap472 (196337)   [on zfs-demo.example.org]
+2026-11-17.13:15:02 (684ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap472
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.13:15:02 zfs destroy pool0/data/build@snap472 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.13:15:16 [txg:1060606] hold pool0/data/build@snap519 (221962) tag=.send-3175004-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.13:15:16 [txg:1060606] hold pool0/data/build@snap521 (217208) tag=.send-3175004-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.13:15:16 (179ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap520 '.send-3175004-1'
+            pool0/data/build@snap522 '.send-3175004-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.13:16:38 [txg:1060622] release pool0/data/build@snap519 (221962) tag=.send-3175004-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.13:16:38 [txg:1060622] release pool0/data/build@snap521 (217208) tag=.send-3175004-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.13:16:38 zfs send -c -I pool0/data/build@snap519 pool0/data/build@snap521 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.14:00:02 [txg:1061167] snapshot pool0/data/build@snap523 (219096)   [on zfs-demo.example.org]
+2026-11-17.14:00:02 (105ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap523
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.14:00:02 zfs snapshot -r pool0/data/build@snap523 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.14:00:02 [txg:1061168] destroy pool0/data/build@snap474 (202778)   [on zfs-demo.example.org]
+2026-11-17.14:00:02 (262ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap474
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.14:00:02 zfs destroy pool0/data/build@snap474 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.14:15:35 [txg:1061365] hold pool0/data/build@snap521 (217208) tag=.send-3258327-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.14:15:35 [txg:1061365] hold pool0/data/build@snap523 (219096) tag=.send-3258327-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.14:15:35 (246ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap522 '.send-3258327-1'
+            pool0/data/build@snap524 '.send-3258327-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.14:16:33 [txg:1061377] release pool0/data/build@snap521 (217208) tag=.send-3258327-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.14:16:33 [txg:1061377] release pool0/data/build@snap523 (219096) tag=.send-3258327-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.14:16:33 zfs send -c -I pool0/data/build@snap521 pool0/data/build@snap523 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.15:00:00 [txg:1061900] snapshot pool0/data/build@snap525 (221255)   [on zfs-demo.example.org]
+2026-11-17.15:00:00 (124ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap525
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.15:00:00 zfs snapshot -r pool0/data/build@snap525 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.15:15:02 [txg:1062086] destroy pool0/data/build@snap476 (198771)   [on zfs-demo.example.org]
+2026-11-17.15:15:02 (516ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap476
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.15:15:02 zfs destroy pool0/data/build@snap476 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.15:15:16 [txg:1062089] hold pool0/data/build@snap523 (219096) tag=.send-3388644-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.15:15:16 [txg:1062089] hold pool0/data/build@snap525 (221255) tag=.send-3388644-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.15:15:17 (294ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap524 '.send-3388644-1'
+            pool0/data/build@snap526 '.send-3388644-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.15:16:30 [txg:1062104] release pool0/data/build@snap523 (219096) tag=.send-3388644-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.15:16:30 [txg:1062104] release pool0/data/build@snap525 (221255) tag=.send-3388644-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.15:16:30 zfs send -c -I pool0/data/build@snap523 pool0/data/build@snap525 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.16:00:00 [txg:1062634] snapshot pool0/data/build@snap527 (218874)   [on zfs-demo.example.org]
+2026-11-17.16:00:01 (228ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap527
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.16:00:01 zfs snapshot -r pool0/data/build@snap527 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.16:15:02 [txg:1062813] destroy pool0/data/build@snap478 (201694)   [on zfs-demo.example.org]
+2026-11-17.16:15:02 (429ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap478
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.16:15:02 zfs destroy pool0/data/build@snap478 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.16:15:16 [txg:1062816] hold pool0/data/build@snap525 (221255) tag=.send-3735365-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.16:15:16 [txg:1062816] hold pool0/data/build@snap527 (218874) tag=.send-3735365-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.16:15:17 (271ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap526 '.send-3735365-1'
+            pool0/data/build@snap528 '.send-3735365-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.16:16:17 [txg:1062829] release pool0/data/build@snap525 (221255) tag=.send-3735365-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.16:16:17 [txg:1062829] release pool0/data/build@snap527 (218874) tag=.send-3735365-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.16:16:17 zfs send -c -I pool0/data/build@snap525 pool0/data/build@snap527 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.17:00:01 [txg:1063352] snapshot pool0/data/build@snap529 (219249)   [on zfs-demo.example.org]
+2026-11-17.17:00:01 (93ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap529
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.17:00:01 zfs snapshot -r pool0/data/build@snap529 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.17:15:01 [txg:1063534] destroy pool0/data/build@snap480 (202049)   [on zfs-demo.example.org]
+2026-11-17.17:15:02 (458ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap480
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.17:15:02 zfs destroy pool0/data/build@snap480 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.17:15:35 [txg:1063541] hold pool0/data/build@snap527 (218874) tag=.send-4049149-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.17:15:35 [txg:1063541] hold pool0/data/build@snap529 (219249) tag=.send-4049149-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.17:15:35 (113ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap528 '.send-4049149-1'
+            pool0/data/build@snap530 '.send-4049149-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.17:16:38 [txg:1063554] release pool0/data/build@snap527 (218874) tag=.send-4049149-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.17:16:38 [txg:1063554] release pool0/data/build@snap529 (219249) tag=.send-4049149-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.17:16:38 zfs send -c -I pool0/data/build@snap527 pool0/data/build@snap529 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.18:00:01 [txg:1064075] snapshot pool0/data/build@snap531 (224541)   [on zfs-demo.example.org]
+2026-11-17.18:00:01 (165ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap531
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.18:00:01 zfs snapshot -r pool0/data/build@snap531 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.18:15:01 [txg:1064255] destroy pool0/data/build@snap482 (203863)   [on zfs-demo.example.org]
+2026-11-17.18:15:01 (450ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap482
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.18:15:01 zfs destroy pool0/data/build@snap482 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.18:15:16 [txg:1064258] hold pool0/data/build@snap529 (219249) tag=.send-4107498-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.18:15:16 [txg:1064258] hold pool0/data/build@snap531 (224541) tag=.send-4107498-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.18:15:17 (254ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap530 '.send-4107498-1'
+            pool0/data/build@snap532 '.send-4107498-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.18:16:25 [txg:1064273] release pool0/data/build@snap529 (219249) tag=.send-4107498-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.18:16:25 [txg:1064273] release pool0/data/build@snap531 (224541) tag=.send-4107498-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.18:16:25 zfs send -c -I pool0/data/build@snap529 pool0/data/build@snap531 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.19:00:01 [txg:1064794] snapshot pool0/data/build@snap10 (226610)   [on zfs-demo.example.org]
+2026-11-17.19:00:01 (121ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap10
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.19:00:01 zfs snapshot -r pool0/data/build@snap10 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.19:00:01 [txg:1064795] snapshot pool0/data/build@snap533 (226617)   [on zfs-demo.example.org]
+2026-11-17.19:00:01 (62ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap533
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.19:00:01 zfs snapshot -r pool0/data/build@snap533 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.19:00:02 [txg:1064796] destroy pool0/data/build@snap484 (207635)   [on zfs-demo.example.org]
+2026-11-17.19:00:02 (65ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap484
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.19:00:02 zfs destroy pool0/data/build@snap484 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.19:00:02 [txg:1064797] destroy pool0/data/build@snap185 (114073)   [on zfs-demo.example.org]
+2026-11-17.19:00:02 (595ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap185
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.19:00:02 zfs destroy pool0/data/build@snap185 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.19:15:11 [txg:1064984] hold pool0/data/build@snap531 (224541) tag=.send-4165684-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.19:15:11 [txg:1064984] hold pool0/data/build@snap10 (226610) tag=.send-4165684-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.19:15:11 [txg:1064984] hold pool0/data/build@snap533 (226617) tag=.send-4165684-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.19:15:12 (84ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap532 '.send-4165684-1'
+            pool0/data/build@snap534 '.send-4165684-1'
+            pool0/data/build@snap535 '.send-4165684-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.19:16:25 [txg:1064999] release pool0/data/build@snap531 (224541) tag=.send-4165684-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.19:16:25 [txg:1064999] release pool0/data/build@snap10 (226610) tag=.send-4165684-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.19:16:25 [txg:1064999] release pool0/data/build@snap533 (226617) tag=.send-4165684-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.19:16:25 zfs send -c -I pool0/data/build@snap531 pool0/data/build@snap533 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.20:00:01 [txg:1065525] snapshot pool0/data/build@snap536 (226897)   [on zfs-demo.example.org]
+2026-11-17.20:00:01 (463ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap536
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.20:00:01 zfs snapshot -r pool0/data/build@snap536 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.20:15:01 [txg:1065706] destroy pool0/data/build@snap487 (207527)   [on zfs-demo.example.org]
+2026-11-17.20:15:02 (510ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap487
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.20:15:02 zfs destroy pool0/data/build@snap487 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.20:15:16 [txg:1065709] hold pool0/data/build@snap533 (226617) tag=.send-29355-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.20:15:16 [txg:1065709] hold pool0/data/build@snap536 (226897) tag=.send-29355-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.20:15:16 (491ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap535 '.send-29355-1'
+            pool0/data/build@snap537 '.send-29355-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.20:16:39 [txg:1065726] release pool0/data/build@snap533 (226617) tag=.send-29355-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.20:16:39 [txg:1065726] release pool0/data/build@snap536 (226897) tag=.send-29355-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.20:16:39 zfs send -c -I pool0/data/build@snap533 pool0/data/build@snap536 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.21:00:00 [txg:1066252] snapshot pool0/data/build@snap538 (223329)   [on zfs-demo.example.org]
+2026-11-17.21:00:00 (238ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap538
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.21:00:00 zfs snapshot -r pool0/data/build@snap538 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.21:15:01 [txg:1066436] destroy pool0/data/build@snap489 (207676)   [on zfs-demo.example.org]
+2026-11-17.21:15:01 (419ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap489
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.21:15:01 zfs destroy pool0/data/build@snap489 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.21:15:16 [txg:1066440] hold pool0/data/build@snap536 (226897) tag=.send-87121-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.21:15:16 [txg:1066440] hold pool0/data/build@snap538 (223329) tag=.send-87121-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.21:15:16 (50ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap537 '.send-87121-1'
+            pool0/data/build@snap539 '.send-87121-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.21:16:33 [txg:1066456] release pool0/data/build@snap536 (226897) tag=.send-87121-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.21:16:33 [txg:1066456] release pool0/data/build@snap538 (223329) tag=.send-87121-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.21:16:33 zfs send -c -I pool0/data/build@snap536 pool0/data/build@snap538 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.22:00:01 [txg:1066978] snapshot pool0/data/build@snap540 (226671)   [on zfs-demo.example.org]
+2026-11-17.22:00:01 (161ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap540
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.22:00:01 zfs snapshot -r pool0/data/build@snap540 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.22:15:01 [txg:1067157] destroy pool0/data/build@snap491 (206805)   [on zfs-demo.example.org]
+2026-11-17.22:15:01 (354ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap491
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.22:15:01 zfs destroy pool0/data/build@snap491 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.22:15:35 [txg:1067164] hold pool0/data/build@snap538 (223329) tag=.send-144813-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.22:15:35 [txg:1067164] hold pool0/data/build@snap540 (226671) tag=.send-144813-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.22:15:35 (309ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap539 '.send-144813-1'
+            pool0/data/build@snap541 '.send-144813-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.22:16:53 [txg:1067180] release pool0/data/build@snap538 (223329) tag=.send-144813-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.22:16:53 [txg:1067180] release pool0/data/build@snap540 (226671) tag=.send-144813-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.22:16:53 zfs send -c -I pool0/data/build@snap538 pool0/data/build@snap540 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.23:00:00 [txg:1067699] snapshot pool0/data/build@snap542 (228647)   [on zfs-demo.example.org]
+2026-11-17.23:00:00 (183ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap542
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.23:00:00 zfs snapshot -r pool0/data/build@snap542 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.23:15:01 [txg:1067881] destroy pool0/data/build@snap493 (209470)   [on zfs-demo.example.org]
+2026-11-17.23:15:01 (360ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap493
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.23:15:01 zfs destroy pool0/data/build@snap493 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.23:15:16 [txg:1067885] hold pool0/data/build@snap540 (226671) tag=.send-202833-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.23:15:16 [txg:1067885] hold pool0/data/build@snap542 (228647) tag=.send-202833-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-17.23:15:16 (66ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap541 '.send-202833-1'
+            pool0/data/build@snap543 '.send-202833-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-17.23:16:30 [txg:1067900] release pool0/data/build@snap540 (226671) tag=.send-202833-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.23:16:30 [txg:1067900] release pool0/data/build@snap542 (228647) tag=.send-202833-1 refs=0 [on zfs-demo.example.org]
+2026-11-17.23:16:30 zfs send -c -I pool0/data/build@snap540 pool0/data/build@snap542 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.00:00:02 [txg:1068422] snapshot pool0/data/build@snap544 (224118)   [on zfs-demo.example.org]
+2026-11-18.00:00:02 (253ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap544
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.00:00:02 zfs snapshot -r pool0/data/build@snap544 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.00:15:02 [txg:1068601] destroy pool0/data/build@snap495 (208826)   [on zfs-demo.example.org]
+2026-11-18.00:15:02 (213ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap495
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.00:15:02 zfs destroy pool0/data/build@snap495 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.00:15:35 [txg:1068608] hold pool0/data/build@snap542 (228647) tag=.send-262803-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.00:15:35 [txg:1068608] hold pool0/data/build@snap544 (224118) tag=.send-262803-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.00:15:35 (56ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap543 '.send-262803-1'
+            pool0/data/build@snap545 '.send-262803-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.00:16:38 [txg:1068621] release pool0/data/build@snap542 (228647) tag=.send-262803-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.00:16:38 [txg:1068621] release pool0/data/build@snap544 (224118) tag=.send-262803-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.00:16:38 zfs send -c -I pool0/data/build@snap542 pool0/data/build@snap544 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.01:00:00 [txg:1069138] snapshot pool0/data/build@snap546 (229593)   [on zfs-demo.example.org]
+2026-11-18.01:00:00 (54ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap546
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.01:00:00 zfs snapshot -r pool0/data/build@snap546 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.01:15:01 [txg:1069314] destroy pool0/data/build@snap497 (206945)   [on zfs-demo.example.org]
+2026-11-18.01:15:01 (299ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap497
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.01:15:01 zfs destroy pool0/data/build@snap497 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.01:15:06 [txg:1069315] hold pool0/data/build@snap544 (224118) tag=.send-321822-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.01:15:06 [txg:1069315] hold pool0/data/build@snap546 (229593) tag=.send-321822-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.01:15:06 (113ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap545 '.send-321822-1'
+            pool0/data/build@snap547 '.send-321822-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.01:15:28 [txg:1069320] release pool0/data/build@snap544 (224118) tag=.send-321822-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.01:15:28 [txg:1069320] release pool0/data/build@snap546 (229593) tag=.send-321822-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.01:15:28 zfs send -c -I pool0/data/build@snap544 pool0/data/build@snap546 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.02:00:01 [txg:1069853] snapshot pool0/data/build@snap548 (227879)   [on zfs-demo.example.org]
+2026-11-18.02:00:02 (54ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap548
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.02:00:02 zfs snapshot -r pool0/data/build@snap548 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.02:00:02 [txg:1069854] destroy pool0/data/build@snap499 (210529)   [on zfs-demo.example.org]
+2026-11-18.02:00:02 (170ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap499
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.02:00:02 zfs destroy pool0/data/build@snap499 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.02:15:16 [txg:1070036] hold pool0/data/build@snap546 (229593) tag=.send-380636-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.02:15:16 [txg:1070036] hold pool0/data/build@snap548 (227879) tag=.send-380636-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.02:15:16 (40ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap547 '.send-380636-1'
+            pool0/data/build@snap549 '.send-380636-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.02:15:38 [txg:1070041] release pool0/data/build@snap546 (229593) tag=.send-380636-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.02:15:38 [txg:1070041] release pool0/data/build@snap548 (227879) tag=.send-380636-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.02:15:38 zfs send -c -I pool0/data/build@snap546 pool0/data/build@snap548 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.03:00:01 [txg:1070569] snapshot pool0/data/build@snap550 (233737)   [on zfs-demo.example.org]
+2026-11-18.03:00:01 (59ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap550
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.03:00:01 zfs snapshot -r pool0/data/build@snap550 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.03:15:01 [txg:1070747] destroy pool0/data/build@snap501 (211530)   [on zfs-demo.example.org]
+2026-11-18.03:15:02 (263ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap501
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.03:15:02 zfs destroy pool0/data/build@snap501 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.03:15:35 [txg:1070754] hold pool0/data/build@snap548 (227879) tag=.send-440928-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.03:15:35 [txg:1070754] hold pool0/data/build@snap550 (233737) tag=.send-440928-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.03:15:35 (64ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap549 '.send-440928-1'
+            pool0/data/build@snap551 '.send-440928-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.03:15:56 [txg:1070760] release pool0/data/build@snap548 (227879) tag=.send-440928-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.03:15:56 [txg:1070760] release pool0/data/build@snap550 (233737) tag=.send-440928-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.03:15:56 zfs send -c -I pool0/data/build@snap548 pool0/data/build@snap550 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.04:00:01 [txg:1071286] snapshot pool0/data/build@snap552 (235011)   [on zfs-demo.example.org]
+2026-11-18.04:00:01 (69ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap552
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.04:00:01 zfs snapshot -r pool0/data/build@snap552 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.04:15:00 [txg:1071467] destroy pool0/data/build@snap503 (202619)   [on zfs-demo.example.org]
+2026-11-18.04:15:01 (368ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap503
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.04:15:01 zfs destroy pool0/data/build@snap503 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.04:15:16 [txg:1071471] hold pool0/data/build@snap550 (233737) tag=.send-501353-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.04:15:16 [txg:1071471] hold pool0/data/build@snap552 (235011) tag=.send-501353-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.04:15:16 (70ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap551 '.send-501353-1'
+            pool0/data/build@snap553 '.send-501353-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.04:15:40 [txg:1071477] release pool0/data/build@snap550 (233737) tag=.send-501353-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.04:15:40 [txg:1071477] release pool0/data/build@snap552 (235011) tag=.send-501353-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.04:15:40 zfs send -c -I pool0/data/build@snap550 pool0/data/build@snap552 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.05:00:01 [txg:1072004] snapshot pool0/data/build@snap554 (230605)   [on zfs-demo.example.org]
+2026-11-18.05:00:01 (196ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap554
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.05:00:01 zfs snapshot -r pool0/data/build@snap554 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.05:00:02 [txg:1072005] destroy pool0/data/build@snap505 (215190)   [on zfs-demo.example.org]
+2026-11-18.05:00:02 (312ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap505
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.05:00:02 zfs destroy pool0/data/build@snap505 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.05:15:16 [txg:1072187] hold pool0/data/build@snap552 (235011) tag=.send-560980-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.05:15:16 [txg:1072187] hold pool0/data/build@snap554 (230605) tag=.send-560980-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.05:15:16 (40ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap553 '.send-560980-1'
+            pool0/data/build@snap555 '.send-560980-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.05:15:39 [txg:1072192] release pool0/data/build@snap552 (235011) tag=.send-560980-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.05:15:39 [txg:1072192] release pool0/data/build@snap554 (230605) tag=.send-560980-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.05:15:39 zfs send -c -I pool0/data/build@snap552 pool0/data/build@snap554 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.06:00:01 [txg:1072724] snapshot pool0/data/build@snap556 (234263)   [on zfs-demo.example.org]
+2026-11-18.06:00:01 (42ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap556
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.06:00:01 zfs snapshot -r pool0/data/build@snap556 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.06:15:01 [txg:1072904] destroy pool0/data/build@snap507 (213963)   [on zfs-demo.example.org]
+2026-11-18.06:15:01 (318ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap507
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.06:15:01 zfs destroy pool0/data/build@snap507 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.06:15:35 [txg:1072912] hold pool0/data/build@snap554 (230605) tag=.send-620129-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.06:15:35 [txg:1072912] hold pool0/data/build@snap556 (234263) tag=.send-620129-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.06:15:35 (42ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap555 '.send-620129-1'
+            pool0/data/build@snap557 '.send-620129-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.06:15:58 [txg:1072917] release pool0/data/build@snap554 (230605) tag=.send-620129-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.06:15:58 [txg:1072917] release pool0/data/build@snap556 (234263) tag=.send-620129-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.06:15:58 zfs send -c -I pool0/data/build@snap554 pool0/data/build@snap556 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.07:00:02 [txg:1073448] snapshot pool0/data/build@snap558 (233056)   [on zfs-demo.example.org]
+2026-11-18.07:00:02 (175ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap558
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.07:00:02 zfs snapshot -r pool0/data/build@snap558 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.07:00:02 [txg:1073449] destroy pool0/data/build@snap509 (217856)   [on zfs-demo.example.org]
+2026-11-18.07:00:02 (330ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap509
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.07:00:02 zfs destroy pool0/data/build@snap509 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.07:15:16 [txg:1073636] hold pool0/data/build@snap556 (234263) tag=.send-681821-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.07:15:16 [txg:1073636] hold pool0/data/build@snap558 (233056) tag=.send-681821-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.07:15:16 (115ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap557 '.send-681821-1'
+            pool0/data/build@snap559 '.send-681821-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.07:15:34 [txg:1073640] release pool0/data/build@snap556 (234263) tag=.send-681821-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.07:15:34 [txg:1073640] release pool0/data/build@snap558 (233056) tag=.send-681821-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.07:15:35 zfs send -c -I pool0/data/build@snap556 pool0/data/build@snap558 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.08:00:01 [txg:1074172] snapshot pool0/data/build@snap560 (237716)   [on zfs-demo.example.org]
+2026-11-18.08:00:01 (191ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap560
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.08:00:01 zfs snapshot -r pool0/data/build@snap560 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.08:15:01 [txg:1074352] destroy pool0/data/build@snap511 (216658)   [on zfs-demo.example.org]
+2026-11-18.08:15:02 (177ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap511
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.08:15:02 zfs destroy pool0/data/build@snap511 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.08:15:35 [txg:1074359] hold pool0/data/build@snap558 (233056) tag=.send-744559-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.08:15:35 [txg:1074359] hold pool0/data/build@snap560 (237716) tag=.send-744559-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.08:15:35 (119ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap559 '.send-744559-1'
+            pool0/data/build@snap561 '.send-744559-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.08:16:36 [txg:1074371] release pool0/data/build@snap558 (233056) tag=.send-744559-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.08:16:36 [txg:1074371] release pool0/data/build@snap560 (237716) tag=.send-744559-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.08:16:36 zfs send -c -I pool0/data/build@snap558 pool0/data/build@snap560 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.09:00:01 [txg:1074897] snapshot pool0/data/build@snap562 (231777)   [on zfs-demo.example.org]
+2026-11-18.09:00:01 (149ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap562
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.09:00:01 zfs snapshot -r pool0/data/build@snap562 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.09:15:01 [txg:1075078] destroy pool0/data/build@snap513 (212452)   [on zfs-demo.example.org]
+2026-11-18.09:15:01 (281ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap513
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.09:15:01 zfs destroy pool0/data/build@snap513 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.09:15:16 [txg:1075082] hold pool0/data/build@snap560 (237716) tag=.send-806081-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.09:15:16 [txg:1075082] hold pool0/data/build@snap562 (231777) tag=.send-806081-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.09:15:16 (123ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap561 '.send-806081-1'
+            pool0/data/build@snap563 '.send-806081-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.09:16:18 [txg:1075094] release pool0/data/build@snap560 (237716) tag=.send-806081-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.09:16:18 [txg:1075094] release pool0/data/build@snap562 (231777) tag=.send-806081-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.09:16:18 zfs send -c -I pool0/data/build@snap560 pool0/data/build@snap562 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.09:52:45 [txg:1075538] set pool0/data/home/shared (87725) refquota=7696581394432 [on zfs-demo.example.org]
+2026-11-18.09:52:45 zfs set refquota=7T pool0/data/home/shared [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.10:00:00 [txg:1075775] snapshot pool0/data/build@snap564 (239373)   [on zfs-demo.example.org]
+2026-11-18.10:00:00 (199ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap564
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.10:00:00 zfs snapshot -r pool0/data/build@snap564 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.10:15:01 [txg:1076476] destroy pool0/data/build@snap515 (215034)   [on zfs-demo.example.org]
+2026-11-18.10:15:01 (503ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap515
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.10:15:01 zfs destroy pool0/data/build@snap515 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.10:15:13 [txg:1076486] hold pool0/data/build@snap562 (231777) tag=.send-961269-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.10:15:13 [txg:1076486] hold pool0/data/build@snap564 (239373) tag=.send-961269-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.10:15:14 (341ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap563 '.send-961269-1'
+            pool0/data/build@snap565 '.send-961269-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.10:17:22 [txg:1076566] release pool0/data/build@snap562 (231777) tag=.send-961269-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.10:17:22 [txg:1076566] release pool0/data/build@snap564 (239373) tag=.send-961269-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.10:17:22 zfs send -c -I pool0/data/build@snap562 pool0/data/build@snap564 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.11:00:01 [txg:1079128] snapshot pool0/data/build@snap566 (240810)   [on zfs-demo.example.org]
+2026-11-18.11:00:01 (173ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap566
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.11:00:01 zfs snapshot -r pool0/data/build@snap566 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.11:15:02 [txg:1081979] destroy pool0/data/build@snap517 (217951)   [on zfs-demo.example.org]
+2026-11-18.11:15:02 (344ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap517
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.11:15:02 zfs destroy pool0/data/build@snap517 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.11:15:35 [txg:1082000] hold pool0/data/build@snap564 (239373) tag=.send-1103632-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.11:15:35 [txg:1082000] hold pool0/data/build@snap566 (240810) tag=.send-1103632-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.11:15:35 (280ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap565 '.send-1103632-1'
+            pool0/data/build@snap567 '.send-1103632-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.11:17:24 [txg:1082047] release pool0/data/build@snap564 (239373) tag=.send-1103632-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.11:17:24 [txg:1082047] release pool0/data/build@snap566 (240810) tag=.send-1103632-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.11:17:24 zfs send -c -I pool0/data/build@snap564 pool0/data/build@snap566 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.12:00:00 [txg:1082755] snapshot pool0/data/build@snap11 (242385)   [on zfs-demo.example.org]
+2026-11-18.12:00:00 (368ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap11
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.12:00:00 zfs snapshot -r pool0/data/build@snap11 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.12:15:01 [txg:1082940] destroy pool0/data/build@snap519 (221962)   [on zfs-demo.example.org]
+2026-11-18.12:15:01 (442ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap519
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.12:15:01 zfs destroy pool0/data/build@snap519 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.12:15:22 [txg:1082945] hold pool0/data/build@snap566 (240810) tag=.send-1156280-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.12:15:22 [txg:1082945] hold pool0/data/build@snap11 (242385) tag=.send-1156280-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.12:15:22 (106ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap567 '.send-1156280-1'
+            pool0/data/build@snap568 '.send-1156280-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.12:15:52 [txg:1082951] release pool0/data/build@snap566 (240810) tag=.send-1156280-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.12:15:52 [txg:1082951] release pool0/data/build@snap11 (242385) tag=.send-1156280-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.12:15:52 zfs send -c -I pool0/data/build@snap566 pool0/data/build@snap11 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.13:00:01 [txg:1083515] snapshot pool0/data/build@snap12 (247445)   [on zfs-demo.example.org]
+2026-11-18.13:00:01 (47ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap12
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.13:00:01 zfs snapshot -r pool0/data/build@snap12 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.13:10:41 [txg:1083642] create pool0/data/cache/postgres (243804)   [on zfs-demo.example.org]
+2026-11-18.13:10:41 [txg:1083643] set pool0/data/cache/postgres (243804) context=system_u:object_r:samba_share_t:s0 [on zfs-demo.example.org]
+2026-11-18.13:10:41 (71ms) ioctl create
+    input:
+        type: 2
+        props:
+            context: 'system_u:object_r:samba_share_t:s0'
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.13:10:41 zfs create -o context=system_u:object_r:samba_share_t:s0 pool0/data/cache/postgres [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.13:10:41 [txg:1083644] create pool0/data/cache/postgres/web (243811)   [on zfs-demo.example.org]
+2026-11-18.13:10:41 (43ms) ioctl create
+    input:
+        type: 2
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.13:10:41 zfs create pool0/data/cache/postgres/web [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.13:10:41 [txg:1083645] create pool0/data/cache/postgres/mail (243819)   [on zfs-demo.example.org]
+2026-11-18.13:10:41 (42ms) ioctl create
+    input:
+        type: 2
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.13:10:41 zfs create pool0/data/cache/postgres/mail [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.13:10:41 [txg:1083646] create pool0/data/cache/postgres/git (242555)   [on zfs-demo.example.org]
+2026-11-18.13:10:41 (33ms) ioctl create
+    input:
+        type: 2
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.13:10:41 zfs create pool0/data/cache/postgres/git [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.13:15:00 [txg:1083697] destroy pool0/data/build@snap521 (217208)   [on zfs-demo.example.org]
+2026-11-18.13:15:00 (265ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap521
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.13:15:00 zfs destroy pool0/data/build@snap521 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.13:15:35 [txg:1083704] hold pool0/data/build@snap11 (242385) tag=.send-1230052-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.13:15:35 [txg:1083704] hold pool0/data/build@snap12 (247445) tag=.send-1230052-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.13:15:35 (59ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap568 '.send-1230052-1'
+            pool0/data/build@snap569 '.send-1230052-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.13:15:49 [txg:1083707] release pool0/data/build@snap11 (242385) tag=.send-1230052-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.13:15:49 [txg:1083707] release pool0/data/build@snap12 (247445) tag=.send-1230052-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.13:15:49 zfs send -c -I pool0/data/build@snap11 pool0/data/build@snap12 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.14:00:00 [txg:1084237] snapshot pool0/data/build@snap13 (244782)   [on zfs-demo.example.org]
+2026-11-18.14:00:00 (119ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap13
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.14:00:00 zfs snapshot -r pool0/data/build@snap13 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.14:15:01 [txg:1084509] destroy pool0/data/build@snap523 (219096)   [on zfs-demo.example.org]
+2026-11-18.14:15:01 (283ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap523
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.14:15:01 zfs destroy pool0/data/build@snap523 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.14:15:35 [txg:1084516] hold pool0/data/build@snap12 (247445) tag=.send-1482334-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.14:15:35 [txg:1084516] hold pool0/data/build@snap13 (244782) tag=.send-1482334-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.14:15:35 (44ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap569 '.send-1482334-1'
+            pool0/data/build@snap570 '.send-1482334-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.14:16:05 [txg:1084522] release pool0/data/build@snap12 (247445) tag=.send-1482334-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.14:16:05 [txg:1084522] release pool0/data/build@snap13 (244782) tag=.send-1482334-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.14:16:05 zfs send -c -I pool0/data/build@snap12 pool0/data/build@snap13 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:00:01 [txg:1085043] snapshot pool0/data/build@snap14 (249732)   [on zfs-demo.example.org]
+2026-11-18.15:00:02 (62ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap14
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:00:02 zfs snapshot -r pool0/data/build@snap14 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:00:02 [txg:1085044] destroy pool0/data/build@snap525 (221255)   [on zfs-demo.example.org]
+2026-11-18.15:00:02 (368ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap525
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:00:02 zfs destroy pool0/data/build@snap525 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:15:35 [txg:1085230] hold pool0/data/build@snap13 (244782) tag=.send-1536163-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.15:15:35 [txg:1085230] hold pool0/data/build@snap14 (249732) tag=.send-1536163-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.15:15:35 (53ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap570 '.send-1536163-1'
+            pool0/data/build@snap571 '.send-1536163-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:16:15 [txg:1085239] release pool0/data/build@snap13 (244782) tag=.send-1536163-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.15:16:15 [txg:1085239] release pool0/data/build@snap14 (249732) tag=.send-1536163-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.15:16:15 zfs send -c -I pool0/data/build@snap13 pool0/data/build@snap14 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:46:15 [txg:1085595] set pool0/data/home/projects (104162) refquota=27487790694400 [on zfs-demo.example.org]
+2026-11-18.15:46:15 zfs set refquota=25T pool0/data/home/projects [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:46:15 [txg:1085596] set pool0/data/home/scratch (611) refquota=27487790694400 [on zfs-demo.example.org]
+2026-11-18.15:46:15 zfs set refquota=25T pool0/data/home/scratch [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:46:15 [txg:1085597] set pool0/data/home/backups (107654) refquota=27487790694400 [on zfs-demo.example.org]
+2026-11-18.15:46:15 zfs set refquota=25T pool0/data/home/backups [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:46:15 [txg:1085598] set pool0/data/home/archive (195275) refquota=27487790694400 [on zfs-demo.example.org]
+2026-11-18.15:46:15 zfs set refquota=25T pool0/data/home/archive [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:46:15 [txg:1085599] set pool0/data/home/vm (55543) refquota=27487790694400 [on zfs-demo.example.org]
+2026-11-18.15:46:15 zfs set refquota=25T pool0/data/home/vm [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:46:15 [txg:1085600] set pool0/data/home/db (105245) refquota=27487790694400 [on zfs-demo.example.org]
+2026-11-18.15:46:15 zfs set refquota=25T pool0/data/home/db [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:46:15 [txg:1085601] set pool0/data/home/media (106427) refquota=27487790694400 [on zfs-demo.example.org]
+2026-11-18.15:46:15 zfs set refquota=25T pool0/data/home/media [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:46:16 [txg:1085602] set pool0/data/home/shared (87725) refquota=27487790694400 [on zfs-demo.example.org]
+2026-11-18.15:46:16 zfs set refquota=25T pool0/data/home/shared [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:46:16 [txg:1085603] set pool0/data/home/research (139628) refquota=27487790694400 [on zfs-demo.example.org]
+2026-11-18.15:46:16 zfs set refquota=25T pool0/data/home/research [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:46:16 [txg:1085604] set pool0/data/home/lab (198857) refquota=27487790694400 [on zfs-demo.example.org]
+2026-11-18.15:46:16 zfs set refquota=25T pool0/data/home/lab [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:46:16 [txg:1085605] set pool0/data/home/genomics (100223) refquota=27487790694400 [on zfs-demo.example.org]
+2026-11-18.15:46:16 zfs set refquota=25T pool0/data/home/genomics [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:46:16 [txg:1085606] set pool0/data/home/imaging (141025) refquota=27487790694400 [on zfs-demo.example.org]
+2026-11-18.15:46:16 zfs set refquota=25T pool0/data/home/imaging [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:46:16 [txg:1085607] set pool0/data/home/analysis (107139) refquota=27487790694400 [on zfs-demo.example.org]
+2026-11-18.15:46:16 zfs set refquota=25T pool0/data/home/analysis [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:46:16 [txg:1085608] set pool0/data/home/raw (106412) refquota=27487790694400 [on zfs-demo.example.org]
+2026-11-18.15:46:16 zfs set refquota=25T pool0/data/home/raw [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:46:16 [txg:1085609] set pool0/data/home/processed (107035) refquota=27487790694400 [on zfs-demo.example.org]
+2026-11-18.15:46:16 zfs set refquota=25T pool0/data/home/processed [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:46:16 [txg:1085610] set pool0/data/home/results (147270) refquota=27487790694400 [on zfs-demo.example.org]
+2026-11-18.15:46:16 zfs set refquota=25T pool0/data/home/results [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:46:16 [txg:1085611] set pool0/data/home/users (105354) refquota=27487790694400 [on zfs-demo.example.org]
+2026-11-18.15:46:16 zfs set refquota=25T pool0/data/home/users [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:46:16 [txg:1085612] set pool0/data/home/alice (103013) refquota=27487790694400 [on zfs-demo.example.org]
+2026-11-18.15:46:17 zfs set refquota=25T pool0/data/home/alice [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:46:17 [txg:1085613] set pool0/data/home/bob (105226) refquota=27487790694400 [on zfs-demo.example.org]
+2026-11-18.15:46:17 zfs set refquota=25T pool0/data/home/bob [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:46:17 [txg:1085614] set pool0/data/home/carol (103490) refquota=27487790694400 [on zfs-demo.example.org]
+2026-11-18.15:46:17 zfs set refquota=25T pool0/data/home/carol [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:46:17 [txg:1085615] set pool0/data/home/dave (103028) refquota=27487790694400 [on zfs-demo.example.org]
+2026-11-18.15:46:17 zfs set refquota=25T pool0/data/home/dave [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:46:17 [txg:1085616] set pool0/data/home/erin (106519) refquota=27487790694400 [on zfs-demo.example.org]
+2026-11-18.15:46:17 zfs set refquota=25T pool0/data/home/erin [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:46:17 [txg:1085617] set pool0/data/home/frank (105380) refquota=27487790694400 [on zfs-demo.example.org]
+2026-11-18.15:46:17 zfs set refquota=25T pool0/data/home/frank [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:46:17 [txg:1085618] set pool0/data/home/grace (147248) refquota=27487790694400 [on zfs-demo.example.org]
+2026-11-18.15:46:17 zfs set refquota=25T pool0/data/home/grace [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:46:17 [txg:1085619] set pool0/data/home/heidi (105141) refquota=27487790694400 [on zfs-demo.example.org]
+2026-11-18.15:46:17 zfs set refquota=25T pool0/data/home/heidi [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:46:17 [txg:1085620] set pool0/data/home/ivan (82682) refquota=27487790694400 [on zfs-demo.example.org]
+2026-11-18.15:46:17 zfs set refquota=25T pool0/data/home/ivan [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.15:46:17 [txg:1085621] set pool0/data/home/judy (105119) refquota=27487790694400 [on zfs-demo.example.org]
+2026-11-18.15:46:18 zfs set refquota=25T pool0/data/home/judy [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.16:00:01 [txg:1085840] snapshot pool0/data/build@snap15 (248629)   [on zfs-demo.example.org]
+2026-11-18.16:00:01 (187ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap15
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.16:00:01 zfs snapshot -r pool0/data/build@snap15 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.16:00:01 [txg:1085841] destroy pool0/data/build@snap527 (218874)   [on zfs-demo.example.org]
+2026-11-18.16:00:02 (301ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap527
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.16:00:02 zfs destroy pool0/data/build@snap527 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.16:15:16 [txg:1086021] hold pool0/data/build@snap14 (249732) tag=.send-1617309-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.16:15:16 [txg:1086021] hold pool0/data/build@snap15 (248629) tag=.send-1617309-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.16:15:16 (235ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap571 '.send-1617309-1'
+            pool0/data/build@snap572 '.send-1617309-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.16:15:47 [txg:1086028] release pool0/data/build@snap14 (249732) tag=.send-1617309-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.16:15:47 [txg:1086028] release pool0/data/build@snap15 (248629) tag=.send-1617309-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.16:15:47 zfs send -c -I pool0/data/build@snap14 pool0/data/build@snap15 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.16:26:53 [txg:1086198] set pool0/data/home (71352) quota=329853488332800 [on zfs-demo.example.org]
+2026-11-18.16:26:53 zfs set quota=300T pool0/data/home [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.17:00:00 [txg:1086779] snapshot pool0/data/build@snap16 (251411)   [on zfs-demo.example.org]
+2026-11-18.17:00:00 (102ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap16
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.17:00:00 zfs snapshot -r pool0/data/build@snap16 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.17:15:03 [txg:1087149] destroy pool0/data/build@snap529 (219249)   [on zfs-demo.example.org]
+2026-11-18.17:15:03 (2203ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap529
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.17:15:03 zfs destroy pool0/data/build@snap529 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.17:15:14 [txg:1087159] hold pool0/data/build@snap15 (248629) tag=.send-1747729-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.17:15:14 [txg:1087159] hold pool0/data/build@snap16 (251411) tag=.send-1747729-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.17:15:14 (2075ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap572 '.send-1747729-1'
+            pool0/data/build@snap573 '.send-1747729-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.17:21:56 [txg:1087463] release pool0/data/build@snap15 (248629) tag=.send-1747729-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.17:21:56 [txg:1087463] release pool0/data/build@snap16 (251411) tag=.send-1747729-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.17:21:57 zfs send -c -I pool0/data/build@snap15 pool0/data/build@snap16 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.18:00:02 [txg:1089092] snapshot pool0/data/build@snap17 (252943)   [on zfs-demo.example.org]
+2026-11-18.18:00:02 (1862ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap17
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.18:00:02 zfs snapshot -r pool0/data/build@snap17 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.18:00:04 [txg:1089094] destroy pool0/data/build@snap531 (224541)   [on zfs-demo.example.org]
+2026-11-18.18:00:05 (2729ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap531
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.18:00:05 zfs destroy pool0/data/build@snap531 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.18:15:18 [txg:1089723] hold pool0/data/build@snap16 (251411) tag=.send-1847507-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.18:15:18 [txg:1089723] hold pool0/data/build@snap17 (252943) tag=.send-1847507-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.18:15:18 (1861ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap573 '.send-1847507-1'
+            pool0/data/build@snap574 '.send-1847507-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.18:19:23 [txg:1089916] release pool0/data/build@snap16 (251411) tag=.send-1847507-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.18:19:23 [txg:1089916] release pool0/data/build@snap17 (252943) tag=.send-1847507-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.18:19:24 zfs send -c -I pool0/data/build@snap16 pool0/data/build@snap17 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.19:00:02 [txg:1091706] snapshot pool0/data/build@snap18 (254273)   [on zfs-demo.example.org]
+2026-11-18.19:00:02 (1937ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap18
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.19:00:02 zfs snapshot -r pool0/data/build@snap18 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.19:00:04 [txg:1091708] snapshot pool0/data/build@snap19 (254519)   [on zfs-demo.example.org]
+2026-11-18.19:00:05 (2553ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap19
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.19:00:05 zfs snapshot -r pool0/data/build@snap19 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.19:00:06 [txg:1091710] destroy pool0/data/build@snap533 (226617)   [on zfs-demo.example.org]
+2026-11-18.19:00:07 (1759ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap533
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.19:00:07 zfs destroy pool0/data/build@snap533 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.19:00:08 [txg:1091712] destroy pool0/data/build@snap235 (153543)   [on zfs-demo.example.org]
+2026-11-18.19:00:09 (1927ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap235
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.19:00:09 zfs destroy pool0/data/build@snap235 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.19:15:18 [txg:1092349] hold pool0/data/build@snap17 (252943) tag=.send-2024392-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.19:15:18 [txg:1092349] hold pool0/data/build@snap18 (254273) tag=.send-2024392-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.19:15:18 [txg:1092349] hold pool0/data/build@snap19 (254519) tag=.send-2024392-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.19:15:18 (1897ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap574 '.send-2024392-1'
+            pool0/data/build@snap575 '.send-2024392-1'
+            pool0/data/build@snap576 '.send-2024392-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.19:16:13 [txg:1092385] release pool0/data/build@snap17 (252943) tag=.send-2024392-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.19:16:13 [txg:1092385] release pool0/data/build@snap18 (254273) tag=.send-2024392-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.19:16:13 [txg:1092385] release pool0/data/build@snap19 (254519) tag=.send-2024392-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.19:16:13 zfs send -c -I pool0/data/build@snap17 pool0/data/build@snap19 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.20:00:01 [txg:1093819] snapshot pool0/data/build@snap20 (258703)   [on zfs-demo.example.org]
+2026-11-18.20:00:01 (312ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap20
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.20:00:01 zfs snapshot -r pool0/data/build@snap20 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.20:15:01 [txg:1094016] destroy pool0/data/build@snap536 (226897)   [on zfs-demo.example.org]
+2026-11-18.20:15:02 (321ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap536
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.20:15:02 zfs destroy pool0/data/build@snap536 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.20:15:10 [txg:1094018] hold pool0/data/build@snap19 (254519) tag=.send-2127256-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.20:15:10 [txg:1094018] hold pool0/data/build@snap20 (258703) tag=.send-2127256-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.20:15:10 (187ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap576 '.send-2127256-1'
+            pool0/data/build@snap577 '.send-2127256-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.20:15:21 [txg:1094020] release pool0/data/build@snap19 (254519) tag=.send-2127256-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.20:15:21 [txg:1094020] release pool0/data/build@snap20 (258703) tag=.send-2127256-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.20:15:21 zfs send -c -I pool0/data/build@snap19 pool0/data/build@snap20 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.21:00:02 [txg:1094610] snapshot pool0/data/build@snap21 (257826)   [on zfs-demo.example.org]
+2026-11-18.21:00:02 (183ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap21
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.21:00:02 zfs snapshot -r pool0/data/build@snap21 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.21:00:02 [txg:1094611] destroy pool0/data/build@snap538 (223329)   [on zfs-demo.example.org]
+2026-11-18.21:00:02 (286ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap538
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.21:00:02 zfs destroy pool0/data/build@snap538 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.21:15:35 [txg:1094819] hold pool0/data/build@snap20 (258703) tag=.send-2169118-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.21:15:35 [txg:1094819] hold pool0/data/build@snap21 (257826) tag=.send-2169118-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.21:15:35 (112ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap577 '.send-2169118-1'
+            pool0/data/build@snap578 '.send-2169118-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.21:16:00 [txg:1094825] release pool0/data/build@snap20 (258703) tag=.send-2169118-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.21:16:00 [txg:1094825] release pool0/data/build@snap21 (257826) tag=.send-2169118-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.21:16:00 zfs send -c -I pool0/data/build@snap20 pool0/data/build@snap21 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.22:00:02 [txg:1095426] snapshot pool0/data/build@snap22 (257607)   [on zfs-demo.example.org]
+2026-11-18.22:00:02 (564ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap22
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.22:00:02 zfs snapshot -r pool0/data/build@snap22 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.22:00:02 [txg:1095427] destroy pool0/data/build@snap540 (226671)   [on zfs-demo.example.org]
+2026-11-18.22:00:02 (400ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap540
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.22:00:02 zfs destroy pool0/data/build@snap540 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.22:15:01 [txg:1095638] hold pool0/data/build@snap21 (257826) tag=.send-2210018-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.22:15:01 [txg:1095638] hold pool0/data/build@snap22 (257607) tag=.send-2210018-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.22:15:02 (200ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap578 '.send-2210018-1'
+            pool0/data/build@snap579 '.send-2210018-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.22:15:35 [txg:1095646] release pool0/data/build@snap21 (257826) tag=.send-2210018-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.22:15:35 [txg:1095646] release pool0/data/build@snap22 (257607) tag=.send-2210018-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.22:15:35 zfs send -c -I pool0/data/build@snap21 pool0/data/build@snap22 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.23:00:01 [txg:1096238] snapshot pool0/data/build@snap23 (261275)   [on zfs-demo.example.org]
+2026-11-18.23:00:01 (82ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap23
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.23:00:01 zfs snapshot -r pool0/data/build@snap23 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.23:00:01 [txg:1096239] destroy pool0/data/build@snap542 (228647)   [on zfs-demo.example.org]
+2026-11-18.23:00:01 (153ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap542
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.23:00:01 zfs destroy pool0/data/build@snap542 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.23:15:35 [txg:1096450] hold pool0/data/build@snap22 (257607) tag=.send-2251295-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.23:15:35 [txg:1096450] hold pool0/data/build@snap23 (261275) tag=.send-2251295-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-18.23:15:35 (167ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap579 '.send-2251295-1'
+            pool0/data/build@snap580 '.send-2251295-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-18.23:16:09 [txg:1096458] release pool0/data/build@snap22 (257607) tag=.send-2251295-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.23:16:09 [txg:1096458] release pool0/data/build@snap23 (261275) tag=.send-2251295-1 refs=0 [on zfs-demo.example.org]
+2026-11-18.23:16:09 zfs send -c -I pool0/data/build@snap22 pool0/data/build@snap23 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.00:00:02 [txg:1097049] snapshot pool0/data/build@snap24 (277)   [on zfs-demo.example.org]
+2026-11-19.00:00:02 (74ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap24
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.00:00:02 zfs snapshot -r pool0/data/build@snap24 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.00:15:01 [txg:1097255] destroy pool0/data/build@snap544 (224118)   [on zfs-demo.example.org]
+2026-11-19.00:15:01 (468ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap544
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.00:15:01 zfs destroy pool0/data/build@snap544 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.00:15:10 [txg:1097258] hold pool0/data/build@snap23 (261275) tag=.send-2291786-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-19.00:15:10 [txg:1097258] hold pool0/data/build@snap24 (277) tag=.send-2291786-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-19.00:15:10 (133ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap580 '.send-2291786-1'
+            pool0/data/build@snap581 '.send-2291786-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.00:15:49 [txg:1097267] release pool0/data/build@snap23 (261275) tag=.send-2291786-1 refs=0 [on zfs-demo.example.org]
+2026-11-19.00:15:49 [txg:1097267] release pool0/data/build@snap24 (277) tag=.send-2291786-1 refs=0 [on zfs-demo.example.org]
+2026-11-19.00:15:49 zfs send -c -I pool0/data/build@snap23 pool0/data/build@snap24 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.01:00:02 [txg:1097881] snapshot pool0/data/build@snap25 (261543)   [on zfs-demo.example.org]
+2026-11-19.01:00:02 (281ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap25
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.01:00:02 zfs snapshot -r pool0/data/build@snap25 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.01:00:02 [txg:1097882] destroy pool0/data/build@snap546 (229593)   [on zfs-demo.example.org]
+2026-11-19.01:00:02 (310ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap546
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.01:00:02 zfs destroy pool0/data/build@snap546 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.01:15:16 [txg:1098106] hold pool0/data/build@snap24 (277) tag=.send-2331931-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-19.01:15:16 [txg:1098106] hold pool0/data/build@snap25 (261543) tag=.send-2331931-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-19.01:15:17 (260ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap581 '.send-2331931-1'
+            pool0/data/build@snap582 '.send-2331931-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.01:16:05 [txg:1098118] release pool0/data/build@snap24 (277) tag=.send-2331931-1 refs=0 [on zfs-demo.example.org]
+2026-11-19.01:16:05 [txg:1098118] release pool0/data/build@snap25 (261543) tag=.send-2331931-1 refs=0 [on zfs-demo.example.org]
+2026-11-19.01:16:05 zfs send -c -I pool0/data/build@snap24 pool0/data/build@snap25 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.02:00:02 [txg:1098903] snapshot pool0/data/build@snap26 (639)   [on zfs-demo.example.org]
+2026-11-19.02:00:03 (318ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap26
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.02:00:03 zfs snapshot -r pool0/data/build@snap26 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.02:00:03 [txg:1098904] destroy pool0/data/build@snap548 (227879)   [on zfs-demo.example.org]
+2026-11-19.02:00:03 (375ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap548
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.02:00:03 zfs destroy pool0/data/build@snap548 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.02:15:16 [txg:1099200] hold pool0/data/build@snap25 (261543) tag=.send-2372882-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-19.02:15:16 [txg:1099200] hold pool0/data/build@snap26 (639) tag=.send-2372882-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-19.02:15:16 (109ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap582 '.send-2372882-1'
+            pool0/data/build@snap583 '.send-2372882-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.02:15:45 [txg:1099210] release pool0/data/build@snap25 (261543) tag=.send-2372882-1 refs=0 [on zfs-demo.example.org]
+2026-11-19.02:15:45 [txg:1099210] release pool0/data/build@snap26 (639) tag=.send-2372882-1 refs=0 [on zfs-demo.example.org]
+2026-11-19.02:15:45 zfs send -c -I pool0/data/build@snap25 pool0/data/build@snap26 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.03:00:01 [txg:1100153] snapshot pool0/data/build@snap27 (5121)   [on zfs-demo.example.org]
+2026-11-19.03:00:01 (267ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap27
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.03:00:01 zfs snapshot -r pool0/data/build@snap27 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.03:15:01 [txg:1100475] destroy pool0/data/build@snap550 (233737)   [on zfs-demo.example.org]
+2026-11-19.03:15:01 [txg:1100475] hold pool0/data/build@snap26 (639) tag=.send-2412940-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-19.03:15:01 [txg:1100475] hold pool0/data/build@snap27 (5121) tag=.send-2412940-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-19.03:15:02 (374ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap583 '.send-2412940-1'
+            pool0/data/build@snap584 '.send-2412940-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.03:15:02 (686ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap550
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.03:15:02 zfs destroy pool0/data/build@snap550 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.03:15:32 [txg:1100483] release pool0/data/build@snap26 (639) tag=.send-2412940-1 refs=0 [on zfs-demo.example.org]
+2026-11-19.03:15:32 [txg:1100483] release pool0/data/build@snap27 (5121) tag=.send-2412940-1 refs=0 [on zfs-demo.example.org]
+2026-11-19.03:15:32 zfs send -c -I pool0/data/build@snap26 pool0/data/build@snap27 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.04:00:01 [txg:1101283] snapshot pool0/data/build@snap28 (4042)   [on zfs-demo.example.org]
+2026-11-19.04:00:01 (198ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap28
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.04:00:01 zfs snapshot -r pool0/data/build@snap28 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.04:15:01 [txg:1101687] destroy pool0/data/build@snap552 (235011)   [on zfs-demo.example.org]
+2026-11-19.04:15:02 (594ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap552
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.04:15:02 zfs destroy pool0/data/build@snap552 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.04:15:35 [txg:1101701] hold pool0/data/build@snap27 (5121) tag=.send-2454602-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-19.04:15:35 [txg:1101701] hold pool0/data/build@snap28 (4042) tag=.send-2454602-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-19.04:15:35 (561ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap584 '.send-2454602-1'
+            pool0/data/build@snap585 '.send-2454602-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.04:16:21 [txg:1101721] release pool0/data/build@snap27 (5121) tag=.send-2454602-1 refs=0 [on zfs-demo.example.org]
+2026-11-19.04:16:21 [txg:1101721] release pool0/data/build@snap28 (4042) tag=.send-2454602-1 refs=0 [on zfs-demo.example.org]
+2026-11-19.04:16:21 zfs send -c -I pool0/data/build@snap27 pool0/data/build@snap28 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.05:00:02 [txg:1102439] snapshot pool0/data/build@snap29 (6799)   [on zfs-demo.example.org]
+2026-11-19.05:00:02 (88ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap29
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.05:00:02 zfs snapshot -r pool0/data/build@snap29 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.05:00:02 [txg:1102440] destroy pool0/data/build@snap554 (230605)   [on zfs-demo.example.org]
+2026-11-19.05:00:02 (433ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap554
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.05:00:02 zfs destroy pool0/data/build@snap554 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.05:15:33 [txg:1102640] hold pool0/data/build@snap28 (4042) tag=.send-2496367-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-19.05:15:33 [txg:1102640] hold pool0/data/build@snap29 (6799) tag=.send-2496367-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-19.05:15:33 (174ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap585 '.send-2496367-1'
+            pool0/data/build@snap586 '.send-2496367-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.05:16:04 [txg:1102647] release pool0/data/build@snap28 (4042) tag=.send-2496367-1 refs=0 [on zfs-demo.example.org]
+2026-11-19.05:16:04 [txg:1102647] release pool0/data/build@snap29 (6799) tag=.send-2496367-1 refs=0 [on zfs-demo.example.org]
+2026-11-19.05:16:04 zfs send -c -I pool0/data/build@snap28 pool0/data/build@snap29 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.06:00:01 [txg:1103194] snapshot pool0/data/build@snap30 (6101)   [on zfs-demo.example.org]
+2026-11-19.06:00:01 (97ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap30
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.06:00:01 zfs snapshot -r pool0/data/build@snap30 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.06:15:02 [txg:1103382] destroy pool0/data/build@snap556 (234263)   [on zfs-demo.example.org]
+2026-11-19.06:15:02 (536ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap556
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.06:15:02 zfs destroy pool0/data/build@snap556 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.06:15:35 [txg:1103389] hold pool0/data/build@snap29 (6799) tag=.send-2538514-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-19.06:15:35 [txg:1103389] hold pool0/data/build@snap30 (6101) tag=.send-2538514-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-19.06:15:35 (364ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap586 '.send-2538514-1'
+            pool0/data/build@snap587 '.send-2538514-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.06:16:06 [txg:1103396] release pool0/data/build@snap29 (6799) tag=.send-2538514-1 refs=0 [on zfs-demo.example.org]
+2026-11-19.06:16:06 [txg:1103396] release pool0/data/build@snap30 (6101) tag=.send-2538514-1 refs=0 [on zfs-demo.example.org]
+2026-11-19.06:16:06 zfs send -c -I pool0/data/build@snap29 pool0/data/build@snap30 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.07:00:01 [txg:1103955] snapshot pool0/data/build@snap31 (3671)   [on zfs-demo.example.org]
+2026-11-19.07:00:01 (349ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap31
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.07:00:01 zfs snapshot -r pool0/data/build@snap31 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.07:15:01 [txg:1104143] destroy pool0/data/build@snap558 (233056)   [on zfs-demo.example.org]
+2026-11-19.07:15:02 (534ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap558
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.07:15:02 zfs destroy pool0/data/build@snap558 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.07:15:35 [txg:1104150] hold pool0/data/build@snap30 (6101) tag=.send-2580349-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-19.07:15:35 [txg:1104150] hold pool0/data/build@snap31 (3671) tag=.send-2580349-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-19.07:15:35 (278ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap587 '.send-2580349-1'
+            pool0/data/build@snap588 '.send-2580349-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.07:16:00 [txg:1104156] release pool0/data/build@snap30 (6101) tag=.send-2580349-1 refs=0 [on zfs-demo.example.org]
+2026-11-19.07:16:00 [txg:1104156] release pool0/data/build@snap31 (3671) tag=.send-2580349-1 refs=0 [on zfs-demo.example.org]
+2026-11-19.07:16:00 zfs send -c -I pool0/data/build@snap30 pool0/data/build@snap31 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.08:00:02 [txg:1104707] snapshot pool0/data/build@snap32 (10628)   [on zfs-demo.example.org]
+2026-11-19.08:00:02 (181ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap32
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.08:00:02 zfs snapshot -r pool0/data/build@snap32 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.08:00:02 [txg:1104708] destroy pool0/data/build@snap560 (237716)   [on zfs-demo.example.org]
+2026-11-19.08:00:02 (269ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap560
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.08:00:02 zfs destroy pool0/data/build@snap560 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.08:15:17 [txg:1104904] hold pool0/data/build@snap31 (3671) tag=.send-2633256-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-19.08:15:17 [txg:1104904] hold pool0/data/build@snap32 (10628) tag=.send-2633256-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-19.08:15:17 (279ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap588 '.send-2633256-1'
+            pool0/data/build@snap589 '.send-2633256-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.08:15:55 [txg:1104912] release pool0/data/build@snap31 (3671) tag=.send-2633256-1 refs=0 [on zfs-demo.example.org]
+2026-11-19.08:15:55 [txg:1104912] release pool0/data/build@snap32 (10628) tag=.send-2633256-1 refs=0 [on zfs-demo.example.org]
+2026-11-19.08:15:55 zfs send -c -I pool0/data/build@snap31 pool0/data/build@snap32 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.09:00:02 [txg:1105482] snapshot pool0/data/build@snap33 (7033)   [on zfs-demo.example.org]
+2026-11-19.09:00:02 (189ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap33
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.09:00:02 zfs snapshot -r pool0/data/build@snap33 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.09:00:02 [txg:1105483] destroy pool0/data/build@snap562 (231777)   [on zfs-demo.example.org]
+2026-11-19.09:00:02 (412ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap562
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.09:00:02 zfs destroy pool0/data/build@snap562 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.09:15:18 [txg:1105695] hold pool0/data/build@snap32 (10628) tag=.send-2674705-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-19.09:15:18 [txg:1105695] hold pool0/data/build@snap33 (7033) tag=.send-2674705-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-19.09:15:18 (158ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap589 '.send-2674705-1'
+            pool0/data/build@snap590 '.send-2674705-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.09:15:58 [txg:1105705] release pool0/data/build@snap32 (10628) tag=.send-2674705-1 refs=0 [on zfs-demo.example.org]
+2026-11-19.09:15:58 [txg:1105705] release pool0/data/build@snap33 (7033) tag=.send-2674705-1 refs=0 [on zfs-demo.example.org]
+2026-11-19.09:15:58 zfs send -c -I pool0/data/build@snap32 pool0/data/build@snap33 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.10:00:01 [txg:1106316] snapshot pool0/data/build@snap34 (9900)   [on zfs-demo.example.org]
+2026-11-19.10:00:01 (106ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap34
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.10:00:01 zfs snapshot -r pool0/data/build@snap34 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.10:00:01 [txg:1106317] destroy pool0/data/build@snap564 (239373)   [on zfs-demo.example.org]
+2026-11-19.10:00:02 (253ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap564
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.10:00:02 zfs destroy pool0/data/build@snap564 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.10:15:35 [txg:1106525] hold pool0/data/build@snap33 (7033) tag=.send-2716830-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-19.10:15:35 [txg:1106525] hold pool0/data/build@snap34 (9900) tag=.send-2716830-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-19.10:15:35 (88ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap590 '.send-2716830-1'
+            pool0/data/build@snap591 '.send-2716830-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.10:16:16 [txg:1106534] release pool0/data/build@snap33 (7033) tag=.send-2716830-1 refs=0 [on zfs-demo.example.org]
+2026-11-19.10:16:16 [txg:1106534] release pool0/data/build@snap34 (9900) tag=.send-2716830-1 refs=0 [on zfs-demo.example.org]
+2026-11-19.10:16:16 zfs send -c -I pool0/data/build@snap33 pool0/data/build@snap34 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.11:00:01 [txg:1107148] snapshot pool0/data/build@snap35 (11917)   [on zfs-demo.example.org]
+2026-11-19.11:00:01 (332ms) ioctl snapshot
+    input:
+        snaps:
+            pool0/data/build@snap35
+        props:
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.11:00:01 zfs snapshot -r pool0/data/build@snap35 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.11:15:01 [txg:1107360] destroy pool0/data/build@snap566 (240810)   [on zfs-demo.example.org]
+2026-11-19.11:15:02 (342ms) ioctl destroy_snaps
+    input:
+        snaps:
+            pool0/data/build@snap566
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.11:15:02 zfs destroy pool0/data/build@snap566 [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.11:15:06 [txg:1107362] hold pool0/data/build@snap34 (9900) tag=.send-2758654-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-19.11:15:06 [txg:1107362] hold pool0/data/build@snap35 (11917) tag=.send-2758654-1 temp=1 refs=1 [on zfs-demo.example.org]
+2026-11-19.11:15:06 (152ms) ioctl hold
+    input:
+        holds:
+            pool0/data/build@snap591 '.send-2758654-1'
+            pool0/data/build@snap592 '.send-2758654-1'
+        cleanup_fd: 5
+ [user 0 (root) on zfs-demo.example.org:linux]
+2026-11-19.11:15:41 [txg:1107369] release pool0/data/build@snap34 (9900) tag=.send-2758654-1 refs=0 [on zfs-demo.example.org]
+2026-11-19.11:15:41 [txg:1107369] release pool0/data/build@snap35 (11917) tag=.send-2758654-1 refs=0 [on zfs-demo.example.org]
+2026-11-19.11:15:41 zfs send -c -I pool0/data/build@snap34 pool0/data/build@snap35 [user 0 (root) on zfs-demo.example.org:linux]
+

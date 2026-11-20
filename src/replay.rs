@@ -14,8 +14,17 @@ pub struct Replay {
 }
 
 impl Replay {
+    /// Also pins the wall clock to the capture time (UTC), so ages and dates render the same everywhere.
     pub fn new(dir: &std::path::Path) -> Result<Self, String> {
         let src = FixtureSource::new(dir)?;
+        let captured = std::fs::read_to_string(dir.join("meta.json"))
+            .ok()
+            .and_then(|s| serde_json::from_str::<serde_json::Value>(&s).ok())
+            .and_then(|m| m["captured"].as_str().map(str::to_string))
+            .and_then(|c| jiff::Timestamp::strptime("%Y-%m-%dT%H:%M:%S%z", &c).ok())
+            .map(|t| t.as_second())
+            .unwrap_or(1_795_000_000);
+        crate::fmt::pin_clock(captured);
         let blocks = std::fs::read_to_string(dir.join("iostat.txt")).map(|t| split_stream(&t)).unwrap_or_default();
         Ok(Self { src, blocks, tick: 0 })
     }

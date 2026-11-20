@@ -1,0 +1,51 @@
+---
+source: tests/render.rs
+expression: "render(\"7\", 30)"
+---
+┏ pools & datasets ━━━━━━━━━━━━━━━━━━━━┓╭ pool pool0 · 81 shown · 49 local · zfs order ────────────────────────╮╭ about this property ─────────────────────────╮
+┃◆ pool0 (pool)                        ┃│PROPERTY                       VALUE                                  ││altroot                                       │
+┃  pool0                               ┃│── settable · 15 (zpool set)                                          ││value -                                       │
+┃    data                              ┃│altroot                        -                                      ││source default                                │
+┃      build                           ┃│version                        -                                      ││settable: zpool set altroot=…                 │
+┃      cache                           ┃│bootfs                         -                                      ││                                              │
+┃        docker                        ┃│delegation                     on                                     ││Temporary prefix added to all mountpoints (set│
+┃          git                         ┃│autoreplace                    off                                    ││when importing, e.g. for rescue).             │
+┃          mail                        ┃│cachefile                      -                                      ││                                              │
+┃          web                         ┃│failmode                       wait                                   ││change   zpool set altroot=<value> pool0      │
+┃        k8s                           ┃│listsnapshots                  off                                    ││                                              │
+┃          git                         ┃│autoexpand                     off                                    ││                                              │
+┃          mail                        ┃│ashift                         12                                     ││                                              │
+┃          web                         ┃│comment                        -                                      ││                                              │
+┃        logs                          ┃│multihost                      off                                    ││                                              │
+┃          git                         ┃│autotrim                       on                                     ││                                              │
+┃          mail                        ┃│compatibility                  off                                    ││                                              │
+┃          web                         ┃│dedup_table_quota              auto                                   ││                                              │
+┃        postgres                      ┃│── feature flags · 47 (enabled = available, active = in use on disk)  ││                                              │
+┃          git                         ┃│feature@async_destroy          enabled                                ││                                              │
+┃          mail                        ┃│feature@empty_bpobj            active                                 ││                                              │
+┃          web                         ┃│feature@lz4_compress           active                                 ││                                              │
+┃      ci                              ┃│feature@multi_vdev_crash_dump  enabled                                ││                                              │
+┃      home                            ┃│feature@spacemap_histogram     active                                 ││                                              │
+┃        alice                         ┃│feature@enabled_txg            active                                 ││                                              │
+┃        analysis                      ┃│feature@hole_birth             active                                 ││                                              │
+┃        archive                       ┃│feature@extensible_dataset     active                                 ││                                              │
+┃        backups                       ┃│feature@embedded_data          active                                 ││                                              │
+┃        bob                           ┃│feature@bookmarks              enabled                                ││                                              │
+┃        carol                         ┃│feature@filesystem_limits      enabled                                ││                                              │
+┃        dave                          ┃│feature@large_blocks           active                                 ││                                              │
+┃        db                            ┃│feature@large_dnode            active                                 ││                                              │
+┃        erin                          ┃│feature@sha512                 enabled                                ││                                              │
+┃        frank                         ┃│feature@skein                  enabled                                ││                                              │
+┃        genomics                      ┃│feature@edonr                  enabled                                ││                                              │
+┃        grace                         ┃│feature@userobj_accounting     active                                 ││                                              │
+┃        heidi                         ┃│feature@encryption             active                                 ││                                              │
+┃        imaging                       ┃│feature@project_quota          active                                 ││                                              │
+┃        ivan                          ┃│feature@device_removal         enabled                                ││                                              │
+┃        judy                          ┃│feature@obsolete_counts        enabled                                ││                                              │
+┃        lab                           ┃│feature@zpool_checkpoint       enabled                                ││                                              │
+┃        media                         ┃│feature@spacemap_v2            active                                 ││                                              │
+┃        processed                     ┃│feature@allocation_classes     active                                 ││                                              │
+┃        projects                      ┃│feature@resilver_defer         enabled                                ││                                              │
+┃        raw                           ┃│feature@bookmark_v2            enabled                                ││                                              │
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛╰──────────────────────────────────────────────────────────────────────╯╰──────────────────────────────────────────────╯
+ q quit  ? help  1-7 tabs  ↑↓ pick pool/dataset  Enter → its properties  / filter  p pause  +/- interval  b bytes  l log

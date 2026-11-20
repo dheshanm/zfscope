@@ -1,0 +1,10 @@
+20 1 0x01 8 2176 269061673896656 2941855721045307
+name                            type data
+hits                            4    1489653016
+future                          4    83642893
+stride                          4    15562561
+past                            4    127157287
+misses                          4    4748259598
+max_streams                     4    658807730
+io_issued                       4    83275375
+io_active                       4    0

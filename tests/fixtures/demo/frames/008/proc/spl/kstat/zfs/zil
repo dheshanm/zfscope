@@ -1,0 +1,23 @@
+29 1 0x01 21 5712 269061702078092 2941846720917310
+name                            type data
+zil_commit_count                4    389520229
+zil_commit_writer_count         4    386746254
+zil_commit_error_count          4    0
+zil_commit_stall_count          4    0
+zil_commit_suspend_count        4    0
+zil_commit_crash_count          4    0
+zil_itx_count                   4    772930530
+zil_itx_indirect_count          4    0
+zil_itx_indirect_bytes          4    0
+zil_itx_copied_count            4    77629746
+zil_itx_copied_bytes            4    294226346956
+zil_itx_needcopy_count          4    605304011
+zil_itx_needcopy_bytes          4    41262743594328
+zil_itx_metaslab_normal_count   4    2
+zil_itx_metaslab_normal_bytes   4    1296
+zil_itx_metaslab_normal_write   4    8192
+zil_itx_metaslab_normal_alloc   4    12288
+zil_itx_metaslab_slog_count     4    663380740
+zil_itx_metaslab_slog_bytes     4    41819882138824
+zil_itx_metaslab_slog_write     4    43035115311104
+zil_itx_metaslab_slog_alloc     4    48228240846848

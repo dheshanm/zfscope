@@ -1,0 +1,12 @@
+{
+ "host": "zfs-demo",
+ "ticks": 20,
+ "interval": 1.0,
+ "hist_every": 5,
+ "captured": "2026-11-19T11:52:07-0500",
+ "pseudonyms": {
+  "datasets": 50,
+  "snapshots": 592
+ },
+ "sanitized": true
+}

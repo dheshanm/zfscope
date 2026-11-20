@@ -2,6 +2,8 @@
 
 `top` for OpenZFS hosts: a live, read-only terminal view of what a ZFS server is doing and how it is set up.
 
+![zfscope tour](docs/demo.gif)
+
 - **Overview**: pool health and capacity per class, IOPS / bandwidth / latency graphs, ARC, ZIL, TXG, busiest datasets
 - **Pool**: vdev/disk tree with live IO, latency, queue and space columns; per-device graphs, a latency heatmap,
   request-size histogram, a disk grid to spot the one slow disk, and `zpool history`
@@ -15,14 +17,35 @@
 
 Graphs are mirrored braille lines (reads up, writes down); press `?` in any view for a guide to what it shows.
 
+| | |
+|---|---|
+| ![Overview](docs/overview.png) Overview | ![Pool](docs/pool.png) Pool: topology, graphs, latency heatmap |
+| ![Disk grid](docs/disk-grid.png) Disk grid | ![Datasets](docs/datasets.png) Datasets: space, IO, ZIL |
+| ![ARC](docs/arc.png) ARC | ![ZIL and TXG](docs/zil-txg.png) ZIL and TXGs |
+| ![Disks](docs/disks.png) Disks: slots, paths, SMART | ![Properties](docs/props.png) Properties with help |
+
+Screenshots come from a sanitised capture of a real 60-disk server (`tests/fixtures/demo`), not a mock.
+
 ## Install
 
-Static Linux binaries (x86_64, aarch64), built from macOS or Linux without a C toolchain:
+Download the static binary on the ZFS host (no dependencies, any distribution):
 
 ```sh
+arch=$(uname -m)   # x86_64 or aarch64
+curl -fLo /usr/local/sbin/zfscope \
+  "https://github.com/dheshanm/zfscope/releases/latest/download/zfscope-$arch-unknown-linux-musl"
+chmod +x /usr/local/sbin/zfscope
+```
+
+Each [release](https://github.com/dheshanm/zfscope/releases) lists `SHA256SUMS` for checking the download.
+
+**Or build it** on any machine (no Docker or extra linker needed) and copy it over:
+
+```sh
+git clone https://github.com/dheshanm/zfscope && cd zfscope
 rustup target add x86_64-unknown-linux-musl
 cargo build --release --target x86_64-unknown-linux-musl
-scp target/x86_64-unknown-linux-musl/release/zfscope host:/usr/local/sbin/
+scp target/x86_64-unknown-linux-musl/release/zfscope root@SERVER:/usr/local/sbin/
 ```
 
 ## Usage
@@ -55,7 +78,12 @@ scripts/deploy-test.sh root@host                  # build and copy to host:/tmp/
 Captures go to `tests/fixtures/local/` (gitignored): dataset and snapshot names are replaced on the server before
 anything is copied, but they are still real host data and are never committed.
 
-Each release build of changed sources gets the next build number (`BUILD`), shown as `0.1.0+bN` in the header.
+Each release build of changed sources gets the next build number (`BUILD`), shown as `0.1.0+bN` in the header;
+tagged releases (`ZFSCOPE_RELEASE=1`) are just `0.1.0`.
+
+`scripts/sanitize-fixture.py` turns a capture into a committable fixture (host names, serials, WWNs, GUIDs and IPs
+replaced; fails if anything original remains); `scripts/screenshots.sh` regenerates `docs/` from it. Render tests
+(`tests/render.rs`) snapshot every view: `cargo insta review` after an intentional UI change.
 
 ## License
 

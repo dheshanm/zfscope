@@ -188,10 +188,27 @@ pub fn age(ts: i64, now: i64) -> String {
     format!("{} ago", duration((now - ts).max(0) as f64))
 }
 
-/// Unix seconds to local `YYYY-MM-DD HH:MM`.
+/// Pinned wall clock (unix seconds) and UTC dates, for deterministic renders (tests, screenshots). 0 = real clock.
+static PINNED_NOW: std::sync::atomic::AtomicI64 = std::sync::atomic::AtomicI64::new(0);
+
+pub fn pin_clock(unix_secs: i64) {
+    PINNED_NOW.store(unix_secs, Ordering::Relaxed);
+}
+
+/// Current unix time (or the pinned one).
+pub fn now() -> i64 {
+    match PINNED_NOW.load(Ordering::Relaxed) {
+        0 => jiff::Timestamp::now().as_second(),
+        t => t,
+    }
+}
+
+/// Unix seconds to local `YYYY-MM-DD HH:MM` (UTC while the clock is pinned).
 pub fn date(ts: i64) -> String {
+    let tz =
+        if PINNED_NOW.load(Ordering::Relaxed) != 0 { jiff::tz::TimeZone::UTC } else { jiff::tz::TimeZone::system() };
     match jiff::Timestamp::from_second(ts) {
-        Ok(t) => jiff::ZonedDateTime::new(t, jiff::tz::TimeZone::system()).strftime("%Y-%m-%d %H:%M").to_string(),
+        Ok(t) => jiff::ZonedDateTime::new(t, tz).strftime("%Y-%m-%d %H:%M").to_string(),
         Err(_) => "-".into(),
     }
 }

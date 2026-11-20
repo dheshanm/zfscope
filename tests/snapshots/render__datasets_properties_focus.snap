@@ -1,0 +1,51 @@
+---
+source: tests/render.rs
+expression: "render(\"3 j Enter ] ] ] Tab j j j\", 30)"
+---
+╭ datasets · tree · sort name ▲ · 2/59 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│NAME▲                 USED   AVAIL   REFER    SNAP   LUSED  RATIO  QUOTA           SHARE OF PARENT       read     write                                       │
+│▾ pool0               394T    439T   96.0K       -    504T  1.29x  ·               █▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒         0         0                                       │
+│  ▾ data              374T    439T    360K       -    504T  1.29x  ·               █▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒         0         0                                       │
+│      build          10.2T   39.8T   9.28T    939G   11.9T  1.19x  ━━───────  20%  █···············    113M/s    528K/s                                       │
+│    ▾ cache          10.4T    439T    352K       -   13.1T  1.21x  ·               █···············         0         0                                       │
+│      ▾ docker        856K    439T    280K       -    312K  1.00x  ·               █···············         0         0                                       │
+│          git         192K    439T    192K       -   69.5K  1.00x  ·               ████············         0         0                                       │
+│          mail        192K    439T    192K       -   69.5K  1.00x  ·               ████············         0         0                                       │
+│          web         192K    439T    192K       -   69.5K  1.00x  ·               ████············         0         0                                       │
+│      ▾ k8s          10.4T    439T   10.4T       -   13.1T  1.21x  ·               ████████████████         0         0                                       │
+│          git         192K    439T    192K       -   69.5K  1.00x  ·               █···············         0         0                                       │
+│          mail        192K    439T    192K       -   69.5K  1.00x  ·               █···············         0         0                                       │
+│          web         192K    439T    192K       -   69.5K  1.00x  ·               █···············         0         0                                       │
+│      ▾ logs          856K    439T    280K       -    312K  1.00x  ·               █···············         0         0                                       │
+│          git         192K    439T    192K       -   69.5K  1.00x  ·               ████············         0         0                                       │
+│          mail        192K    439T    192K       -   69.5K  1.00x  ·               ████············         0         0                                       │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+ pool0/data  Space   IO·ZIL   Snapshots   Properties   [ ] panes · Tab focus list ↔ pane · P props tab · Enter close
+┏ properties · 93 shown · 1 local · zfs order ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓╭ about this property ─────────────────────────────────────────╮
+┃PROPERTY                VALUE                                     SOURCE                      ┃│volblocksize                                                  │
+┃── settable · 53 (zfs set)                                                                    ┃│value -                                                       │
+┃quota                   none                                      default                     ┃│source default                                                │
+┃reservation             none                                      default                     ┃│settable: zfs set volblocksize=…                              │
+┃volsize                 -                                         default                     ┃│                                                              │
+┃volblocksize            -                                         default                     ┃│Block size of a volume (zvol). Fixed when the volume is       │
+┃recordsize              1.00M                                     inherited from pool0        ┃│created (default 16K).                                        │
+┃mountpoint              /pool0/data                               default                     ┃│                                                              │
+┃sharenfs                off                                       default                     ┃│possible values                                               │
+┃checksum                on                                        default                     ┃│  4K    matches 4K-sector guests; high metadata overhead      │
+┃compression             zstd-1                                    inherited from pool0        ┃│  8K    databases on zvols                                    │
+┃atime                   off                                       inherited from pool0        ┃│  16K   default: VM disks                                     │
+┃devices                 on                                        default                     ┃│  32K   VMs with larger IO                                    │
+┃exec                    on                                        default                     ┃│  64K   VMs with mostly sequential IO                         │
+┃setuid                  on                                        default                     ┃│  128K  large sequential IO (backup targets)                  │
+┃readonly                off                                       default                     ┃│                                                              │
+┃zoned                   off                                       default                     ┃│Match it to the IO size of whatever uses the volume (a VM's   │
+┃snapdir                 hidden                                    default                     ┃│filesystem, a database). Too small wastes space on metadata   │
+┃aclmode                 discard                                   default                     ┃│and RAIDZ padding; too large makes small writes expensive.    │
+┃aclinherit              restricted                                default                     ┃│                                                              │
+┃canmount                on                                        default                     ┃│change   zfs set volblocksize=<value> pool0/data              │
+┃xattr                   sa                                        inherited from pool0        ┃│                                                              │
+┃copies                  1                                         default                     ┃│                                                              │
+┃vscan                   off                                       default                     ┃│                                                              │
+┃nbmand                  off                                       default                     ┃│                                                              │
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛╰──────────────────────────────────────────────────────────────╯
+ q quit  ? help  1-7 tabs  Tab next focus  ↑↓ move in pane  [ ] panes  Esc back to list  P props tab  p pause  +/- interval  b bytes  l log

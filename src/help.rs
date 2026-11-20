@@ -738,7 +738,7 @@ pub fn tab_guide(tab: crate::app::Tab) -> &'static [(&'static str, &'static str)
             (
                 "Disk grid (d)",
                 "Every disk as a tile, coloured by the chosen metric, so one slow or erroring disk \
-              among many stands out.",
+              among many stands out. The side panel lists every metric with its worst disk; ↑↓ picks one.",
             ),
             ("History (H)", "zpool history: every command run against the pool, and internal events."),
         ],

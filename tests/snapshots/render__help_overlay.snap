@@ -16,7 +16,7 @@ expression: "render(\"2 ?\", 30)"
 │      e00s07            │Request sizes: Sizes of IOs sent to the device. ind = single requests, agg = neighbouring requests merged   │                        │
 │      e00s08            │into one larger IO.                                                                                         │                        │
 │      e00s09            │Disk grid (d): Every disk as a tile, coloured by the chosen metric, so one slow or erroring disk among many │                        │
-│  ▾ raidz2-1            │stands out.                                                                                                 │                        │
+│  ▾ raidz2-1            │stands out. The side panel lists every metric with its worst disk; ↑↓ picks one.                            │                        │
 │      e00s10            │History (H): zpool history: every command run against the pool, and internal events.                        │                        │
 │      e00s11            │                                                                                                            │                        │
 │      e00s12            │Terms                                                                                                       │                        │
@@ -43,7 +43,7 @@ pool0 pool ONLINE        │vdevs                                               
 ╭ latency r 8.6ms (disk 8│ b                         exact byte counts instead of K/M/G/T                                             │                        │
 │▲ read wait · top 75ms  │ r                         re-read configuration now (zpool status/list, zfs list)                          │                        │
 │                        │ l                         log pane                                                                         │                        │
-│                        │ Pool:  m / d / c / w / H  column set / disk grid / grid colouring / heatmap wait type / history            │                        │
+│                        │ Pool:  m / d / c / w / H  column set / disk grid (↑↓/c colour) / heatmap wait type / history               │                        │
 │                        │ Datasets:  t / Enter      ztop mode / detail ([ ] panes, Tab focus list ↔ pane, P opens Props)             │                        │
 │                        │ ARC, ZIL·TXG:  ↑↓ / n     pick a tunable to read its help / next pool                                      │████████████████████████│
 │▼ write wait · bottom 75╰────────────────────────────────────────────────────────────────────────────────────────────────────────────╯                        │

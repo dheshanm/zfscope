@@ -486,7 +486,89 @@ fn size_hist(f: &mut Frame, m: &Model, key: &str, r: Rect) {
 
 // ------------------------------------------------------------------------------------------------ disk grid
 
+/// A leaf vdev's value for `metric` (NaN when unknown), and how a tile shows it.
+fn grid_value(m: &Model, metric: GridMetric, pool: &str, v: &Vdev) -> (f64, String) {
+    match metric {
+        GridMetric::Latency => {
+            let io = m.io(pool, &v.name);
+            let (r, wv) =
+                io.map(|i| (i.wait[w::DISK_R].unwrap_or(0.0), i.wait[w::DISK_W].unwrap_or(0.0))).unwrap_or((0.0, 0.0));
+            let x = r.max(wv);
+            (x, fmt::ns(x))
+        }
+        GridMetric::Ops => {
+            let x = m.io(pool, &v.name).map(|i| i.rops + i.wops).unwrap_or(0.0);
+            (x, fmt::count(x))
+        }
+        GridMetric::Util => {
+            let x = m
+                .disk_for_vdev(pool, &v.name)
+                .and_then(|d| m.disk_rates.get(&d.whole))
+                .map(|r| r.util)
+                .unwrap_or(f64::NAN);
+            (x, fmt::pct(x))
+        }
+        GridMetric::Errors => {
+            let x = (v.errors() + v.slow_ios) as f64;
+            (x, if x > 0.0 { format!("{x}") } else { "ok".into() })
+        }
+    }
+}
+
+/// Disk grid plus a panel listing every metric it can colour by (with the current worst disk's value), so the
+/// choices are visible at a glance and ↑↓ / a click picks one.
 fn grid(f: &mut Frame, app: &mut App, area: Rect) {
+    let rows = GridMetric::ALL.len() as u16;
+    let (grid_r, metrics_r, side) = if area.width >= 100 {
+        let [a, b] = Layout::horizontal([Constraint::Min(40), Constraint::Length(34)]).areas(area);
+        (a, b, true)
+    } else {
+        let [a, b] = Layout::vertical([Constraint::Length(rows + 3), Constraint::Min(4)]).areas(area);
+        (b, a, false)
+    };
+    grid_tiles(f, app, grid_r);
+    grid_metrics(f, app, metrics_r, side);
+}
+
+fn grid_metrics(f: &mut Frame, app: &mut App, area: Rect, side: bool) {
+    let m = &app.model;
+    let ir = inner(area);
+    let leaves: Vec<(&str, &Vdev)> =
+        m.pools().iter().flat_map(|p| p.root.leaves().into_iter().map(move |v| (p.name.as_str(), v))).collect();
+    let mut lines = vec![Line::from(vec![
+        Span::styled(format!("  {:<w$}", "metric", w = (ir.width as usize).saturating_sub(10)), theme::dim()),
+        Span::styled(format!("{:>7} ", "worst"), theme::dim()),
+    ])];
+    for (i, &g) in GridMetric::ALL.iter().enumerate() {
+        let vals = leaves.iter().map(|(p, v)| grid_value(m, g, p, v));
+        // errors: the total across disks; the rest: the worst single disk
+        let worst = if g == GridMetric::Errors {
+            let n: f64 = vals.map(|(x, _)| x).sum();
+            if n > 0.0 { format!("{n}") } else { "ok".into() }
+        } else {
+            vals.filter(|(x, _)| x.is_finite()).max_by(|a, b| a.0.total_cmp(&b.0)).map(|(_, t)| t).unwrap_or("-".into())
+        };
+        let on = g == app.grid_metric;
+        let name_w = (ir.width as usize).saturating_sub(10);
+        let style = if on { theme::sel() } else { Style::new() };
+        lines.push(Line::from(vec![
+            Span::styled(if on { "▸ " } else { "  " }, style.fg(theme::ACCENT)),
+            Span::styled(format!("{:<name_w$}", fmt::fit(g.title(), name_w)), style),
+            Span::styled(format!("{worst:>7} "), style),
+        ]));
+        app.hits.add(Rect::new(ir.x, ir.y + 1 + i as u16, ir.width, 1), Hit::GridMetric(g));
+    }
+    if side {
+        lines.push(Line::from(""));
+        lines.push(Line::from(Span::styled(app.grid_metric.about(), theme::dim())));
+    }
+    f.render_widget(
+        Paragraph::new(lines).wrap(ratatui::widgets::Wrap { trim: false }).block(panel("colour by · ↑↓ / c")),
+        area,
+    );
+}
+
+fn grid_tiles(f: &mut Frame, app: &mut App, area: Rect) {
     let m = &app.model;
     let metric = app.grid_metric;
     let ir = inner(area);
@@ -495,34 +577,7 @@ fn grid(f: &mut Frame, app: &mut App, area: Rect) {
     // Two-line tiles: disk name on top, value below, both on the tile's colour.
     let short = |n: &str| if n.chars().count() <= 8 { n.to_string() } else { fmt::fit_left(n, 7) };
     let mut legend_max: f64 = 0.0;
-    let value = |pool: &str, v: &Vdev| -> (f64, String) {
-        match metric {
-            GridMetric::Latency => {
-                let io = m.io(pool, &v.name);
-                let (r, wv) = io
-                    .map(|i| (i.wait[w::DISK_R].unwrap_or(0.0), i.wait[w::DISK_W].unwrap_or(0.0)))
-                    .unwrap_or((0.0, 0.0));
-                let x = r.max(wv);
-                (x, fmt::ns(x))
-            }
-            GridMetric::Ops => {
-                let x = m.io(pool, &v.name).map(|i| i.rops + i.wops).unwrap_or(0.0);
-                (x, fmt::count(x))
-            }
-            GridMetric::Util => {
-                let x = m
-                    .disk_for_vdev(pool, &v.name)
-                    .and_then(|d| m.disk_rates.get(&d.whole))
-                    .map(|r| r.util)
-                    .unwrap_or(f64::NAN);
-                (x, fmt::pct(x))
-            }
-            GridMetric::Errors => {
-                let x = (v.errors() + v.slow_ios) as f64;
-                (x, if x > 0.0 { format!("{x}") } else { "ok".into() })
-            }
-        }
-    };
+    let value = |pool: &str, v: &Vdev| grid_value(m, metric, pool, v);
     for p in m.pools() {
         let leaves = p.root.leaves();
         let tile_w = leaves.iter().map(|v| short(&v.name).chars().count()).max().unwrap_or(6).max(7) + 2;
@@ -599,10 +654,7 @@ fn grid(f: &mut Frame, app: &mut App, area: Rect) {
     }
     legend.push(Span::styled(format!(" {scale}"), theme::dim()));
     lines.push(Line::from(legend));
-    f.render_widget(
-        Paragraph::new(lines).block(panel(&format!("disk grid · {} (c cycles, d/Esc back)", metric.title()))),
-        area,
-    );
+    f.render_widget(Paragraph::new(lines).block(panel(&format!("disk grid · {} (d/Esc back)", metric.title()))), area);
 }
 
 // ------------------------------------------------------------------------------------------------ history

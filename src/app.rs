@@ -185,13 +185,14 @@ pub enum GridMetric {
 }
 
 impl GridMetric {
+    /// Every metric, in the order the grid's metric panel lists them (and `c` cycles).
+    pub const ALL: [GridMetric; 4] = [GridMetric::Latency, GridMetric::Ops, GridMetric::Util, GridMetric::Errors];
+
+    pub fn index(self) -> usize {
+        GridMetric::ALL.iter().position(|m| *m == self).unwrap_or(0)
+    }
     fn next(self) -> Self {
-        match self {
-            GridMetric::Latency => GridMetric::Ops,
-            GridMetric::Ops => GridMetric::Util,
-            GridMetric::Util => GridMetric::Errors,
-            GridMetric::Errors => GridMetric::Latency,
-        }
+        GridMetric::ALL[(self.index() + 1) % GridMetric::ALL.len()]
     }
     pub fn title(self) -> &'static str {
         match self {
@@ -199,6 +200,15 @@ impl GridMetric {
             GridMetric::Ops => "IOPS",
             GridMetric::Util => "util %",
             GridMetric::Errors => "errors",
+        }
+    }
+    /// What the metric measures (shown under the grid's metric panel list).
+    pub fn about(self) -> &'static str {
+        match self {
+            GridMetric::Latency => "Time each IO spent on the disk itself (the worse of reads and writes).",
+            GridMetric::Ops => "Reads + writes per second sent to the disk.",
+            GridMetric::Util => "Share of time the disk was busy with at least one IO.",
+            GridMetric::Errors => "Read / write / checksum errors plus slow IOs. Red also marks disks not ONLINE.",
         }
     }
 }
@@ -412,6 +422,8 @@ pub enum Hit {
     /// row index in the current tab's main list
     Row(usize),
     SubTab(usize),
+    /// an entry of the disk grid's metric panel
+    GridMetric(GridMetric),
 }
 
 #[derive(Default, Debug)]
@@ -1308,6 +1320,12 @@ impl App {
             KeyCode::Char('d') => self.grid = !self.grid,
             KeyCode::Char('c') => self.grid_metric = self.grid_metric.next(),
             KeyCode::Char('w') => self.heat_disk = !self.heat_disk,
+            // the grid hides the topology tree: arrows pick the metric rather than moving/folding unseen rows
+            code if self.grid => {
+                if let Some(i) = Self::nav(code, self.grid_metric.index(), GridMetric::ALL.len(), 1) {
+                    self.grid_metric = GridMetric::ALL[i];
+                }
+            }
             KeyCode::Left | KeyCode::Char('h') => {
                 if let Some(s) = self.topo_sel.clone() {
                     self.topo_collapsed.insert(s);
@@ -1663,6 +1681,7 @@ impl App {
                         self.snap_sel = i;
                     }
                     Some(Hit::PaneArea) => self.ds_focus_pane = true,
+                    Some(Hit::GridMetric(g)) => self.grid_metric = g,
                     Some(Hit::TargetRow(i)) => {
                         self.set_props_focus(PropsFocus::Targets);
                         self.select_target(i);

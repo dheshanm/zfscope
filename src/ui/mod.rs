@@ -192,6 +192,8 @@ fn footer(f: &mut Frame, app: &App, r: Rect) {
         Tab::Pool => {
             if app.pool_history {
                 hints.extend([("↑↓", "scroll"), ("/", "filter"), ("H/Esc", "back")]);
+            } else if app.grid {
+                hints.extend([("↑↓", "colour by"), ("c", "next colour"), ("d/Esc", "back"), ("H", "history")]);
             } else {
                 hints.extend([
                     ("↑↓", "select"),
@@ -200,9 +202,6 @@ fn footer(f: &mut Frame, app: &App, r: Rect) {
                     ("d", "disk grid"),
                     ("H", "history"),
                 ]);
-            }
-            if app.grid && !app.pool_history {
-                hints.push(("c", app.grid_metric.title()));
             }
             if !app.pool_history && !app.grid {
                 hints.push(("w", if app.heat_disk { "heat: disk wait" } else { "heat: total wait" }));
@@ -296,7 +295,7 @@ fn help(f: &mut Frame, app: &mut App, area: Rect) {
         ("b", "exact byte counts instead of K/M/G/T"),
         ("r", "re-read configuration now (zpool status/list, zfs list)"),
         ("l", "log pane"),
-        ("Pool:  m / d / c / w / H", "column set / disk grid / grid colouring / heatmap wait type / history"),
+        ("Pool:  m / d / c / w / H", "column set / disk grid (↑↓/c colour) / heatmap wait type / history"),
         ("Datasets:  t / Enter", "ztop mode / detail ([ ] panes, Tab focus list ↔ pane, P opens Props)"),
         ("ARC, ZIL·TXG:  ↑↓ / n", "pick a tunable to read its help / next pool"),
         ("Props:  Enter / Esc", "move focus right (pools → properties → about) / left"),

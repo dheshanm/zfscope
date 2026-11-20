@@ -90,6 +90,22 @@ view!(pool_latency_sorted, "2 m click:62,2");
 view!(pool_queues, "2 m m");
 view!(pool_space, "2 m m m");
 view!(pool_disk_grid, "2 d");
+view!(pool_disk_grid_util, "2 d Down Down");
+
+#[test]
+fn disk_grid_metric_panel() {
+    // every metric is listed; arrows clamp at the ends; a click picks one
+    let s = render("2 d", 30);
+    for m in ["disk wait", "IOPS", "util %", "errors"] {
+        assert!(s.contains(m), "{m} missing:\n{s}");
+    }
+    assert!(render("2 d Up", 30).contains("disk grid · disk wait"));
+    assert!(render("2 d Down Down Down Down", 30).contains("disk grid · errors"));
+    assert!(render("2 d c", 30).contains("disk grid · IOPS"));
+    // metric panel: right column, rows start below the border + header line (screen row 1 is the panel top)
+    let s = render("2 d click:140,4", 30);
+    assert!(s.contains("disk grid · IOPS"), "{s}");
+}
 view!(pool_history, "2 H");
 view!(datasets_tree, "3");
 view!(datasets_ztop, "3 t");
@@ -211,12 +227,14 @@ fn rw_feature_flag_needs_pool_name() {
 #[test]
 fn renders_at_small_sizes_without_panicking() {
     for (c, r) in [(80, 24), (100, 30), (60, 20)] {
-        for tab in ["1", "2", "3", "4", "5", "6", "7"] {
+        for keys in ["1", "2", "2 d", "3", "4", "5", "6", "7"] {
             let mut rp = Replay::new(std::path::Path::new("tests/fixtures/demo")).unwrap();
             let mut app = App::new("zfs-demo".into(), "fixture".into(), Duration::from_secs(1));
             rp.init(&mut app);
             rp.run(&mut app, 8);
-            app.handle_key(key(tab));
+            for k in keys.split_whitespace() {
+                app.handle_key(key(k));
+            }
             let mut term = Terminal::new(TestBackend::new(c, r)).unwrap();
             term.draw(|f| zfscope::ui::draw(f, &mut app)).unwrap();
         }
